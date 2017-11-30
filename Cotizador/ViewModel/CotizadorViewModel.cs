@@ -30,6 +30,9 @@ namespace Cotizador.ViewModel
         private Boolean _verMensaje;
         private String _txtMensaje;
         private DateTime _fecha;
+        private DateTime _fechaVigencia;
+        private DateTime _fechaEntrega;
+        private Sucursal _sucursalSel;
 
         public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged("ListaClientes"); } }
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
