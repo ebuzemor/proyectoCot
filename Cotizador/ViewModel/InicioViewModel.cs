@@ -30,6 +30,7 @@ namespace Cotizador.ViewModel
                 ApiToken = apitoken,
                 Localhost = localhost
             };
+            VmCotizador.MostrarSucursal(); //para no hacer un constructor con paso de parametros.
             VwCotizador = new CotizadorView
             {
                 DataContext = VmCotizador

@@ -2,9 +2,12 @@
 using Cotizador.Model;
 using Cotizador.View;
 using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 
 namespace Cotizador.ViewModel
 {
@@ -29,10 +32,11 @@ namespace Cotizador.ViewModel
         private Double _sumaSubTotal;
         private Boolean _verMensaje;
         private String _txtMensaje;
-        private DateTime _fecha;
+        private DateTime _fechaCotizacion;
         private DateTime _fechaVigencia;
         private DateTime _fechaEntrega;
         private Sucursal _sucursalSel;
+        private String _txtSucursal;
 
         public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged("ListaClientes"); } }
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
@@ -52,7 +56,11 @@ namespace Cotizador.ViewModel
         public bool EsImportado { get => _esImportado; set { _esImportado = value; OnPropertyChanged("EsImportado"); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
-        public DateTime Fecha { get => _fecha; set { _fecha = value; OnPropertyChanged("Fecha"); } }
+        public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged("Fecha");  ChecarVigencia(_fechaCotizacion); ChecarFecEntrega(); } }
+        public DateTime FechaVigencia { get => _fechaVigencia; set { _fechaVigencia = value; OnPropertyChanged("FechaVigencia"); } }
+        public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; OnPropertyChanged("FechaEntrega"); } }
+        public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged("SucursalSel"); } }
+        public string TxtSucursal { get => _txtSucursal; set { _txtSucursal = value; OnPropertyChanged("TxtSucursal"); } }
         #endregion
 
         #region Commands
@@ -60,7 +68,7 @@ namespace Cotizador.ViewModel
         public RelayCommand AgregarProductoCommand { get; set; }
         public RelayCommand EditarProductoCommand { get; set; }
         public RelayCommand QuitarProductoCommand { get; set; }
-        public RelayCommand CerrarMensajeCommand { get; set; }        
+        public RelayCommand CerrarMensajeCommand { get; set; }
         #endregion
 
         #region Constructor
@@ -72,7 +80,8 @@ namespace Cotizador.ViewModel
             QuitarProductoCommand = new RelayCommand(QuitarProducto);
             CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
-            Fecha = DateTime.Now;
+            FechaCotizacion = DateTime.Now;
+            //ObtenerSucursal();
         }        
         #endregion
 
@@ -120,6 +129,7 @@ namespace Cotizador.ViewModel
                 {
                     ProductoSel = vmBuscarProducto.SelProducto;
                     EsImportado = (ProductoSel.Producto.EsImportado == 1) ? true : false;
+                    ChecarFecEntrega();
                     ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
                     if (ps == null)
                     {
@@ -175,6 +185,8 @@ namespace Cotizador.ViewModel
             ProductoSeleccionado producto = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
             ListaProductos.Remove(producto);
             CalcularTotales();
+            if (ListaProductos.Count == 0)
+                EsImportado = false;
         }        
 
         private void CalcularTotales()
@@ -199,6 +211,55 @@ namespace Cotizador.ViewModel
         private void CerrarMensaje(object parameter)
         {
             VerMensaje = false;
+        }
+
+        private void ChecarVigencia(DateTime fecha)
+        {
+            FechaVigencia = FechaCotizacion.AddDays(15);
+            ChecarFecEntrega();
+        }
+
+        private void ChecarFecEntrega()
+        {
+            foreach(ProductoSeleccionado p in ListaProductos)
+            {
+                EsImportado = false;
+                if(p.Producto.EsImportado == 1)
+                {
+                    EsImportado = true;
+                    break;
+                }
+            }
+            if (EsImportado == false)
+            {
+                FechaEntrega = FechaVigencia.AddDays(6);
+            }
+            else
+            {
+                FechaEntrega = FechaVigencia.AddDays(45);
+            }
+        }
+
+        public void MostrarSucursal()
+        {
+            try
+            {
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("obtenerSucursal/" + Usuario.ClaveEntidadFiscalInmueble, Method.GET);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
+                {
+                    SucursalesJson lista = JsonConvert.DeserializeObject<SucursalesJson>(resp.Content);
+                    SucursalSel = lista.Sucursales.First();
+                    TxtSucursal = "Sucursal: " + SucursalSel.CodigoDeInmueble + " | " + SucursalSel.NombreCorto;
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
         #endregion
     }

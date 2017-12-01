@@ -108,8 +108,10 @@ namespace Cotizador.ViewModel
                     //colClientes.Filter = (x => String.IsNullOrEmpty(TxtFiltrar) ? true : ((Cliente)x).RazonSocial.Contains(TxtFiltrar.ToUpper()));
 
                     ///Paginación de los resultados
-                    CvsClientes = new CollectionViewSource();
-                    CvsClientes.Source = ListaClientes;
+                    CvsClientes = new CollectionViewSource
+                    {
+                        Source = ListaClientes
+                    };
                     CvsClientes.Filter += new FilterEventHandler(FiltroPaginas);
                     IndicePagActual = 0;
                     CalcularPagsTotales();

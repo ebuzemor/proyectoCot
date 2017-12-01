@@ -23,6 +23,7 @@ namespace Cotizador.View
         public CotizadorView()
         {
             InitializeComponent();
+            FechaCotizacion.BlackoutDates.AddDatesInPast();
         }
     }
 }

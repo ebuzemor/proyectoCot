@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Cotizador.View"                          
              xmlns:vm ="clr-namespace:Cotizador.ViewModel"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:val="clr-namespace:Cotizador.Common.Validations"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -58,24 +59,36 @@
                 <RowDefinition Height="10"/>
             </Grid.RowDefinitions>
             <!--AREA DE FECHAS Y ESTATUS-->
-
-            <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6">
+            <Grid Margin="10" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="10"/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
-                    <RowDefinition Height="10"/>
                 </Grid.RowDefinitions>
-                <DatePicker Grid.Row="1" Grid.Column="0" materialDesign:HintAssist.Hint="Fecha:" SelectedDate="{Binding Fecha}"
+                <DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" materialDesign:HintAssist.Hint="Fecha de Cotización:"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx">
+                    <DatePicker.SelectedDate>
+                        <Binding Path="FechaCotizacion" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <val:FechaAntesValidationRule ValidatesOnTargetUpdated="True"/>
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </DatePicker.SelectedDate>
                 </DatePicker>
-                <DatePicker Grid.Row="3" Grid.Column="0" materialDesign:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding Fecha}"
-                                Style="{StaticResource MaterialDesignFloatingHintDatePicker}"/>
+                <DatePicker Grid.Row="2" Grid.Column="0" materialDesign:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
+                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
+                <DatePicker Grid.Row="0" Grid.Column="3" materialDesign:HintAssist.Hint="Fecha de Entrega:" SelectedDate="{Binding FechaEntrega}"
+                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
+                <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="City" Margin="2"/>
+                    <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding TxtSucursal}"/>
+                </StackPanel>
             </Grid>
             <!--CONTENEDOR CLIENTES-->
             <GroupBox Margin="5" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="2" materialDesign:ShadowAssist.ShadowDepth="Depth5"
@@ -134,7 +147,7 @@
                         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3">
                             <DataGrid CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True"
                                   materialDesign:DataGridAssist.CellPadding="13 8 8 8" materialDesign:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
-                                  ItemsSource="{Binding ListaProductos}" AutoGenerateColumns="False" x:Name="lstProductos" SelectionMode="Single">
+                                  ItemsSource="{Binding ListaProductos}" AutoGenerateColumns="False" x:Name="lstProductos" SelectionMode="Single" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                                 <DataGrid.Columns>
                                     <DataGridTemplateColumn Header="Clave" x:Name="Clave" IsReadOnly="True" Width="80">
                                         <DataGridTemplateColumn.CellTemplate>
