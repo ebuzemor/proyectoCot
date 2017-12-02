@@ -56,7 +56,7 @@ namespace Cotizador.ViewModel
         public bool EsImportado { get => _esImportado; set { _esImportado = value; OnPropertyChanged("EsImportado"); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
-        public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged("Fecha");  ChecarVigencia(_fechaCotizacion); ChecarFecEntrega(); } }
+        public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged("Fecha");  ChecarVigencia(_fechaCotizacion); ChecarFechaEntrega(); } }
         public DateTime FechaVigencia { get => _fechaVigencia; set { _fechaVigencia = value; OnPropertyChanged("FechaVigencia"); } }
         public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; OnPropertyChanged("FechaEntrega"); } }
         public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged("SucursalSel"); } }
@@ -128,8 +128,7 @@ namespace Cotizador.ViewModel
                 if (result.Equals("SelProducto") == true)
                 {
                     ProductoSel = vmBuscarProducto.SelProducto;
-                    EsImportado = (ProductoSel.Producto.EsImportado == 1) ? true : false;
-                    ChecarFecEntrega();
+                    //EsImportado = (ProductoSel.Producto.EsImportado == 1) ? true : false;                    
                     ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
                     if (ps == null)
                     {
@@ -141,6 +140,7 @@ namespace Cotizador.ViewModel
                         TxtMensaje = "El producto seleccionado ya fue agregado, proceda a editar la cantidad y descuento en la partida correspondiente";
                         VerMensaje = true;
                     }
+                    ChecarFechaEntrega();
                 }                
             }catch(Exception ex)
             {
@@ -185,8 +185,7 @@ namespace Cotizador.ViewModel
             ProductoSeleccionado producto = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
             ListaProductos.Remove(producto);
             CalcularTotales();
-            if (ListaProductos.Count == 0)
-                EsImportado = false;
+            ChecarFechaEntrega();
         }        
 
         private void CalcularTotales()
@@ -216,10 +215,10 @@ namespace Cotizador.ViewModel
         private void ChecarVigencia(DateTime fecha)
         {
             FechaVigencia = FechaCotizacion.AddDays(15);
-            ChecarFecEntrega();
+            ChecarFechaEntrega();
         }
 
-        private void ChecarFecEntrega()
+        private void ChecarFechaEntrega()
         {
             foreach(ProductoSeleccionado p in ListaProductos)
             {
