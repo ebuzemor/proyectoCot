@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Cotizador.View"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
-             xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"             
+             xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:common="clr-namespace:Cotizador.Common"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -68,7 +68,7 @@
             </Grid>
         </UniformGrid>
         <!--BOTONES DE LA VENTANA-->
-        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="0 16 0 0" HorizontalAlignment="Right">
             <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedButton}" IsEnabled="{Binding ActivoSeleccionar}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="OK" Content="ACTUALIZAR"/>

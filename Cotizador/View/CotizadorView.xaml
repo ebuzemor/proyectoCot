@@ -86,6 +86,22 @@
                 </DatePicker>
                 <DatePicker Grid.Row="2" Grid.Column="0" materialDesign:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
+                <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="1" HorizontalAlignment="Center">
+                    <ComboBox IsEditable="{Binding CambiarEstatusCtz}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                              ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding EstatusCotizacion}">
+                        <materialDesign:HintAssist.Hint>
+                            <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
+                                <materialDesign:PackIcon Kind="TrafficLight" Margin="2"/>
+                                <TextBlock>Estatus de Cotizacion:</TextBlock>
+                            </StackPanel>
+                        </materialDesign:HintAssist.Hint>
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Descripcion}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
                 <DatePicker Grid.Row="0" Grid.Column="3" materialDesign:HintAssist.Hint="Fecha de Entrega:" SelectedDate="{Binding FechaEntrega}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
                 <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
@@ -94,159 +110,154 @@
                 </StackPanel>
             </Grid>
             <!--CONTENEDOR CLIENTES-->
-            <!--<GroupBox Margin="5" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="2" materialDesign:ShadowAssist.ShadowDepth="Depth5"
-                      materialDesign:ColorZoneAssist.Mode="Accent" BorderThickness="0" Header="Cliente:" Style="{DynamicResource MaterialDesignGroupBox}">-->
             <StackPanel  Margin="5" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="2">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="58"/>
-                            <ColumnDefinition Width="3*"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}">
-                            <materialDesign:PackIcon Width="24" Height="24" Kind="AccountPlus" />
-                        </Button>
-                        <materialDesign:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" 
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="58"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}">
+                        <materialDesign:PackIcon Width="24" Height="24" Kind="AccountPlus" />
+                    </Button>
+                    <materialDesign:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" 
                             Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
                             Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Padding="2" materialDesign:ShadowAssist.ShadowDepth="Depth5">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="30"/>
-                                </Grid.RowDefinitions>
-                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                    <materialDesign:PackIcon Kind="AccountCardDetails"/>
-                                    <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Bold" Text="Datos del Cliente a Cotizar:"/>
-                                </StackPanel>
-                                <TextBlock Grid.Row="1" Text="{Binding CteRazonSocial}"/>
-                                <TextBlock TextWrapping="Wrap" Grid.Row="2" Text="{Binding DatosCliente}"/>
-                            </Grid>
-                        </materialDesign:Card>
-                    </Grid>
-                </StackPanel>
-            <!--</GroupBox>-->
-            <!--CONTENEDOR PRODUCTOS-->
-            <!--<GroupBox Margin="5"  Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="3" materialDesign:ShadowAssist.ShadowDepth="Depth5"
-                      materialDesign:ColorZoneAssist.Mode="Accent" BorderThickness="0" Header="Productos:" Style="{DynamicResource MaterialDesignGroupBox}">-->
-            <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="35"/> <!--Con esto hace que se muestre el scrollbar vertical del grid-->
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Button Grid.Row="0" Grid.Column="1" ToolTip="Agregar Producto" Command="{Binding AgregarProductoCommand}"
-                            Style="{StaticResource MaterialDesignRaisedAccentButton}">
-                        <Button.Content>
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Width="24" Height="24"	Kind="CartPlus"/>
-                                <TextBlock Margin="5 0 0 0" Text="Agregar Producto" VerticalAlignment="Center"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                <materialDesign:PackIcon Kind="AccountCardDetails"/>
+                                <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Bold" Text="Datos del Cliente a Cotizar:"/>
                             </StackPanel>
-                        </Button.Content>
-                    </Button>
-                    <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}"
-                              CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False"  SelectionMode="Single"
-                              materialDesign:DataGridAssist.CellPadding="13 8 8 8" materialDesign:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
-                              VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Clave" x:Name="Clave" IsReadOnly="True" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Producto.CodigoInterno}" ToolTip="{Binding Producto.CodigoInterno}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Descripción" x:Name="Descripcion" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}"
-                                                    IsReadOnly="True" Width="2*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Producto.Descripcion}" ToolTip="{Binding Producto.Descripcion}"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Imp." x:Name="Importado" IsReadOnly="True">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <CheckBox IsChecked="{Binding Producto.EsImportado}" ToolTip="Se mostrará seleccionado si el producto es importado"
-                                                  Style="{StaticResource MaterialDesignLightCheckBox}" IsHitTestVisible="False"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Precio Unit." x:Name="PrecioUnit" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}"
-                                                    IsReadOnly="True" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Producto.PrecioUnitario, StringFormat=C2}" TextAlignment="Right"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Cant." x:Name="Cantidad" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}"
-                                                    IsReadOnly="True" Width="50">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Cantidad, StringFormat=N2}" TextAlignment="Right"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Importe Desc." x:Name="Descuento" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
-                                                        IsReadOnly="True" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding ImporteDesc, StringFormat=C2}" TextAlignment="Right"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Importe" x:Name="Importe" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
-                                                        IsReadOnly="True" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Importe, StringFormat=C2}" TextAlignment="Right"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Impuestos" x:Name="Impuesto" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
-                                                        IsReadOnly="True" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding Impuesto, StringFormat=C2}" TextAlignment="Right"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Subtotal" x:Name="Subtotal" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
-                                                        IsReadOnly="True" Width="*">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding SubTotal, StringFormat=C2}" TextAlignment="Right"/>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Acciones" x:Name="Acciones" Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                                    Margin="0 0 8 0" HorizontalAlignment="Left"
-                                                    Content="{materialDesign:PackIcon Pencil}"
-                                                    ToolTip="Editar item" Height="22" Width="22"
-                                                    Command="{Binding ElementName=lstProductos, Path=DataContext.EditarProductoCommand}"
-                                                    CommandParameter="{Binding Producto.ClaveProducto}"/>
-                                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                                    Margin="0 0 8 0" HorizontalAlignment="Left"
-                                                    Content="{materialDesign:PackIcon Delete}"
-                                                    ToolTip="Quitar item" Height="22" Width="22"
-                                                    Command="{Binding ElementName=lstProductos, Path=DataContext.QuitarProductoCommand}"
-                                                    CommandParameter="{Binding Producto.ClaveProducto}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
+                            <TextBlock Grid.Row="1" Text="{Binding CteRazonSocial}"/>
+                            <TextBlock TextWrapping="Wrap" Grid.Row="2" Text="{Binding DatosCliente}"/>
+                        </Grid>
+                    </materialDesign:Card>
                 </Grid>
-            <!--</GroupBox>-->
+            </StackPanel>
+            <!--CONTENEDOR PRODUCTOS-->
+            <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35"/>
+                    <!--Con esto hace que se muestre el scrollbar vertical del grid-->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.Column="1" ToolTip="Agregar Producto" Command="{Binding AgregarProductoCommand}"
+                        Style="{StaticResource MaterialDesignRaisedAccentButton}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Width="24" Height="24"	Kind="CartPlus"/>
+                            <TextBlock Margin="5 0 0 0" Text="Agregar Producto" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}"
+                          CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False"  SelectionMode="Single"
+                          materialDesign:DataGridAssist.CellPadding="13 8 8 8" materialDesign:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="Clave" x:Name="Clave" IsReadOnly="True" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Producto.CodigoInterno}" ToolTip="{Binding Producto.CodigoInterno}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Descripción" x:Name="Descripcion" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}"
+                                                IsReadOnly="True" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Producto.Descripcion}" ToolTip="{Binding Producto.Descripcion}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Imp." x:Name="Importado" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Producto.EsImportado}" ToolTip="Se mostrará seleccionado si el producto es importado"
+                                              Style="{StaticResource MaterialDesignLightCheckBox}" IsHitTestVisible="False"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Precio Unit." x:Name="PrecioUnit" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}"
+                                                IsReadOnly="True" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Producto.PrecioUnitario, StringFormat=C2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Cant." x:Name="Cantidad" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}"
+                                                IsReadOnly="True" Width="50">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Cantidad, StringFormat=N2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Importe Desc." x:Name="Descuento" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
+                                                IsReadOnly="True" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ImporteDesc, StringFormat=C2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Importe" x:Name="Importe" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
+                                                IsReadOnly="True" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Importe, StringFormat=C2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Impuestos" x:Name="Impuesto" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
+                                                IsReadOnly="True" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Impuesto, StringFormat=C2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Subtotal" x:Name="Subtotal" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
+                                                IsReadOnly="True" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding SubTotal, StringFormat=C2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Acciones" x:Name="Acciones" Width="80">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                                Margin="0 0 8 0" HorizontalAlignment="Left"
+                                                Content="{materialDesign:PackIcon Pencil}"
+                                                ToolTip="Editar item" Height="22" Width="22"
+                                                Command="{Binding ElementName=lstProductos, Path=DataContext.EditarProductoCommand}"
+                                                CommandParameter="{Binding Producto.ClaveProducto}"/>
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                                Margin="0 0 8 0" HorizontalAlignment="Left"
+                                                Content="{materialDesign:PackIcon Delete}"
+                                                ToolTip="Quitar item" Height="22" Width="22"
+                                                Command="{Binding ElementName=lstProductos, Path=DataContext.QuitarProductoCommand}"
+                                                CommandParameter="{Binding Producto.ClaveProducto}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
             <!--PIE DEL DATAGRID TOTALES-->
             <StackPanel Margin="5" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="6" HorizontalAlignment="Left" Orientation="Horizontal">
                 <Grid Width="{Binding ElementName=Clave, Path=ActualWidth}"/>
@@ -254,27 +265,27 @@
                 <Grid Width="{Binding ElementName=Importado, Path=ActualWidth}"/>
                 <Grid Width="{Binding ElementName=PrecioUnit, Path=ActualWidth}">
                     <TextBlock Text="{Binding PrecioUniTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold" 
-                                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </Grid>
                 <Grid Width="{Binding ElementName=Cantidad, Path=ActualWidth}">
                     <TextBlock Text="{Binding CantidadTotal, StringFormat=N2}" TextAlignment="Right" FontWeight="Bold"
-                                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </Grid>
                 <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
                     <TextBlock Text="{Binding DescuentoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
-                                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </Grid>
                 <Grid Width="{Binding ElementName=Importe, Path=ActualWidth}">
                     <TextBlock Text="{Binding ImporteTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
-                                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </Grid>
                 <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
                     <TextBlock Text="{Binding ImpuestoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
-                                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </Grid>
                 <Grid Width="{Binding ElementName=Subtotal, Path=ActualWidth}">
                     <TextBlock Text="{Binding SumaSubTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
-                                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                 </Grid>
                 <Grid Width="{Binding ElementName=Acciones, Path=ActualWidth}"/>
             </StackPanel>
@@ -288,9 +299,10 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <TextBox Margin="5" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top" materialDesign:HintAssist.Hint="CONDICIONES" AcceptsReturn="True"
-                         Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                         Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
+                         Text="{Binding Condiciones.CondicionComercial}" IsReadOnly="True"/>
                 <TextBox Margin="5" Grid.Column="3" Grid.ColumnSpan="2" VerticalAlignment="Top" materialDesign:HintAssist.Hint="OBSERVACIONES" AcceptsReturn="True"
-                         Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
+                         Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Observaciones}"/>
             </Grid>
             <!--BOTONES DE GUARDAR Y CANCELARF-->
             <Grid Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="6">
@@ -301,10 +313,10 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" Content="Guardar"/>
-                <Button Grid.Column="3" Content="Cancelar"/>
+                <Button Grid.Column="1" Content="Guardar" Command="{Binding GuardarCtzCommand}"/>
+                <Button Grid.Column="3" Content="Cancelar" Command="{Binding CancelarCtzCommand}"/>
             </Grid>
-            <materialDesign:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="6" Background="{DynamicResource PrimaryHueLightBrush}">
+            <materialDesign:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6" Background="{DynamicResource PrimaryHueLightBrush}">
                 <materialDesign:SnackbarMessage Content="{Binding TxtMensaje}" ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar"/>
             </materialDesign:Snackbar>
         </Grid>

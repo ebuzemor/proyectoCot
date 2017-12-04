@@ -5,6 +5,7 @@ using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
@@ -13,10 +14,21 @@ namespace Cotizador.ViewModel
 {
     public class CotizadorViewModel : Notificador
     {
+        #region Commands
+        public RelayCommand AgregarClienteCommand { get; set; }
+        public RelayCommand AgregarProductoCommand { get; set; }
+        public RelayCommand EditarProductoCommand { get; set; }
+        public RelayCommand QuitarProductoCommand { get; set; }
+        public RelayCommand CerrarMensajeCommand { get; set; }
+        public RelayCommand GuardarCtzCommand { get; set; }
+        public RelayCommand CancelarCtzCommand { get; set; }
+        #endregion
+
         #region Variables
         private Cliente _clienteSel;
         private ObservableCollection<Cliente> _listaClientes;
         private ObservableCollection<ProductoSeleccionado> _listaProductos;
+        private ObservableCollection<EstatusCotizacion> _listaEstatusCtz;
         private String _datosCliente;
         private String _cteRazonSocial;
         private ApiToken _apiToken;
@@ -24,6 +36,7 @@ namespace Cotizador.ViewModel
         private ProductoSeleccionado _productoSel;
         private String _localhost;
         private Boolean _esImportado;
+        private Boolean _cambiarEstatusCtz;
         private Double _precioUniTotal;
         private Double _cantidadTotal;
         private Double _descuentoTotal;
@@ -37,6 +50,9 @@ namespace Cotizador.ViewModel
         private DateTime _fechaEntrega;
         private Sucursal _sucursalSel;
         private String _txtSucursal;
+        private EstatusCotizacion _estatusCotizacion;
+        private String _observaciones;
+        private CondicionesComerciales _condiciones;
 
         public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged("ListaClientes"); } }
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
@@ -61,14 +77,11 @@ namespace Cotizador.ViewModel
         public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; OnPropertyChanged("FechaEntrega"); } }
         public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged("SucursalSel"); } }
         public string TxtSucursal { get => _txtSucursal; set { _txtSucursal = value; OnPropertyChanged("TxtSucursal"); } }
-        #endregion
-
-        #region Commands
-        public RelayCommand AgregarClienteCommand { get; set; }
-        public RelayCommand AgregarProductoCommand { get; set; }
-        public RelayCommand EditarProductoCommand { get; set; }
-        public RelayCommand QuitarProductoCommand { get; set; }
-        public RelayCommand CerrarMensajeCommand { get; set; }
+        public bool CambiarEstatusCtz { get => _cambiarEstatusCtz; set { _cambiarEstatusCtz = value; OnPropertyChanged("CambiarEstatusCtz"); } }
+        public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged("ListaEstatusCtz"); } }
+        public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged("EstatusCotizacion"); } }
+        public string Observaciones { get => _observaciones; set { _observaciones = value; OnPropertyChanged("Observaciones"); } }
+        public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged("Condiciones"); } }
         #endregion
 
         #region Constructor
@@ -79,9 +92,11 @@ namespace Cotizador.ViewModel
             EditarProductoCommand = new RelayCommand(EditarProducto);
             QuitarProductoCommand = new RelayCommand(QuitarProducto);
             CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
+            GuardarCtzCommand = new RelayCommand(GuardarCotizacion);
+            CancelarCtzCommand = new RelayCommand(CancelarCotizacion);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
-            //ObtenerSucursal();
+            CambiarEstatusCtz = true;
         }        
         #endregion
 
@@ -114,34 +129,49 @@ namespace Cotizador.ViewModel
         {
             try
             {
-                var vmBuscarProducto = new BuscarProductosViewModel
+                if (ClienteSel != null)
                 {
-                    ApiToken = ApiToken,
-                    Usuario = Usuario,
-                    Localhost = Localhost
-                };
-                var vwBuscarProducto = new BuscarProductosView
-                {
-                    DataContext = vmBuscarProducto
-                };
-                var result = await DialogHost.Show(vwBuscarProducto, "Prueba", ClosingEventHandler);
-                if (result.Equals("SelProducto") == true)
-                {
-                    ProductoSel = vmBuscarProducto.SelProducto;
-                    //EsImportado = (ProductoSel.Producto.EsImportado == 1) ? true : false;                    
-                    ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
-                    if (ps == null)
+                    var vmBuscarProducto = new BuscarProductosViewModel
                     {
-                        ListaProductos.Add(ProductoSel);
-                        CalcularTotales();
-                    }
-                    else
+                        ApiToken = ApiToken,
+                        Usuario = Usuario,
+                        Localhost = Localhost
+                    };
+                    var vwBuscarProducto = new BuscarProductosView
                     {
-                        TxtMensaje = "El producto seleccionado ya fue agregado, proceda a editar la cantidad y descuento en la partida correspondiente";
-                        VerMensaje = true;
+                        DataContext = vmBuscarProducto
+                    };
+                    var result = await DialogHost.Show(vwBuscarProducto, "Prueba", ClosingEventHandler);
+                    if (result.Equals("SelProducto") == true)
+                    {
+                        ProductoSel = vmBuscarProducto.SelProducto;
+                        ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
+                        if (ps == null)
+                        {
+                            ListaProductos.Add(ProductoSel);
+                            CalcularTotales();
+                        }
+                        else
+                        {
+                            TxtMensaje = "El producto seleccionado ya fue agregado, proceda a editar la cantidad y descuento en la partida correspondiente";
+                            VerMensaje = true;
+                        }
+                        ChecarFechaEntrega();
                     }
-                    ChecarFechaEntrega();
-                }                
+                }
+                else
+                {
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "Debe seleccionar a un Cliente para poder realizar una Cotización"
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "Prueba");
+                }
             }catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -239,6 +269,37 @@ namespace Cotizador.ViewModel
             }
         }
 
+        private void GuardarCotizacion(object parameter)
+        {
+            
+        }
+
+        private async void CancelarCotizacion(object parameter)
+        {
+            if (ClienteSel != null)
+            {
+                var vmMensaje = new MensajeViewModel
+                {
+                    TituloMensaje = "Advertencia",
+                    CuerpoMensaje = "¿Desea cancelar la cotización?"
+                };
+                var vwMensaje = new MensajeView
+                {
+                    DataContext = vmMensaje
+                };
+                var result = await DialogHost.Show(vwMensaje, "Prueba");
+                if (result.Equals("ACEPTAR") == true)
+                {
+                    ListaProductos.Clear();
+                    ClienteSel = null;
+                    FechaCotizacion = DateTime.Now;
+                    EstatusCotizacion = ListaEstatusCtz.First();
+                    CteRazonSocial = string.Empty;
+                    DatosCliente = string.Empty;
+                }
+            }
+        }
+
         public void MostrarSucursal()
         {
             try
@@ -258,6 +319,55 @@ namespace Cotizador.ViewModel
             }
             catch (Exception)
             {
+                TxtMensaje = "Error al cargar sucursales, verifique que el servidor esté activo";
+                VerMensaje = true;
+            }
+        }
+
+        public void CargarEstatusCotizacion()
+        {
+            try
+            {
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("estatusCotizacion", Method.GET);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
+                {
+                    List<EstatusCotizacion> lista = JsonConvert.DeserializeObject<List<EstatusCotizacion>>(resp.Content);
+                    ListaEstatusCtz = new ObservableCollection<EstatusCotizacion>(lista);
+                    EstatusCotizacion = ListaEstatusCtz.First();
+                }
+            }
+            catch (Exception)
+            {
+                TxtMensaje = "Error al cargar estatus de la cotización, verifique que el servidor esté activo";
+                VerMensaje = true;
+            }
+        }
+
+        public void MostrarCondicionesComerciales()
+        {
+            try
+            {
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("mostrarCondComCtz/" + Usuario.ClaveEntidadFiscalEmpresa, Method.GET);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
+                {
+                    List<CondicionesComerciales> lista = JsonConvert.DeserializeObject<List<CondicionesComerciales>>(resp.Content);
+                    Condiciones = lista.First();
+                }
+            }
+            catch (Exception ex)
+            {
+                TxtMensaje = "Excepción: " + ex.Message;
+                VerMensaje = true;
             }
         }
         #endregion
