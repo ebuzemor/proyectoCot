@@ -101,7 +101,7 @@
     <Compile Include="Common\NotificadorExtension.cs" />
     <Compile Include="Common\Validations\CamposVaciosValidationRule.cs" />
     <Compile Include="Common\Validations\FechaAntesValidationRule.cs" />
-    <Compile Include="Model\ApiToken.cs" />
+    <Compile Include="Model\ApiKey.cs" />
     <Compile Include="Model\Cliente.cs" />
     <Compile Include="Model\CondicionesComerciales.cs" />
     <Compile Include="Model\Cotizacion.cs" />

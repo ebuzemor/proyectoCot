@@ -19,7 +19,7 @@ namespace Cotizador.ViewModel
         private ProductosJson _productosJson;
         private String _txtProducto;
         //private String _txtFiltrar;
-        private ApiToken _apiToken;
+        private ApiKey _appKey;
         private Usuario _usuario;
         private ICollectionView _icvProductos;
         private String _localhost;
@@ -41,7 +41,7 @@ namespace Cotizador.ViewModel
         public ObservableCollection<Producto> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged("ListaProductos"); } }        
         public ProductosJson ProductosJson { get => _productosJson; set { _productosJson = value; OnPropertyChanged("ProdutosJson"); } }
         public string TxtProducto { get => _txtProducto; set { _txtProducto = value; OnPropertyChanged("TxtProducto"); } }
-        public ApiToken ApiToken { get => _apiToken; set { _apiToken = value; OnPropertyChanged("ApiToken"); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
         public ICollectionView IcvProductos { get => _icvProductos; set { _icvProductos = value; OnPropertyChanged("CvProductos"); } }
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
@@ -145,7 +145,7 @@ namespace Cotizador.ViewModel
                 var rest = new RestClient(Localhost);
                 var req = new RestRequest("buscarExistencias/" + Usuario.ClaveEntidadFiscalInmueble + "/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtProducto, Method.GET);
                 req.AddHeader("Accept", "application/json");
-                req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
                 IRestResponse<ProductosJson> resp = rest.Execute<ProductosJson>(req);
                 if (resp.IsSuccessful)
@@ -159,12 +159,14 @@ namespace Cotizador.ViewModel
                         //IcvProductos.Filter = (x => String.IsNullOrEmpty(TxtFiltrar) ? true : ((Producto)x).Descripcion.Contains(TxtFiltrar.ToUpper()));
 
                         ///Paginación de los resultados
-                        CvsProductos = new CollectionViewSource();
-                        CvsProductos.Source = ListaProductos;
-                        CvsProductos.Filter += new FilterEventHandler(FiltroPaginas);
+                        CvsProductos = new CollectionViewSource
+                        {
+                            Source = ListaProductos
+                        };
+                        CvsProductos.Filter += new FilterEventHandler(FiltroPaginas);                    
                         IndicePagActual = 0;
                         CalcularPagsTotales();
-                        activarBotones();
+                        ActivarBotones();
                     }
                 }
             }
@@ -201,7 +203,7 @@ namespace Cotizador.ViewModel
         {
             PagActual = IndicePagActual;
             CvsProductos.View.Refresh();
-            activarBotones();
+            ActivarBotones();
         }
 
         private void CalcularPagsTotales()
@@ -229,7 +231,7 @@ namespace Cotizador.ViewModel
             }
         }
 
-        private void activarBotones()
+        private void ActivarBotones()
         {
             ActivoInicio = (IndicePagActual != 0) ? true : false;
             ActivoAnterior = (IndicePagActual != 0) ? true : false;

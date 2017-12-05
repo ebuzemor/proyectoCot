@@ -2,15 +2,16 @@
 
 namespace Cotizador.Model
 {
-    public class ApiToken
-    {
-        [JsonProperty("login")]
-        public static Login Login { get; set; }
-    }
-
-    public class Login
+    public class ApiKey
     {
         [JsonProperty("token")]
         public string Token { get; set; }
+
+        public ApiKey(string token)
+        {
+            Token = token;
+        }
+
+        public ApiKey() { }
     }
 }

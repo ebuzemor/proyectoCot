@@ -16,7 +16,7 @@ namespace Cotizador.ViewModel
         private ObservableCollection<Cliente> _listaClientes;
         private Cliente _NvoCliente;
         private String _TxtCliente;
-        private ApiToken _apiToken;
+        private ApiKey _appKey;
         private Usuario _usuario;
         private ClientesJson _clientesJson;
         //Variables para filtrar mientras se escribe
@@ -36,7 +36,7 @@ namespace Cotizador.ViewModel
         public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged("ListaClientes"); } }
         public Cliente NvoCliente { get => _NvoCliente; set { _NvoCliente = value; OnPropertyChanged("NvoCliente"); } }
         public string TxtCliente { get => _TxtCliente; set { _TxtCliente = value; OnPropertyChanged("TxtCliente"); } }
-        public ApiToken ApiToken { get => _apiToken; set { _apiToken = value; OnPropertyChanged("ApiToken"); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
         public ClientesJson ClientesJson { get => _clientesJson; set { _clientesJson = value; OnPropertyChanged("ClientesJson"); } }
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }    
@@ -94,7 +94,7 @@ namespace Cotizador.ViewModel
             var rest = new RestClient(Localhost);
             var req = new RestRequest("buscarClientesEmpresa/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtCliente, Method.GET);
             req.AddHeader("Accept", "application/json");
-            req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
             IRestResponse<ClientesJson> resp = rest.Execute<ClientesJson>(req);
             if (resp.IsSuccessful)

@@ -8,26 +8,27 @@ namespace Cotizador.ViewModel
     public class InicioViewModel : Notificador
     {
         #region Variables
-        private ApiToken _apiToken;
+        private ApiKey _appKey;
         private Usuario _usuario;
         private CotizadorView _vwCotizador;
         private CotizadorViewModel _vmCotizador;
         private String _localhost;
 
         public MenuOpciones[] MenuOpcion { get; }
-        public ApiToken ApiToken { get => _apiToken; set { _apiToken = value; OnPropertyChanged("ApiToken"); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
         public CotizadorView VwCotizador { get => _vwCotizador; set { _vwCotizador = value; OnPropertyChanged("VwCotizador"); } }
         public CotizadorViewModel VmCotizador { get => _vmCotizador; set { _vmCotizador = value; OnPropertyChanged("VmCotizador"); } }
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
+        
         #endregion
 
-        public InicioViewModel(ApiToken apitoken, Usuario usuario, String localhost)
+        public InicioViewModel(ApiKey appkey, Usuario usuario, String localhost)
         {
             VmCotizador = new CotizadorViewModel
             {
                 Usuario = usuario,
-                ApiToken = apitoken,
+                AppKey = appkey,
                 Localhost = localhost
             };
             //para no hacer un constructor con paso de parametros.

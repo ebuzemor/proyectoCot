@@ -21,7 +21,9 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Snackbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -88,8 +90,14 @@
                         Style="{StaticResource MaterialDesignRaisedAccentButton}"
                         Command="{Binding ValidarUsuarioCommand}" 
                         CommandParameter="{Binding ElementName=txtPassword}"/>
-                <TextBlock Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="6" Text="{Binding Mensaje}" Foreground="Red" 
-                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <materialDesign:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource PrimaryHueDarkBrush}"
+                                         ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionMidButton}">
+                    <materialDesign:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                        <materialDesign:SnackbarMessage.Content>
+                            <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}" TextWrapping="Wrap"/>
+                        </materialDesign:SnackbarMessage.Content>
+                    </materialDesign:SnackbarMessage>
+                </materialDesign:Snackbar>
             </Grid>
         </Border>
     </Grid>

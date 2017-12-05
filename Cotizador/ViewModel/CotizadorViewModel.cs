@@ -31,7 +31,7 @@ namespace Cotizador.ViewModel
         private ObservableCollection<EstatusCotizacion> _listaEstatusCtz;
         private String _datosCliente;
         private String _cteRazonSocial;
-        private ApiToken _apiToken;
+        private ApiKey _appKey;
         private Usuario _usuario;
         private ProductoSeleccionado _productoSel;
         private String _localhost;
@@ -58,7 +58,7 @@ namespace Cotizador.ViewModel
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
         public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged("DatosCliente"); } }
         public string CteRazonSocial { get => _cteRazonSocial; set { _cteRazonSocial = value; OnPropertyChanged("CteRazonSocial"); } }
-        public ApiToken ApiToken { get => _apiToken; set { _apiToken = value; OnPropertyChanged("ApiToken"); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }        
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
         public ProductoSeleccionado ProductoSel { get => _productoSel; set { _productoSel = value; OnPropertyChanged("ProductoSel"); } }
@@ -81,7 +81,7 @@ namespace Cotizador.ViewModel
         public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged("ListaEstatusCtz"); } }
         public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged("EstatusCotizacion"); } }
         public string Observaciones { get => _observaciones; set { _observaciones = value; OnPropertyChanged("Observaciones"); } }
-        public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged("Condiciones"); } }
+        public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged("Condiciones"); } }        
         #endregion
 
         #region Constructor
@@ -107,7 +107,7 @@ namespace Cotizador.ViewModel
             {
                 var vmBuscarCliente = new BuscarClientesViewModel
                 {
-                    ApiToken = ApiToken,
+                    AppKey = AppKey,
                     Usuario = Usuario,
                     Localhost = Localhost
                 };
@@ -133,7 +133,7 @@ namespace Cotizador.ViewModel
                 {
                     var vmBuscarProducto = new BuscarProductosViewModel
                     {
-                        ApiToken = ApiToken,
+                        AppKey = AppKey,
                         Usuario = Usuario,
                         Localhost = Localhost
                     };
@@ -237,10 +237,7 @@ namespace Cotizador.ViewModel
             }
         }
 
-        private void CerrarMensaje(object parameter)
-        {
-            VerMensaje = false;
-        }
+        private void CerrarMensaje(object parameter) => VerMensaje = false;
 
         private void ChecarVigencia(DateTime fecha)
         {
@@ -307,7 +304,7 @@ namespace Cotizador.ViewModel
                 var rest = new RestClient(Localhost);
                 var req = new RestRequest("obtenerSucursal/" + Usuario.ClaveEntidadFiscalInmueble, Method.GET);
                 req.AddHeader("Accept", "application/json");
-                req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
                 IRestResponse resp = rest.Execute(req);
                 if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
@@ -331,7 +328,7 @@ namespace Cotizador.ViewModel
                 var rest = new RestClient(Localhost);
                 var req = new RestRequest("estatusCotizacion", Method.GET);
                 req.AddHeader("Accept", "application/json");
-                req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
                 IRestResponse resp = rest.Execute(req);
                 if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
@@ -355,7 +352,7 @@ namespace Cotizador.ViewModel
                 var rest = new RestClient(Localhost);
                 var req = new RestRequest("mostrarCondComCtz/" + Usuario.ClaveEntidadFiscalEmpresa, Method.GET);
                 req.AddHeader("Accept", "application/json");
-                req.AddHeader("Authorization", "Bearer " + ApiToken.Login.Token);
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
                 IRestResponse resp = rest.Execute(req);
                 if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
