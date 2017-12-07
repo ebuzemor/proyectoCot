@@ -143,7 +143,7 @@ namespace Cotizador.ViewModel
             try
             {
                 var rest = new RestClient(Localhost);
-                var req = new RestRequest("buscarExistencias/" + Usuario.ClaveEntidadFiscalInmueble + "/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtProducto, Method.GET);
+                var req = new RestRequest("buscarProductos/" + Usuario.ClaveEntidadFiscalInmueble + "/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtProducto, Method.GET);
                 req.AddHeader("Accept", "application/json");
                 req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
@@ -199,6 +199,7 @@ namespace Cotizador.ViewModel
             IndicePagActual = PagsTotales - 1;
             ActualizarPagina();
         }
+
         private void ActualizarPagina()
         {
             PagActual = IndicePagActual;
@@ -233,10 +234,13 @@ namespace Cotizador.ViewModel
 
         private void ActivarBotones()
         {
-            ActivoInicio = (IndicePagActual != 0) ? true : false;
-            ActivoAnterior = (IndicePagActual != 0) ? true : false;
-            ActivoSiguiente = (IndicePagActual < PagsTotales - 1) ? true : false;
-            ActivoFinal = (PagActual != PagsTotales) ? true : false;
+            if (ListaProductos.Count > 0)
+            {
+                ActivoInicio = (IndicePagActual != 0) ? true : false;
+                ActivoAnterior = (IndicePagActual != 0) ? true : false;
+                ActivoSiguiente = (IndicePagActual < PagsTotales - 1) ? true : false;
+                ActivoFinal = (PagActual != PagsTotales) ? true : false;
+            }
         }
 
         private void CalcularImporte(double? cantidad)
@@ -265,7 +269,7 @@ namespace Cotizador.ViewModel
                 if (descuento > 0 && TxtCantidad > 0)
                 {
                     TxtImporteDesc = Convert.ToDouble(descuento) * NvoProducto.PrecioUnitario * TxtCantidad;
-                    TxtImporte = NvoProducto.PrecioUnitario - TxtImporteDesc;
+                    TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad) - TxtImporteDesc;
                 }
                 else if (descuento == 0 && TxtCantidad > 0)
                 {

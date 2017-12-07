@@ -146,7 +146,7 @@ namespace Cotizador.ViewModel
                     VerMensaje = true;
                 }
             }
-            catch(Exception e)
+            catch(Exception)
             {
                 EsValido = false;
                 TxtMensaje = "ERROR DE VALIDACION: Para iniciar sesión debe escribir nombre de usuario, password y elegir una sucursal.";

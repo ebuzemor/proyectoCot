@@ -6,13 +6,13 @@ namespace Cotizador.Model
     public class EstatusCotizacion
     {
         [JsonProperty("claveTipoDeStatusDeComprobante")]
-        public int ClaveTipoDeStatusDeComprobante { get; set; }
+        public long ClaveTipoDeStatusDeComprobante { get; set; }
 
         [JsonProperty("descripcion")]
         public string Descripcion { get; set; }
 
         [JsonProperty("claveTipoDeComprobante")]
-        public int ClaveTipoDeComprobante { get; set; }
+        public long ClaveTipoDeComprobante { get; set; }
 
         public override string ToString()
         {

@@ -53,6 +53,10 @@ namespace Cotizador.ViewModel
         private EstatusCotizacion _estatusCotizacion;
         private String _observaciones;
         private CondicionesComerciales _condiciones;
+        private Cotizacion _miCotizacion;
+        private List<ComprobantesImpuestos> _listaCotizacionImpuestos;
+        private List<ComprobantesImpuestos> _listaImpuestosXlinea;
+        private List<DetalleComprobantes> _listaDetalleComprobantes;
 
         public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged("ListaClientes"); } }
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
@@ -81,7 +85,11 @@ namespace Cotizador.ViewModel
         public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged("ListaEstatusCtz"); } }
         public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged("EstatusCotizacion"); } }
         public string Observaciones { get => _observaciones; set { _observaciones = value; OnPropertyChanged("Observaciones"); } }
-        public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged("Condiciones"); } }        
+        public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged("Condiciones"); } }
+        public Cotizacion MiCotizacion { get => _miCotizacion; set { _miCotizacion = value; OnPropertyChanged("MiCotizacion"); } }
+        public List<ComprobantesImpuestos> ListaCotizacionImpuestos { get => _listaCotizacionImpuestos; set => _listaCotizacionImpuestos = value; }
+        public List<ComprobantesImpuestos> ListaImpuestosXlinea { get => _listaImpuestosXlinea; set => _listaImpuestosXlinea = value; }
+        public List<DetalleComprobantes> ListaDetalleComprobantes { get => _listaDetalleComprobantes; set => _listaDetalleComprobantes = value; }
         #endregion
 
         #region Constructor
@@ -115,10 +123,13 @@ namespace Cotizador.ViewModel
                 {
                     DataContext = vmBuscarCliente
                 };
-                var result = await DialogHost.Show(vwBuscarCliente, "Prueba", ClosingEventHandler);
-                ClienteSel = vmBuscarCliente.NvoCliente;
-                CteRazonSocial = ClienteSel.RazonSocial + " | RFC:" + ClienteSel.Rfc + " | Codigo:" + ClienteSel.CodigoDeCliente;
-                DatosCliente = "Contacto(s):" + ClienteSel.Contacto + " | Teléfono(s): " + ClienteSel.NumeroTelefono + " | Direccion: " + ClienteSel.Direccion;
+                var result = await DialogHost.Show(vwBuscarCliente, "CotizadorView", ClosingEventHandler);
+                if (result.Equals("NvoCliente") == true)
+                {
+                    ClienteSel = vmBuscarCliente.NvoCliente;
+                    CteRazonSocial = ClienteSel.RazonSocial + " | RFC:" + ClienteSel.Rfc + " | Codigo:" + ClienteSel.CodigoDeCliente;
+                    DatosCliente = "Contacto(s):" + ClienteSel.Contacto + " | Teléfono(s): " + ClienteSel.NumeroTelefono + " | Direccion: " + ClienteSel.Direccion;
+                }
             } catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -141,7 +152,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmBuscarProducto
                     };
-                    var result = await DialogHost.Show(vwBuscarProducto, "Prueba", ClosingEventHandler);
+                    var result = await DialogHost.Show(vwBuscarProducto, "CotizadorView", ClosingEventHandler);
                     if (result.Equals("SelProducto") == true)
                     {
                         ProductoSel = vmBuscarProducto.SelProducto;
@@ -170,7 +181,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "Prueba");
+                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
                 }
             }catch(Exception ex)
             {
@@ -194,7 +205,7 @@ namespace Cotizador.ViewModel
             {
                 DataContext = vmEditarItem
             };
-            var result = await DialogHost.Show(vwEditarItem, "Prueba", ClosingEventHandler);
+            var result = await DialogHost.Show(vwEditarItem, "CotizadorView", ClosingEventHandler);
             if (result.Equals("OK") == true)
             {
                 vmEditarItem.ActualizarProducto();
@@ -216,7 +227,7 @@ namespace Cotizador.ViewModel
             ListaProductos.Remove(producto);
             CalcularTotales();
             ChecarFechaEntrega();
-        }        
+        }
 
         private void CalcularTotales()
         {
@@ -226,7 +237,7 @@ namespace Cotizador.ViewModel
             ImporteTotal = 0.0;
             ImpuestoTotal = 0.0;
             SumaSubTotal = 0.0;
-            foreach(ProductoSeleccionado p in ListaProductos)
+            foreach (ProductoSeleccionado p in ListaProductos)
             {
                 PrecioUniTotal += p.Producto.PrecioUnitario;
                 CantidadTotal += p.Cantidad;
@@ -235,6 +246,12 @@ namespace Cotizador.ViewModel
                 ImpuestoTotal += p.Impuesto;
                 SumaSubTotal += p.SubTotal;
             }
+            PrecioUniTotal = Math.Round(PrecioUniTotal, 2);
+            CantidadTotal = Math.Round(CantidadTotal, 2);
+            DescuentoTotal = Math.Round(DescuentoTotal, 2);
+            ImporteTotal = Math.Round(ImporteTotal, 2);
+            ImpuestoTotal = Math.Round(ImpuestoTotal, 2);
+            SumaSubTotal = Math.Round(SumaSubTotal, 2);
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;
@@ -266,9 +283,107 @@ namespace Cotizador.ViewModel
             }
         }
 
-        private void GuardarCotizacion(object parameter)
+        private async void GuardarCotizacion(object parameter)
         {
-            
+            if (ClienteSel != null)
+            {
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                string direccionIP = host.AddressList.FirstOrDefault(h => h.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
+                ListaDetalleComprobantes = new List<DetalleComprobantes>();
+                ComprobantesImpuestos ImpuestoLinea = new ComprobantesImpuestos();
+                ListaCotizacionImpuestos = new List<ComprobantesImpuestos>();
+                ListaImpuestosXlinea = new List<ComprobantesImpuestos>();
+                int c = 1;
+                
+                foreach (ProductoSeleccionado item in ListaProductos)
+                {
+                    string[] cadTasas = item.Producto.Tasas.Split(',');
+                    string[] cadClave = item.Producto.ClavesImpuestos.Split(',');
+
+                    for (int i = 0; i < cadTasas.Length; i++)
+                    {
+                        ImpuestoLinea = new ComprobantesImpuestos
+                        {
+                            ClaveImpuesto = Convert.ToInt64(cadClave[i]),
+                            Importe = Math.Round(item.Cantidad * item.Producto.PrecioUnitario * (Convert.ToDouble(cadTasas[i]) / 100), 2)
+                        };
+                        ListaImpuestosXlinea.Add(ImpuestoLinea);
+                        ListaCotizacionImpuestos.Add(ImpuestoLinea);
+                    }
+                    
+                    DetalleComprobantes detCom = new DetalleComprobantes
+                    {
+                        Cantidad = item.Cantidad,
+                        ClaveUnidadDeMedida = item.Producto.ClaveUnidadDeMedida,
+                        ClaveProducto = item.Producto.ClaveProducto,
+                        Importe = item.Importe,
+                        ImporteDescuento = item.ImporteDesc,
+                        Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
+                        NumeroPartidas = c,
+                        PrecioUnitario = item.Producto.PrecioUnitario
+                    };
+                    c += 1;
+                    ListaDetalleComprobantes.Add(detCom);
+                    ListaImpuestosXlinea.Clear();
+                }
+                // utilizando Linq, se hace una sumatoria por tipo de impuesto y se guarda en una variable
+                var listaSumaImpuestos = ListaCotizacionImpuestos.GroupBy(x => x.ClaveImpuesto)
+                                      .Select(y => new
+                                      {
+                                          ClaveImpuesto = y.Key,
+                                          Importe = Math.Round(y.Sum(z => z.Importe), 2)
+                                      });
+                
+                MiCotizacion = new Cotizacion
+                {
+                    Empresa = Usuario.Empresa,
+                    Equipo = direccionIP,
+                    Usuario = Usuario.NombreUsuario,
+                    ClaveInmueble = Usuario.Sucursal,
+                    ClaveTipoDeComprobante = EstatusCotizacion.ClaveTipoDeComprobante,
+                    FechaEmision = FechaCotizacion.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Partidas = ListaProductos.Count,
+                    ClaveMoneda = 1,
+                    ClaveEntidadFiscalInmueble = Usuario.ClaveEntidadFiscalInmueble,
+                    ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,
+                    ClaveEntidadFiscalResponsable = Usuario.ClaveEntidadFiscalEmpleado,
+                    ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
+                    ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
+                    ClaveListaDePrecios = 1,
+                    FechaVigencia = FechaVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
+                    SubTotal = ImporteTotal,
+                    Descuento = DescuentoTotal,
+                    Impuestos = ImpuestoTotal,
+                    Total = SumaSubTotal,
+                    Observaciones = Observaciones,
+                    DetallesDeComprobante = JsonConvert.SerializeObject(ListaDetalleComprobantes)
+                };
+                String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
+                //se procede a guardar la cotizacion
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("guardarCotizacion", Method.POST);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                req.AddParameter("text/json", AprosiCtz, ParameterType.RequestBody);
+                
+                req.RequestFormat = DataFormat.Json;
+                IRestResponse response = rest.Execute(req);
+                if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                {
+                    List<ComprobanteGenerado> compgen = JsonConvert.DeserializeObject<List<ComprobanteGenerado>>(response.Content);
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Aviso",
+                        CuerpoMensaje = "Se generó con éxito la cotización #" + compgen.First().ClaveComprobante
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    LimpiarCotizacion();
+                }
+            }
         }
 
         private async void CancelarCotizacion(object parameter)
@@ -284,17 +399,28 @@ namespace Cotizador.ViewModel
                 {
                     DataContext = vmMensaje
                 };
-                var result = await DialogHost.Show(vwMensaje, "Prueba");
+                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
                 if (result.Equals("ACEPTAR") == true)
                 {
-                    ListaProductos.Clear();
-                    ClienteSel = null;
-                    FechaCotizacion = DateTime.Now;
-                    EstatusCotizacion = ListaEstatusCtz.First();
-                    CteRazonSocial = string.Empty;
-                    DatosCliente = string.Empty;
+                    LimpiarCotizacion();
                 }
             }
+        }
+
+        private void LimpiarCotizacion()
+        {
+            ListaProductos.Clear();
+            ClienteSel = null;
+            FechaCotizacion = DateTime.Now;
+            EstatusCotizacion = ListaEstatusCtz.First();
+            CteRazonSocial = string.Empty;
+            DatosCliente = string.Empty;
+            CantidadTotal = 0;
+            DescuentoTotal = 0;
+            ImporteTotal = 0;
+            ImpuestoTotal = 0;
+            PrecioUniTotal = 0;
+            SumaSubTotal = 0;
         }
 
         public void MostrarSucursal()

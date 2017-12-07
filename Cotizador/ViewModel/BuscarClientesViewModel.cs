@@ -92,7 +92,7 @@ namespace Cotizador.ViewModel
         private void BuscarCliente(object parameter)
         {
             var rest = new RestClient(Localhost);
-            var req = new RestRequest("buscarClientesEmpresa/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtCliente, Method.GET);
+            var req = new RestRequest("buscarClientes/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtCliente, Method.GET);
             req.AddHeader("Accept", "application/json");
             req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
@@ -117,6 +117,10 @@ namespace Cotizador.ViewModel
                     CalcularPagsTotales();
                     ActivarBotones();
                 }
+            }
+            else
+            {
+
             }
         }
 

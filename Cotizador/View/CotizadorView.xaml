@@ -37,7 +37,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <!--CONTENEDOR PRINCIPAL-->
-    <materialDesign:DialogHost Identifier="Prueba">
+    <materialDesign:DialogHost Identifier="CotizadorView">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20"/>
@@ -50,13 +50,13 @@
                 <ColumnDefinition Width="20"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="1.1*"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="0.7*"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="2.3*"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="2.1*"/>
+                <RowDefinition Height="60"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="10"/>
@@ -259,36 +259,75 @@
                 </DataGrid>
             </Grid>
             <!--PIE DEL DATAGRID TOTALES-->
-            <StackPanel Margin="5" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="6" HorizontalAlignment="Left" Orientation="Horizontal">
-                <Grid Width="{Binding ElementName=Clave, Path=ActualWidth}"/>
-                <Grid Width="{Binding ElementName=Descripcion, Path=ActualWidth}"/>
-                <Grid Width="{Binding ElementName=Importado, Path=ActualWidth}"/>
-                <Grid Width="{Binding ElementName=PrecioUnit, Path=ActualWidth}">
-                    <TextBlock Text="{Binding PrecioUniTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold" 
+            <Grid Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="6">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Margin="5" HorizontalAlignment="Left" Orientation="Horizontal">
+                    <Grid Width="{Binding ElementName=Clave, Path=ActualWidth}"/>
+                    <Grid Width="{Binding ElementName=Descripcion, Path=ActualWidth}"/>
+                    <Grid Width="{Binding ElementName=Importado, Path=ActualWidth}">
+                        <TextBlock Text="TOTALES:" TextAlignment="Right" FontWeight="Bold" 
+                                   Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=PrecioUnit, Path=ActualWidth}">
+                        <TextBlock Text="Precio Unit." TextAlignment="Right" FontWeight="Bold" 
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </Grid>
-                <Grid Width="{Binding ElementName=Cantidad, Path=ActualWidth}">
-                    <TextBlock Text="{Binding CantidadTotal, StringFormat=N2}" TextAlignment="Right" FontWeight="Bold"
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Cantidad, Path=ActualWidth}">
+                        <TextBlock Text="Cant." TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </Grid>
-                <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
-                    <TextBlock Text="{Binding DescuentoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
+                        <TextBlock Text="Importe Desc." TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </Grid>
-                <Grid Width="{Binding ElementName=Importe, Path=ActualWidth}">
-                    <TextBlock Text="{Binding ImporteTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Importe, Path=ActualWidth}">
+                        <TextBlock Text="Importe" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </Grid>
-                <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
-                    <TextBlock Text="{Binding ImpuestoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
+                        <TextBlock Text="Impuestos" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </Grid>
-                <Grid Width="{Binding ElementName=Subtotal, Path=ActualWidth}">
-                    <TextBlock Text="{Binding SumaSubTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Subtotal, Path=ActualWidth}">
+                        <TextBlock Text="Total" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </Grid>
-                <Grid Width="{Binding ElementName=Acciones, Path=ActualWidth}"/>
-            </StackPanel>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Acciones, Path=ActualWidth}"/>
+                </StackPanel>
+                <StackPanel Grid.Row="1" Margin="5" HorizontalAlignment="Left" Orientation="Horizontal">
+                    <Grid Width="{Binding ElementName=Clave, Path=ActualWidth}"/>
+                    <Grid Width="{Binding ElementName=Descripcion, Path=ActualWidth}"/>
+                    <Grid Width="{Binding ElementName=Importado, Path=ActualWidth}"/>
+                    <Grid Width="{Binding ElementName=PrecioUnit, Path=ActualWidth}">
+                        <TextBlock Text="{Binding PrecioUniTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold" 
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Cantidad, Path=ActualWidth}">
+                        <TextBlock Text="{Binding CantidadTotal, StringFormat=N2}" TextAlignment="Right" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
+                        <TextBlock Text="{Binding DescuentoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Importe, Path=ActualWidth}">
+                        <TextBlock Text="{Binding ImporteTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
+                        <TextBlock Text="{Binding ImpuestoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Subtotal, Path=ActualWidth}">
+                        <TextBlock Text="{Binding SumaSubTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Acciones, Path=ActualWidth}"/>
+                </StackPanel>
+            </Grid>
             <!--TEXTAREAS CONDICIONES Y OBSERVACIIONES-->
             <Grid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6">
                 <Grid.ColumnDefinitions>
@@ -316,6 +355,7 @@
                 <Button Grid.Column="1" Content="Guardar" Command="{Binding GuardarCtzCommand}"/>
                 <Button Grid.Column="3" Content="Cancelar" Command="{Binding CancelarCtzCommand}"/>
             </Grid>
+            <!--AREA DE MENSAJES-->
             <materialDesign:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6" Background="{DynamicResource PrimaryHueLightBrush}">
                 <materialDesign:SnackbarMessage Content="{Binding TxtMensaje}" ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar"/>
             </materialDesign:Snackbar>
