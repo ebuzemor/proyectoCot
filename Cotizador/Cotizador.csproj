@@ -107,11 +107,13 @@
     <Compile Include="Model\CondicionesComerciales.cs" />
     <Compile Include="Model\Cotizacion.cs" />
     <Compile Include="Model\EstatusCotizacion.cs" />
+    <Compile Include="Model\InfoCotizaciones.cs" />
     <Compile Include="Model\ListaProductos.cs" />
     <Compile Include="Model\Producto.cs" />
     <Compile Include="Model\ProductoSeleccionado.cs" />
     <Compile Include="Model\Sucursal.cs" />
     <Compile Include="Model\Usuario.cs" />
+    <Compile Include="ViewModel\BuscadorCotizacionesViewModel.cs" />
     <Compile Include="ViewModel\BuscarClientesViewModel.cs" />
     <Compile Include="ViewModel\BuscarProductosViewModel.cs" />
     <Compile Include="ViewModel\CotizadorViewModel.cs" />
@@ -119,6 +121,9 @@
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
+    <Compile Include="View\BuscadorCotizacionesView.xaml.cs">
+      <DependentUpon>BuscadorCotizacionesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BuscarClientesView.xaml.cs">
       <DependentUpon>BuscarClientesView.xaml</DependentUpon>
     </Compile>
@@ -149,6 +154,10 @@
     <Compile Include="View\MensajeView.xaml.cs">
       <DependentUpon>MensajeView.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\BuscadorCotizacionesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\BuscarClientesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

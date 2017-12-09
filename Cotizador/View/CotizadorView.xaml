@@ -1,11 +1,9 @@
 ﻿<UserControl x:Class="Cotizador.View.CotizadorView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:mdWpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Cotizador.View"                          
-             xmlns:vm ="clr-namespace:Cotizador.ViewModel"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:val="clr-namespace:Cotizador.Common.Validations"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024"
@@ -37,7 +35,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <!--CONTENEDOR PRINCIPAL-->
-    <materialDesign:DialogHost Identifier="CotizadorView">
+    <mdWpf:DialogHost Identifier="CotizadorView">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20"/>
@@ -74,7 +72,7 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" materialDesign:HintAssist.Hint="Fecha de Cotización:"
+                <DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha de Cotización:"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx">
                     <DatePicker.SelectedDate>
                         <Binding Path="FechaCotizacion" UpdateSourceTrigger="PropertyChanged">
@@ -84,17 +82,17 @@
                         </Binding>
                     </DatePicker.SelectedDate>
                 </DatePicker>
-                <DatePicker Grid.Row="2" Grid.Column="0" materialDesign:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
+                <DatePicker Grid.Row="2" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
                 <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="1" HorizontalAlignment="Center">
                     <ComboBox IsEditable="{Binding CambiarEstatusCtz}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                               ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding EstatusCotizacion}">
-                        <materialDesign:HintAssist.Hint>
+                        <mdWpf:HintAssist.Hint>
                             <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
-                                <materialDesign:PackIcon Kind="TrafficLight" Margin="2"/>
+                                <mdWpf:PackIcon Kind="TrafficLight" Margin="2"/>
                                 <TextBlock>Estatus de Cotizacion:</TextBlock>
                             </StackPanel>
-                        </materialDesign:HintAssist.Hint>
+                        </mdWpf:HintAssist.Hint>
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Descripcion}"/>
@@ -102,10 +100,10 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
-                <DatePicker Grid.Row="0" Grid.Column="3" materialDesign:HintAssist.Hint="Fecha de Entrega:" SelectedDate="{Binding FechaEntrega}"
+                <DatePicker Grid.Row="0" Grid.Column="3" mdWpf:HintAssist.Hint="Fecha de Entrega:" SelectedDate="{Binding FechaEntrega}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
                 <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="City" Margin="2"/>
+                    <mdWpf:PackIcon Kind="City" Margin="2"/>
                     <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding TxtSucursal}"/>
                 </StackPanel>
             </Grid>
@@ -117,11 +115,11 @@
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}">
-                        <materialDesign:PackIcon Width="24" Height="24" Kind="AccountPlus" />
+                        <mdWpf:PackIcon Width="24" Height="24" Kind="AccountPlus" />
                     </Button>
-                    <materialDesign:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" 
+                    <mdWpf:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" 
                             Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
-                            Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Padding="2" materialDesign:ShadowAssist.ShadowDepth="Depth5">
+                            Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"/>
@@ -129,13 +127,13 @@
                                 <RowDefinition Height="30"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                <materialDesign:PackIcon Kind="AccountCardDetails"/>
+                                <mdWpf:PackIcon Kind="AccountCardDetails"/>
                                 <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Bold" Text="Datos del Cliente a Cotizar:"/>
                             </StackPanel>
                             <TextBlock Grid.Row="1" Text="{Binding CteRazonSocial}"/>
                             <TextBlock TextWrapping="Wrap" Grid.Row="2" Text="{Binding DatosCliente}"/>
                         </Grid>
-                    </materialDesign:Card>
+                    </mdWpf:Card>
                 </Grid>
             </StackPanel>
             <!--CONTENEDOR PRODUCTOS-->
@@ -154,14 +152,14 @@
                         Style="{StaticResource MaterialDesignRaisedAccentButton}">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Width="24" Height="24"	Kind="CartPlus"/>
+                            <mdWpf:PackIcon Width="24" Height="24" Kind="CartPlus"/>
                             <TextBlock Margin="5 0 0 0" Text="Agregar Producto" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button.Content>
                 </Button>
                 <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}"
                           CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False"  SelectionMode="Single"
-                          materialDesign:DataGridAssist.CellPadding="13 8 8 8" materialDesign:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
+                          SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="Clave" x:Name="Clave" IsReadOnly="True" Width="80">
@@ -241,13 +239,13 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                                 Margin="0 0 8 0" HorizontalAlignment="Left"
-                                                Content="{materialDesign:PackIcon Pencil}"
+                                                Content="{mdWpf:PackIcon Pencil}"
                                                 ToolTip="Editar item" Height="22" Width="22"
                                                 Command="{Binding ElementName=lstProductos, Path=DataContext.EditarProductoCommand}"
                                                 CommandParameter="{Binding Producto.ClaveProducto}"/>
                                         <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                                 Margin="0 0 8 0" HorizontalAlignment="Left"
-                                                Content="{materialDesign:PackIcon Delete}"
+                                                Content="{mdWpf:PackIcon Delete}"
                                                 ToolTip="Quitar item" Height="22" Width="22"
                                                 Command="{Binding ElementName=lstProductos, Path=DataContext.QuitarProductoCommand}"
                                                 CommandParameter="{Binding Producto.ClaveProducto}"/>
@@ -328,7 +326,7 @@
                     <Grid Width="{Binding ElementName=Acciones, Path=ActualWidth}"/>
                 </StackPanel>
             </Grid>
-            <!--TEXTAREAS CONDICIONES Y OBSERVACIIONES-->
+            <!--TEXTAREAS CONDICIONES Y OBSERVACIONES-->
             <Grid Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
@@ -337,10 +335,10 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <TextBox Margin="5" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top" materialDesign:HintAssist.Hint="CONDICIONES" AcceptsReturn="True"
+                <TextBox Margin="5" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top" mdWpf:HintAssist.Hint="CONDICIONES" AcceptsReturn="True"
                          Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                          Text="{Binding Condiciones.CondicionComercial}" IsReadOnly="True"/>
-                <TextBox Margin="5" Grid.Column="3" Grid.ColumnSpan="2" VerticalAlignment="Top" materialDesign:HintAssist.Hint="OBSERVACIONES" AcceptsReturn="True"
+                <TextBox Margin="5" Grid.Column="3" Grid.ColumnSpan="2" VerticalAlignment="Top" mdWpf:HintAssist.Hint="OBSERVACIONES" AcceptsReturn="True"
                          Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Observaciones}"/>
             </Grid>
             <!--BOTONES DE GUARDAR Y CANCELARF-->
@@ -356,9 +354,9 @@
                 <Button Grid.Column="3" Content="Cancelar" Command="{Binding CancelarCtzCommand}"/>
             </Grid>
             <!--AREA DE MENSAJES-->
-            <materialDesign:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6" Background="{DynamicResource PrimaryHueLightBrush}">
-                <materialDesign:SnackbarMessage Content="{Binding TxtMensaje}" ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar"/>
-            </materialDesign:Snackbar>
+            <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6" Background="{DynamicResource PrimaryHueLightBrush}">
+                <mdWpf:SnackbarMessage Content="{Binding TxtMensaje}" ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar"/>
+            </mdWpf:Snackbar>
         </Grid>
-    </materialDesign:DialogHost>
+    </mdWpf:DialogHost>
 </UserControl>

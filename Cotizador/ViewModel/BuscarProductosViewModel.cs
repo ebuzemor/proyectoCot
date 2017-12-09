@@ -248,10 +248,13 @@ namespace Cotizador.ViewModel
             try
             {
                 if (cantidad > 0)
+                {
+                    CalcularDescuento(TxtDescuento);
                     if (NvoProducto.EsFraccionable == 0)
-                        TxtImporte = Convert.ToInt32(cantidad) * NvoProducto.PrecioUnitario;
+                        TxtImporte = Convert.ToInt32(cantidad) * NvoProducto.PrecioUnitario - TxtImporteDesc;
                     else
-                        TxtImporte = Convert.ToDouble(cantidad) * NvoProducto.PrecioUnitario;
+                        TxtImporte = Convert.ToDouble(cantidad) * NvoProducto.PrecioUnitario - TxtImporteDesc;                    
+                }
                 else
                     TxtImporte = 0;
                 SeleccionarProducto();

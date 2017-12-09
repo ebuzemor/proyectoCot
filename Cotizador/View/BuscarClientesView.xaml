@@ -57,9 +57,11 @@
                     Content="{materialDesign:PackIcon Kind=ChevronDoubleLeft, Size=24}" IsEnabled="{Binding ActivoInicio}"/>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
                     Content="{materialDesign:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
-            <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
-            <TextBlock  Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text=" de "/>
-            <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
+            <UniformGrid Columns="3">
+                <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
+                <TextBlock  Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text=" de "/>
+                <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
+            </UniformGrid>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
                     Content="{materialDesign:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Final" Command="{Binding FinalCommand}"

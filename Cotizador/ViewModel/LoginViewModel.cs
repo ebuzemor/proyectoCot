@@ -182,7 +182,7 @@ namespace Cotizador.ViewModel
         private void CargarSucursales()
         {
             var rest = new RestClient(Localhost);
-            var reqSuc = new RestRequest("listaSucursales/" + 100000205, Method.GET);
+            var reqSuc = new RestRequest("listaSucursales/" + ClaveEF_Empresa, Method.GET);
             reqSuc.AddHeader("Accept", "application/json");
             reqSuc.AddHeader("Authorization", "Bearer " + AppKey.Token);
 

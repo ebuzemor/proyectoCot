@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:local="clr-namespace:Cotizador.View"
-             xmlns:vm ="clr-namespace:Cotizador.ViewModel"             
              xmlns:common="clr-namespace:Cotizador.Common"             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -43,8 +42,8 @@
                         <!--BOTONES DE LA DERECHA-->
                         <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                             <StackPanel>
-                                <Button Content="Cerrar Sesión"/>
-                                <Button Content="Salir"/>
+                                <Button Content="Cerrar Sesión" Command="{Binding CerrarSesionCommand}"/>
+                                <Button Content="Salir" Command="{Binding SalirAppCommand}"/>
                             </StackPanel>
                         </materialDesign:PopupBox>
                         <Image Source="/Images/logo_aprosi.png" Stretch="Fill" Width="100" Height="50"/>
