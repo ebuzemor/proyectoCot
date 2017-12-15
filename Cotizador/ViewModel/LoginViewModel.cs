@@ -104,7 +104,7 @@ namespace Cotizador.ViewModel
             TxtPassword = pwbox.Password;
             ValidarCredenciales(TxtLogin, TxtPassword);
             if (EsValido == true)
-            {                
+            {
                 InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
                 InicioView vwInicio = new InicioView
                 {

@@ -52,9 +52,11 @@
         <!--CONTROLES DE SELECCIONAR PERIODO-->
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
             <TextBlock Text="Seleccione Período:" VerticalAlignment="Center" Width="150"/>
-            <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Inicial" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" VerticalAlignment="Center"/>
+            <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Inicial" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" 
+                        SelectedDate="{Binding FechaInicial}" VerticalAlignment="Center"/>
             <TextBlock Width="30"/>
-            <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Final" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" VerticalAlignment="Center"/>
+            <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Final" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" 
+                        SelectedDate="{Binding FechaFinal}" VerticalAlignment="Center"/>
         </StackPanel>
         <!--CONTROLES DE SELECCIONAR CLIENTE-->
         <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
@@ -71,7 +73,7 @@
         <!--CONTROLES DE SELECCIONAR ESTATUS-->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
             <TextBlock Text="Seleccione Estatus: " Width="150" VerticalAlignment="Center"/>
-            <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding EstatusCotizacion}">
+            <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding ActualEstatus}">
                 <mdWpf:HintAssist.Hint>
                     <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
                         <mdWpf:PackIcon Kind="TrafficLight" Margin="2"/>
@@ -115,48 +117,74 @@
         <DataGrid x:Name="lstCotizaciones" Margin="10" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" CanUserAddRows="False"
                   CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionMode="Single"
                   mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ListaCotizaciones}" SelectedItem="{Binding InfoCotizacion}">
+                  HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ListaCotizaciones}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Cliente" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="2.4*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding RazonSocial}"/>
+                            <TextBlock Text="{Binding RazonSocial}" ToolTip="{Binding RazonSocial}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Clave Comprobante" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Clave Comp." IsReadOnly="True" Width="1.1*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate></DataTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ClaveComprobanteDeCotizacion}" ToolTip="{Binding ClaveComprobanteDeCotizacion}" TextAlignment="Center"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Fecha Emisión" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Fecha Emisión" IsReadOnly="True" Width="*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate></DataTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding FechaEmision, StringFormat=d}" ToolTip="{Binding FechaEmision, StringFormat=d}" TextAlignment="Center"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Partidas" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Partidas" IsReadOnly="True" Width=".5*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate></DataTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Partidas}" ToolTip="{Binding Partidas}" TextAlignment="Center"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Estatus" IsReadOnly="True">
+                <DataGridTemplateColumn Header="Estatus" IsReadOnly="True" Width="*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate></DataTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Estatus}" ToolTip="{Binding Estatus}" TextAlignment="Center"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Importe" IsReadOnly="True" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                <DataGridTemplateColumn Header="Importe" IsReadOnly="True" Width="*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate></DataTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Subtotal, StringFormat=C2}" ToolTip="{Binding Subtotal, StringFormat=C2}" TextAlignment="Right"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width="*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate></DataTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Descuento, StringFormat=C2}" ToolTip="{Binding Descuento, StringFormat=C2}" TextAlignment="Right"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Total" IsReadOnly="True" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                <DataGridTemplateColumn Header="Total" IsReadOnly="True" Width="*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                     <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate></DataTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Total, StringFormat=C2}" ToolTip="{Binding Total, StringFormat=C2}" TextAlignment="Right"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Ver">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                    Margin="0 0 8 0" HorizontalAlignment="Left"
+                                    Content="{mdWpf:PackIcon Kind=Eye}"
+                                    ToolTip="Ver Cotización" Height="22" Width="22"
+                                    Command="{Binding ElementName=lstCotizaciones, Path=DataContext.VerCotizacionCommand}"
+                                    CommandParameter="{Binding ClaveComprobanteDeCotizacion}"/>
+                        </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
@@ -177,9 +205,9 @@
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
             <UniformGrid Columns="3">
-                <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
-                <TextBlock  Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text=" de "/>
-                <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
+                <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
+                <TextBlock  Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="de "/>
+                <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
             </UniformGrid>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>

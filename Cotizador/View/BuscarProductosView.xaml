@@ -90,9 +90,9 @@
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
             <UniformGrid Columns="3">
-                <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
-                <TextBlock  Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text=" de "/>
-                <TextBlock Width="auto" Style="{StaticResource MaterialDesignCaptionTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
+                <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
+                <TextBlock  Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="de "/>
+                <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
             </UniformGrid>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>

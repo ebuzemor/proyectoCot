@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Cotizador.Model
 {
@@ -41,6 +36,12 @@ namespace Cotizador.Model
 
         [JsonProperty("ClaveEntidadFiscalResponsable")]
         public long ClaveEntidadFiscalResponsable { get; set; }
+
+        [JsonProperty("ClaveComprobante")]
+        public string ClaveComprobante { get; set; }
+
+        [JsonProperty("CodigoDeComprobante")]
+        public string CodigoDeComprobante { get; set; } 
 
         [JsonProperty("ListaComprobantesImpuestos")]
         public string ListaComprobantesImpuestos { get; set; }
@@ -107,5 +108,8 @@ namespace Cotizador.Model
 
         [JsonProperty("Impuestos")]
         public string Impuestos { get; set; }
+
+        [JsonProperty("Estatus")]
+        public int Estatus { get; set; }
     }
 }

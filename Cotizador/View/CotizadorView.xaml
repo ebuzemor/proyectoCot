@@ -72,15 +72,15 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha de Cotización:"
-                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx">
-                    <DatePicker.SelectedDate>
+                <DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha de Cotización:" IsEnabled="{Binding ActivaFechaCot}"
+                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" DisplayDate="{Binding FechaCotizacion}" SelectedDate="{Binding FechaCotizacion}">
+                    <!--<DatePicker.SelectedDate>
                         <Binding Path="FechaCotizacion" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
                                 <val:FechaAntesValidationRule ValidatesOnTargetUpdated="True"/>
                             </Binding.ValidationRules>
                         </Binding>
-                    </DatePicker.SelectedDate>
+                    </DatePicker.SelectedDate>-->
                 </DatePicker>
                 <DatePicker Grid.Row="2" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
@@ -162,7 +162,7 @@
                           SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Clave" x:Name="Clave" IsReadOnly="True" Width="80">
+                        <DataGridTemplateColumn Header="Codigo" x:Name="Clave" IsReadOnly="True" Width="80">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Producto.CodigoInterno}" ToolTip="{Binding Producto.CodigoInterno}"/>

@@ -101,6 +101,7 @@
     <Compile Include="Common\NotificadorExtension.cs" />
     <Compile Include="Common\Validations\CamposVaciosValidationRule.cs" />
     <Compile Include="Common\Validations\FechaAntesValidationRule.cs" />
+    <Compile Include="Common\Validations\hiddenRowConverter.cs" />
     <Compile Include="Model\ApiKey.cs" />
     <Compile Include="Model\Cliente.cs" />
     <Compile Include="Model\ComprobanteGenerado.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Model\Cotizacion.cs" />
     <Compile Include="Model\EstatusCotizacion.cs" />
     <Compile Include="Model\InfoCotizaciones.cs" />
+    <Compile Include="Model\InfoDetallesCotizacion.cs" />
     <Compile Include="Model\ListaProductos.cs" />
     <Compile Include="Model\Producto.cs" />
     <Compile Include="Model\ProductoSeleccionado.cs" />
