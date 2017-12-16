@@ -84,7 +84,7 @@
                 </DatePicker>
                 <DatePicker Grid.Row="2" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
-                <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="1" HorizontalAlignment="Center">
+                <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Vertical" Margin="1" HorizontalAlignment="Center">
                     <ComboBox IsEditable="{Binding CambiarEstatusCtz}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                               ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding EstatusCotizacion}">
                         <mdWpf:HintAssist.Hint>
@@ -100,6 +100,8 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
                 </StackPanel>
+                <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                           Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding NumCotizacion}"/>
                 <DatePicker Grid.Row="0" Grid.Column="3" mdWpf:HintAssist.Hint="Fecha de Entrega:" SelectedDate="{Binding FechaEntrega}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
                 <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
@@ -117,10 +119,9 @@
                     <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}">
                         <mdWpf:PackIcon Width="24" Height="24" Kind="AccountPlus" />
                     </Button>
-                    <mdWpf:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" 
-                            Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
-                            Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5">
-                        <Grid>
+                    <mdWpf:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
+                                Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5">
+                        <Grid ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="30"/>

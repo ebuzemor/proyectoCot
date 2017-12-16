@@ -85,6 +85,9 @@ namespace Cotizador.Model
 
     public class DetalleComprobantes
     {
+        [JsonProperty("claveDetalleDeComprobante")]
+        public string ClaveDetalleDeComprobante { get; set; }
+
         [JsonProperty("NumeroPartidas")]
         public long NumeroPartidas { get; set; }
 

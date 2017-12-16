@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace Cotizador.ViewModel
 {
@@ -18,6 +19,10 @@ namespace Cotizador.ViewModel
         public RelayCommand BuscarCotizacionesCommand { get; set; }
         public RelayCommand CerrarMensajeCommand { get; set; }
         public RelayCommand VerCotizacionCommand { get; set; }
+        public RelayCommand InicioCommand { get; set; }
+        public RelayCommand AnteriorCommand { get; set; }
+        public RelayCommand SiguienteCommand { get; set; }
+        public RelayCommand FinalCommand { get; set; }
         #endregion
 
         #region Variables
@@ -39,6 +44,15 @@ namespace Cotizador.ViewModel
         private String _txtCliente;
         private Cliente _clienteCtz;
         private ObservableCollection<ProductoSeleccionado> _listaProductosCtz;
+        private int _pagsTotales;
+        private int _indicePagActual;
+        private int _itemsPorPag;
+        private int _pagActual;
+        private Boolean _activoInicio;
+        private Boolean _activoAnterior;
+        private Boolean _activoSiguiente;
+        private Boolean _activoFinal;
+        private CollectionViewSource _cvsCotizaciones;
 
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
@@ -58,6 +72,15 @@ namespace Cotizador.ViewModel
         public string TxtCliente { get => _txtCliente; set { _txtCliente = value; OnPropertyChanged("TxtCliente"); } }
         public Cliente ClienteCtz { get => _clienteCtz; set { _clienteCtz = value; OnPropertyChanged("ClienteCtz"); } }
         public ObservableCollection<ProductoSeleccionado> ListaProductosCtz { get => _listaProductosCtz; set { _listaProductosCtz = value; OnPropertyChanged("ListaProductosCtz"); } }
+        public int PagsTotales { get => _pagsTotales; set { _pagsTotales = value; OnPropertyChanged("PagsTotales"); } }
+        public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged("IndicePagActual"); } }
+        public int ItemsPorPag { get => _itemsPorPag; set { _itemsPorPag = value; OnPropertyChanged("ItemsPorPag"); } }
+        public int PagActual { get => _pagActual + 1; set { _pagActual = value; OnPropertyChanged("PagActual"); } }
+        public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged("ActivoInicio"); } }
+        public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged("ActivoAnterior"); } }
+        public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged("ActivoSiguiente"); } }
+        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged("ActivoFinal"); } }
+        public CollectionViewSource CvsCotizaciones { get => _cvsCotizaciones; set { _cvsCotizaciones = value; OnPropertyChanged("CvsCotizaciones"); } }
         #endregion
 
         #region Constructor
@@ -66,9 +89,15 @@ namespace Cotizador.ViewModel
             BuscarCotizacionesCommand = new RelayCommand(BuscarCotizaciones);
             CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
             VerCotizacionCommand = new RelayCommand(VerCotizaciones);
+            InicioCommand = new RelayCommand(Inicio);
+            AnteriorCommand = new RelayCommand(Anterior);
+            SiguienteCommand = new RelayCommand(Siguiente);
+            FinalCommand = new RelayCommand(Final);
             DateTime hoy = DateTime.Now;
             FechaInicial = new DateTime(hoy.Year, hoy.Month, 1);
             FechaFinal = FechaInicial.AddMonths(1).AddDays(-1);
+            IndicePagActual = 0;
+            ItemsPorPag = 10;
         }
         #endregion
 
@@ -157,6 +186,16 @@ namespace Cotizador.ViewModel
                         {
                             List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
                             ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);
+
+                            ///Paginacion de los resultados
+                            CvsCotizaciones = new CollectionViewSource
+                            {
+                                Source = ListaCotizaciones
+                            };
+                            CvsCotizaciones.Filter += new FilterEventHandler(FiltroPaginas);
+                            IndicePagActual = 0;
+                            CalcularPagsTotales();
+                            ActivarBotones();
                         }
                         if (ListaCotizaciones.Count == 0)
                         {
@@ -172,7 +211,7 @@ namespace Cotizador.ViewModel
                 }
                 catch (Exception)
                 {
-                    TxtMensaje = "La búsqueda no obtuvo resultados, verifique los filtros por favor.";
+                    TxtMensaje = "Ocurrió un error al realizar la consulta, contacte al Administrador.";
                     VerMensaje = true;
                 }
             }
@@ -196,6 +235,8 @@ namespace Cotizador.ViewModel
             vmInicio.VmCotizador.ListaProductos = ListaProductosCtz;
             vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
             vmInicio.VmCotizador.CalcularTotales();
+            vmInicio.VmCotizador.NumCotizacion = "COTIZACION #: " + InfoCotizacion.ClaveComprobanteDeCotizacion;
+            vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
 
             var vwInicio = new InicioView
             {
@@ -243,6 +284,7 @@ namespace Cotizador.ViewModel
                             Impuesto = fila.Impuestos,
                             SubTotal = fila.Subtotal,
                             Estatus = 3,
+                            ClaveDetalleDeComprobante = fila.ClaveDetalleDeComprobante,
                             Producto = new Producto
                             {
                                 ClaveProducto = fila.ClaveProducto,
@@ -251,7 +293,7 @@ namespace Cotizador.ViewModel
                                 SumaImpuestos = fila.SumaImpuestos,
                                 CodigoInterno = fila.CodigoInterno,
                                 Tasas = fila.Tasas,
-                                ClavesImpuestos = fila.ClavesImpuestos                                
+                                ClavesImpuestos = fila.ClavesImpuestos
                             }
                         };
                         ListaProductosCtz.Add(psel);
@@ -266,6 +308,73 @@ namespace Cotizador.ViewModel
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;
+
+        private void Inicio(object obj)
+        {
+            IndicePagActual = 0;
+            ActualizarPagina();
+        }
+
+        private void Anterior(object obj)
+        {
+            IndicePagActual -= 1;
+            ActualizarPagina();
+        }
+
+        private void Siguiente(object obj)
+        {
+            IndicePagActual += 1;
+            ActualizarPagina();
+        }
+
+        private void Final(object obj)
+        {
+            IndicePagActual = PagsTotales - 1;
+            ActualizarPagina();
+        }
+
+        private void ActualizarPagina()
+        {
+            PagActual = IndicePagActual;
+            CvsCotizaciones.View.Refresh();
+            ActivarBotones();
+        }
+
+        private void CalcularPagsTotales()
+        {
+            if (ListaCotizaciones.Count % ItemsPorPag == 0)
+            {
+                PagsTotales = ListaCotizaciones.Count / ItemsPorPag;
+            }
+            else
+            {
+                PagsTotales = (ListaCotizaciones.Count / ItemsPorPag) + 1;
+            }
+        }
+
+        private void FiltroPaginas(object sender, FilterEventArgs e)
+        {
+            int index = ListaCotizaciones.IndexOf((InfoCotizaciones)e.Item);
+            if (index >= ItemsPorPag * IndicePagActual && index < ItemsPorPag * (IndicePagActual + 1))
+            {
+                e.Accepted = true;
+            }
+            else
+            {
+                e.Accepted = false;
+            }
+        }
+
+        private void ActivarBotones()
+        {
+            if (ListaCotizaciones.Count > 0)
+            {
+                ActivoInicio = (IndicePagActual != 0) ? true : false;
+                ActivoAnterior = (IndicePagActual != 0) ? true : false;
+                ActivoSiguiente = (IndicePagActual < PagsTotales - 1) ? true : false;
+                ActivoFinal = (PagActual != PagsTotales) ? true : false;
+            }
+        }
         #endregion
     }
 }

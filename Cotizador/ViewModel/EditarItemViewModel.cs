@@ -65,7 +65,6 @@ namespace Cotizador.ViewModel
                 }
                 else
                     TxtImporte = 0;
-                //actualizarProducto();
             }
             catch (Exception)
             {
@@ -92,7 +91,6 @@ namespace Cotizador.ViewModel
                     TxtImporte = 0;
                     TxtImporteDesc = 0;
                 }
-                //actualizarProducto();
             }
             catch (Exception)
             {
@@ -110,10 +108,10 @@ namespace Cotizador.ViewModel
         {
             ProdSeleccionado.Cantidad = TxtCantidad;
             ProdSeleccionado.Descuento = TxtDescuento;
-            ProdSeleccionado.ImporteDesc = TxtImporteDesc;
-            ProdSeleccionado.Importe = TxtImporte;
-            double impuestos = Math.Round(TxtImporte * (ProdSeleccionado.Producto.SumaImpuestos / 100.0), 2);
-            ProdSeleccionado.Impuesto = impuestos;
+            ProdSeleccionado.ImporteDesc = Math.Round(TxtImporteDesc, 2);
+            ProdSeleccionado.Importe = Math.Round(TxtImporte, 2);
+            double impuestos = TxtImporte * (ProdSeleccionado.Producto.SumaImpuestos / 100.0);
+            ProdSeleccionado.Impuesto = Math.Round(impuestos, 2);
             ProdSeleccionado.SubTotal = Math.Round(TxtImporte + impuestos, 2);
         }
         #endregion

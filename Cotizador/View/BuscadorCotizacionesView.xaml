@@ -117,7 +117,7 @@
         <DataGrid x:Name="lstCotizaciones" Margin="10" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" CanUserAddRows="False"
                   CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionMode="Single"
                   mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding ListaCotizaciones}">
+                  HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding CvsCotizaciones.View}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="2.4*">
                     <DataGridTemplateColumn.CellTemplate>
@@ -175,15 +175,23 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Ver">
+                <DataGridTemplateColumn Header="Acciones">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
-                                    Margin="0 0 8 0" HorizontalAlignment="Left"
-                                    Content="{mdWpf:PackIcon Kind=Eye}"
-                                    ToolTip="Ver Cotización" Height="22" Width="22"
-                                    Command="{Binding ElementName=lstCotizaciones, Path=DataContext.VerCotizacionCommand}"
-                                    CommandParameter="{Binding ClaveComprobanteDeCotizacion}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        Margin="0 0 8 0" HorizontalAlignment="Left"
+                                        Content="{mdWpf:PackIcon Kind=Eye}"
+                                        ToolTip="Ver Cotización" Height="22" Width="22"
+                                        Command="{Binding ElementName=lstCotizaciones, Path=DataContext.VerCotizacionCommand}"
+                                        CommandParameter="{Binding ClaveComprobanteDeCotizacion}"/>
+                                <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        Margin="0 0 8 0" HorizontalAlignment="Left"
+                                        Content="{mdWpf:PackIcon Kind=FileSend}"
+                                        ToolTip="Enviar Cotizacion" Height="22" Width="22"
+                                        Command="{Binding ElementName=lstCotizaciones, Path=DataContext.EnviarCotizacionCommand}"
+                                        CommandParameter="{Binding ClaveComprobanteDeCotizacion}"/>
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

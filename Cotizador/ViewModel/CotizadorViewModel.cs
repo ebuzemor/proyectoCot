@@ -59,6 +59,7 @@ namespace Cotizador.ViewModel
         private List<ComprobantesImpuestos> _listaImpuestosXlinea;
         private List<DetalleComprobantes> _listaDetalleComprobantes;
         private Boolean _activaFechaCot;
+        private String _numCotizacion;
         
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
         public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged("DatosCliente"); } }
@@ -94,6 +95,7 @@ namespace Cotizador.ViewModel
         public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged("InfoCotizacion"); } }
         public bool ActivaFechaCot { get => _activaFechaCot; set { _activaFechaCot = value; OnPropertyChanged("ActivaFechaCot"); } }
         public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged("ListaDetalles"); } }
+        public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged("NumCotizacion"); } }
         #endregion
 
         #region Constructor
@@ -442,7 +444,8 @@ namespace Cotizador.ViewModel
                     Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
                     NumeroPartidas = c,
                     PrecioUnitario = item.Producto.PrecioUnitario,
-                    Estatus = item.Estatus
+                    Estatus = item.Estatus,
+                    ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante
                 };
                 c += 1;
                 ListaDetalleComprobantes.Add(detCom);
@@ -496,16 +499,16 @@ namespace Cotizador.ViewModel
             if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
             {
                 var respuesta = JsonConvert.DeserializeObject(response.Content);
-                //var vmMensaje = new MensajeViewModel
-                //{
-                //    TituloMensaje = "Aviso",
-                //    CuerpoMensaje = "Se generó con éxito la cotización #" + compgen.First().ClaveComprobante
-                //};
-                //var vwMensaje = new MensajeView
-                //{
-                //    DataContext = vmMensaje
-                //};
-                //var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                var vmMensaje = new MensajeViewModel
+                {
+                    TituloMensaje = "Aviso",
+                    CuerpoMensaje = "Se guardaron los cambios correctamente en la cotizacion: " + InfoCotizacion.ClaveComprobanteDeCotizacion
+                };
+                var vwMensaje = new MensajeView
+                {
+                    DataContext = vmMensaje
+                };
+                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
                 LimpiarCotizacion();
             }
         }
@@ -546,6 +549,8 @@ namespace Cotizador.ViewModel
             PrecioUniTotal = 0;
             SumaSubTotal = 0;
             ActivaFechaCot = true;
+            Observaciones = null;
+            NumCotizacion = null;
         }
 
         private void ActualizarListaDetalles(ProductoSeleccionado prodsel, int estatus)
