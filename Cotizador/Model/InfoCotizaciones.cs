@@ -10,6 +10,9 @@ namespace Cotizador.Model
         [JsonProperty("codigoDeComprobante")]
         public string CodigoDeComprobante { get; set; }
 
+        [JsonProperty("correoElectronico")]
+        public string CorreoElectronico { get; set; }
+
         [JsonProperty("claveEntidadFiscalCliente")]
         public long ClaveEntidadFiscalCliente { get; set; }
 
@@ -21,6 +24,9 @@ namespace Cotizador.Model
 
         [JsonProperty("estatus")]
         public string Estatus { get; set; }
+
+        [JsonProperty("claveEstatus")]
+        public int ClaveEstatus { get; set; }
 
         [JsonProperty("fechaEmision")]
         public string FechaEmision { get; set; }

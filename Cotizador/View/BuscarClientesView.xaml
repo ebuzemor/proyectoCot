@@ -73,8 +73,7 @@
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedButton}"
-                    Command="{x:Static wpf:DialogHost.CloseDialogCommand}">
+            <Button Style="{DynamicResource MaterialDesignRaisedButton}" Command="{x:Static wpf:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>
                     NvoCliente
                 </Button.CommandParameter>

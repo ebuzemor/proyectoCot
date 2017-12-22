@@ -4,7 +4,7 @@ namespace Cotizador.Model
 {
     public class ComprobanteGenerado
     {
-        [JsonProperty("claveComprobante")]
-        public string ClaveComprobante { get; set; }
+        [JsonProperty("folioCodigoComprobante")]
+        public string FolioCodigoComprobante { get; set; }
     }
 }

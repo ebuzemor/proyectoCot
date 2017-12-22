@@ -36,7 +36,6 @@ namespace Cotizador.ViewModel
         private ProductoSeleccionado _productoSel;
         private String _localhost;
         private Boolean _esImportado;
-        private Boolean _cambiarEstatusCtz;
         private Double _precioUniTotal;
         private Double _cantidadTotal;
         private Double _descuentoTotal;
@@ -60,6 +59,12 @@ namespace Cotizador.ViewModel
         private List<DetalleComprobantes> _listaDetalleComprobantes;
         private Boolean _activaFechaCot;
         private String _numCotizacion;
+        private int _indexEstatusCtz;
+        private long _claveEstatusCtz;
+        private Boolean _borradorSeleccionado;
+        private Boolean _pendienteSeleccionado;
+        private Boolean _definitivaSeleccionado;
+        private Boolean _aceptaCambios;
         
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
         public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged("DatosCliente"); } }
@@ -83,7 +88,6 @@ namespace Cotizador.ViewModel
         public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; OnPropertyChanged("FechaEntrega"); } }
         public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged("SucursalSel"); } }
         public string TxtSucursal { get => _txtSucursal; set { _txtSucursal = value; OnPropertyChanged("TxtSucursal"); } }
-        public bool CambiarEstatusCtz { get => _cambiarEstatusCtz; set { _cambiarEstatusCtz = value; OnPropertyChanged("CambiarEstatusCtz"); } }
         public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged("ListaEstatusCtz"); } }
         public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged("EstatusCotizacion"); } }
         public string Observaciones { get => _observaciones; set { _observaciones = value; OnPropertyChanged("Observaciones"); } }
@@ -96,6 +100,12 @@ namespace Cotizador.ViewModel
         public bool ActivaFechaCot { get => _activaFechaCot; set { _activaFechaCot = value; OnPropertyChanged("ActivaFechaCot"); } }
         public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged("ListaDetalles"); } }
         public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged("NumCotizacion"); } }
+        public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged("IndexEstatusCtz"); ActualizarEstatus(); } }
+        public long ClaveEstatusCtz { get => _claveEstatusCtz; set { _claveEstatusCtz = value; OnPropertyChanged("ClaveEstatusCtz"); } }
+        public bool BorradorSeleccionado { get => _borradorSeleccionado; set { _borradorSeleccionado = value; OnPropertyChanged("BorradorSeleccionado"); } }
+        public bool PendienteSeleccionado { get => _pendienteSeleccionado; set { _pendienteSeleccionado = value; OnPropertyChanged("PendienteSeleccionado"); } }
+        public bool DefinitivaSeleccionado { get => _definitivaSeleccionado; set { _definitivaSeleccionado = value; OnPropertyChanged("DefinitivaSeleccionado"); } }
+        public bool AceptaCambios { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged("AceptaCambios"); } }
         #endregion
 
         #region Constructor
@@ -110,9 +120,10 @@ namespace Cotizador.ViewModel
             CancelarCtzCommand = new RelayCommand(CancelarCotizacion);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
-            CambiarEstatusCtz = true;
             ActivaFechaCot = true;
             ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
+            BorradorSeleccionado = true;
+            AceptaCambios = true;
         }        
         #endregion
 
@@ -392,7 +403,8 @@ namespace Cotizador.ViewModel
                         var vmMensaje = new MensajeViewModel
                         {
                             TituloMensaje = "Aviso",
-                            CuerpoMensaje = "Se generó con éxito la cotización #" + compgen.First().ClaveComprobante
+                            MostrarCancelar = false,
+                            CuerpoMensaje = "La cotizacion " + compgen.First().FolioCodigoComprobante + " fue generada de manera exitosa."
                         };
                         var vwMensaje = new MensajeView
                         {
@@ -502,7 +514,8 @@ namespace Cotizador.ViewModel
                 var vmMensaje = new MensajeViewModel
                 {
                     TituloMensaje = "Aviso",
-                    CuerpoMensaje = "Se guardaron los cambios correctamente en la cotizacion: " + InfoCotizacion.ClaveComprobanteDeCotizacion
+                    MostrarCancelar = false,
+                    CuerpoMensaje = "Se guardaron los cambios correctamente en la cotizacion: " + InfoCotizacion.CodigoDeComprobante
                 };
                 var vwMensaje = new MensajeView
                 {
@@ -520,7 +533,8 @@ namespace Cotizador.ViewModel
                 var vmMensaje = new MensajeViewModel
                 {
                     TituloMensaje = "Advertencia",
-                    CuerpoMensaje = "¿Desea cancelar la cotización?"
+                    MostrarCancelar = true,
+                    CuerpoMensaje = "¿Desea crear una nueva cotización?"
                 };
                 var vwMensaje = new MensajeView
                 {
@@ -551,6 +565,8 @@ namespace Cotizador.ViewModel
             ActivaFechaCot = true;
             Observaciones = null;
             NumCotizacion = null;
+            AceptaCambios = true;
+            IndexEstatusCtz = 0;
         }
 
         private void ActualizarListaDetalles(ProductoSeleccionado prodsel, int estatus)
@@ -563,7 +579,7 @@ namespace Cotizador.ViewModel
                     break;
                 default:
                     {
-                        var prod = ListaDetalles.Single(x => x.Producto.ClaveProducto == prodsel.Producto.ClaveProducto);
+                        var prod = ListaDetalles.First(x => x.Producto.ClaveProducto == prodsel.Producto.ClaveProducto);
                         prod.Estatus = estatus;
                         break;
                     }
@@ -630,8 +646,8 @@ namespace Cotizador.ViewModel
                 IRestResponse resp = rest.Execute(req);
                 if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
                 {
-                    List<CondicionesComerciales> lista = JsonConvert.DeserializeObject<List<CondicionesComerciales>>(resp.Content);
-                    Condiciones = lista.First();
+                    CondicionesComerciales lista = JsonConvert.DeserializeObject<CondicionesComerciales>(resp.Content);                    
+                    Condiciones = lista;
                 }
             }
             catch (Exception ex)
@@ -640,6 +656,78 @@ namespace Cotizador.ViewModel
                 VerMensaje = true;
             }
         }       
+
+        public void ActualizarEstatus()
+        {
+            switch (IndexEstatusCtz)
+            {
+                case 0:
+                    BorradorSeleccionado = true;
+                    PendienteSeleccionado = false;
+                    DefinitivaSeleccionado = false;
+                    ClaveEstatusCtz = 160;
+                    AceptaCambios = true;
+                    break;
+                case 1:
+                    if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
+                    {
+                        BorradorSeleccionado = false;
+                        PendienteSeleccionado = true;
+                        DefinitivaSeleccionado = false;
+                        ClaveEstatusCtz = 161;
+                        AceptaCambios = true;
+                    }
+                    else
+                        IndexEstatusCtz = 0;
+                    break;
+                case 2:
+                    if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
+                    {
+                        BorradorSeleccionado = false;
+                        PendienteSeleccionado = false;
+                        DefinitivaSeleccionado = true;
+                        ClaveEstatusCtz = 162;
+                        EstatusDefinitiva();
+                        AceptaCambios = false;
+                    }
+                    else
+                        IndexEstatusCtz = 0;
+                    break;
+                default:
+                    break;
+            }
+            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == ClaveEstatusCtz);
+        }
+
+        private async void EstatusDefinitiva()
+        {
+            try
+            {
+                var vmMensaje = new MensajeViewModel
+                {
+                    TituloMensaje = "Advertencia",
+                    CuerpoMensaje = "El cambio de estatus de la Cotización a Definitiva es irreversible, ¿Desea cambiar el estatus?",
+                    MostrarCancelar = true
+                };
+                var vwMensaje = new MensajeView
+                {
+                    DataContext = vmMensaje
+                };
+                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                if (result.Equals("ACEPTAR"))
+                {
+                    GuardarCotizacion(ClienteSel);
+                }
+                else
+                {
+                    IndexEstatusCtz = 1;
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+        }
         #endregion
     }
 }

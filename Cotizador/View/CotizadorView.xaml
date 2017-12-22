@@ -27,6 +27,7 @@
                 <Setter Property="HorizontalContentAlignment" Value="Right"/>
                 <Setter Property="HorizontalAlignment" Value="Right"/>
             </Style>
+            <BooleanToVisibilityConverter x:Key="EstatusSeleccionado"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
@@ -85,7 +86,7 @@
                 <DatePicker Grid.Row="2" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
                 <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Vertical" Margin="1" HorizontalAlignment="Center">
-                    <ComboBox IsEditable="{Binding CambiarEstatusCtz}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
+                    <!--<ComboBox IsEditable="{Binding CambiarEstatusCtz}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
                               ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding EstatusCotizacion}">
                         <mdWpf:HintAssist.Hint>
                             <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
@@ -98,7 +99,30 @@
                                 <TextBlock Text="{Binding Descripcion}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    </ComboBox>-->
+                    <ListBox SelectedIndex="{Binding IndexEstatusCtz}" Style="{StaticResource MaterialDesignToolToggleListBox}" IsEnabled="{Binding AceptaCambios}">
+                        <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Borrador" VerticalAlignment="Center"/>
+                                <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
+                                                Visibility="{Binding BorradorSeleccionado, Converter={StaticResource EstatusSeleccionado}}"/>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Pendiente" VerticalAlignment="Center"/>
+                                <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
+                                                Visibility="{Binding PendienteSeleccionado, Converter={StaticResource EstatusSeleccionado}}"/>
+                            </StackPanel>
+                        </ListBoxItem>
+                        <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Definitiva" VerticalAlignment="Center"/>
+                                <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
+                                                Visibility="{Binding DefinitivaSeleccionado, Converter={StaticResource EstatusSeleccionado}}"/>
+                            </StackPanel>
+                        </ListBoxItem>
+                    </ListBox>
                 </StackPanel>
                 <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" 
                            Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding NumCotizacion}"/>
@@ -116,7 +140,7 @@
                         <ColumnDefinition Width="58"/>
                         <ColumnDefinition Width="3*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}">
+                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}" IsEnabled="{Binding AceptaCambios}">
                         <mdWpf:PackIcon Width="24" Height="24" Kind="AccountPlus" />
                     </Button>
                     <mdWpf:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
@@ -150,7 +174,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Grid.Column="1" ToolTip="Agregar Producto" Command="{Binding AgregarProductoCommand}"
-                        Style="{StaticResource MaterialDesignRaisedAccentButton}">
+                        Style="{StaticResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding AceptaCambios}">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <mdWpf:PackIcon Width="24" Height="24" Kind="CartPlus"/>
@@ -158,7 +182,7 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}"
+                <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}" IsEnabled="{Binding AceptaCambios}"
                           CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False"  SelectionMode="Single"
                           SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -240,7 +264,7 @@
                                     <StackPanel Orientation="Horizontal">
                                         <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                                 Margin="0 0 8 0" HorizontalAlignment="Left"
-                                                Content="{mdWpf:PackIcon Pencil}"
+                                                Content="{mdWpf:PackIcon Pencil}" 
                                                 ToolTip="Editar item" Height="22" Width="22"
                                                 Command="{Binding ElementName=lstProductos, Path=DataContext.EditarProductoCommand}"
                                                 CommandParameter="{Binding Producto.ClaveProducto}"/>
@@ -346,13 +370,13 @@
             <Grid Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" Content="Guardar" Command="{Binding GuardarCtzCommand}"/>
-                <Button Grid.Column="3" Content="Cancelar" Command="{Binding CancelarCtzCommand}"/>
+                <Button Grid.Column="1" Content="Guardar Cotizacion" Command="{Binding GuardarCtzCommand}" IsEnabled="{Binding AceptaCambios}"/>
+                <Button Grid.Column="3" Content="Nueva Cotización" Command="{Binding CancelarCtzCommand}"/>
             </Grid>
             <!--AREA DE MENSAJES-->
             <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6" Background="{DynamicResource PrimaryHueLightBrush}">

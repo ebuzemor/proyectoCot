@@ -10,6 +10,8 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
+using System.Text.RegularExpressions;
+using System.IO;
 
 namespace Cotizador.ViewModel
 {
@@ -19,6 +21,8 @@ namespace Cotizador.ViewModel
         public RelayCommand BuscarCotizacionesCommand { get; set; }
         public RelayCommand CerrarMensajeCommand { get; set; }
         public RelayCommand VerCotizacionCommand { get; set; }
+        public RelayCommand EnviarCotizacionCommand { get; set; }
+        public RelayCommand DescargarCotizacionCommand { get; set; }
         public RelayCommand InicioCommand { get; set; }
         public RelayCommand AnteriorCommand { get; set; }
         public RelayCommand SiguienteCommand { get; set; }
@@ -53,6 +57,7 @@ namespace Cotizador.ViewModel
         private Boolean _activoSiguiente;
         private Boolean _activoFinal;
         private CollectionViewSource _cvsCotizaciones;
+        private String _correosElectronicos;
 
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
@@ -81,6 +86,7 @@ namespace Cotizador.ViewModel
         public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged("ActivoSiguiente"); } }
         public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged("ActivoFinal"); } }
         public CollectionViewSource CvsCotizaciones { get => _cvsCotizaciones; set { _cvsCotizaciones = value; OnPropertyChanged("CvsCotizaciones"); } }
+        public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged("CorreosElectronicos"); } }
         #endregion
 
         #region Constructor
@@ -89,6 +95,8 @@ namespace Cotizador.ViewModel
             BuscarCotizacionesCommand = new RelayCommand(BuscarCotizaciones);
             CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
             VerCotizacionCommand = new RelayCommand(VerCotizaciones);
+            EnviarCotizacionCommand = new RelayCommand(EnviarCotizacion);
+            DescargarCotizacionCommand = new RelayCommand(DescargarCotizacion);
             InicioCommand = new RelayCommand(Inicio);
             AnteriorCommand = new RelayCommand(Anterior);
             SiguienteCommand = new RelayCommand(Siguiente);
@@ -161,6 +169,18 @@ namespace Cotizador.ViewModel
             }            
         }
 
+        private int CargarEstatusCotizacion(int claveEstatus)
+        {
+            int clvstat = 0;
+            switch (claveEstatus)
+            {
+                case 160: clvstat = 0; break;
+                case 161: clvstat = 1; break;
+                case 162: clvstat = 2; break;
+            }
+            return clvstat;
+        }
+
         private void BuscarCotizaciones(object parameter)
         {
             if (MiSucursal != null)
@@ -168,7 +188,7 @@ namespace Cotizador.ViewModel
                 try
                 {
                     if (FechaFinal >= FechaInicial)
-                    {
+                    {                        
                         var estatus = ActualEstatus.ClaveTipoDeStatusDeComprobante;
                         var rest = new RestClient(Localhost);
                         var req = new RestRequest("mostrarCotizaciones", Method.POST);
@@ -201,6 +221,11 @@ namespace Cotizador.ViewModel
                         {
                             TxtMensaje = "La búsqueda no obtuvo resultados, verifique los filtros por favor.";
                             VerMensaje = true;
+                        }
+                        else
+                        {
+                            IndicePagActual = 0;
+                            ActualizarPagina();
                         }
                     }
                     else
@@ -235,15 +260,16 @@ namespace Cotizador.ViewModel
             vmInicio.VmCotizador.ListaProductos = ListaProductosCtz;
             vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
             vmInicio.VmCotizador.CalcularTotales();
-            vmInicio.VmCotizador.NumCotizacion = "COTIZACION #: " + InfoCotizacion.ClaveComprobanteDeCotizacion;
-            vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
+            vmInicio.VmCotizador.NumCotizacion = "COTIZACION: " + InfoCotizacion.CodigoDeComprobante;
+            //vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
+            vmInicio.VmCotizador.IndexEstatusCtz = CargarEstatusCotizacion(InfoCotizacion.ClaveEstatus);
 
             var vwInicio = new InicioView
             {
                 DataContext = vmInicio
             };
             Navigator.NavigationService.Navigate(vwInicio);
-        }
+        }        
 
         public void CargarCotizacion()
         {
@@ -305,6 +331,83 @@ namespace Cotizador.ViewModel
                 TxtMensaje = "ERROR" + ex.Message;
                 VerMensaje = true;
             }
+        }
+
+        private async void EnviarCotizacion(object parameter)
+        {
+            string numCot = parameter as string;
+            InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
+            CorreosElectronicos = InfoCotizacion.CorreoElectronico;
+            var vmEnviarCtz = new EnviarCotizacionViewModel
+            {
+                NumCotizacion = InfoCotizacion.ClaveComprobanteDeCotizacion,
+                CorreosElectronicos = CorreosElectronicos
+            };
+            var vwEnviarCtz = new EnviarCotizacionView
+            {
+                DataContext = vmEnviarCtz
+            };
+            var result = await DialogHost.Show(vwEnviarCtz, "BuscadorCotizacionesView");
+            if (result.Equals("ENVIAR"))
+            {                
+                CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
+                bool existeError = ValidarCorreo();
+                if(existeError == true)
+                {
+                    TxtMensaje = "La cotización no puede ser enviada hasta que las direcciones de email estén escritas de manera correcta o hay un espacio en blanco.";
+                    VerMensaje = true;
+                }
+                else
+                {
+                    string prmCotizacion = InfoCotizacion.ClaveComprobanteDeCotizacion;
+                    string prmEmails = String.Join(",", Regex.Split(CorreosElectronicos, @"\r\n"));
+                    var rest = new RestClient(Localhost);
+                    var req = new RestRequest("enviarMail", Method.POST);
+                    req.AddHeader("Accept", "application/json");
+                    req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                    req.AddParameter("claveComprobante", prmCotizacion);
+                    req.AddParameter("emails", prmEmails);
+
+                    IRestResponse response = rest.Execute(req);
+                    if(response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                    {
+                        TxtMensaje = "La cotización fue enviada correctamente";
+                        VerMensaje = true;
+                    }
+                    else
+                    {
+                        TxtMensaje = "Hubo un error al enviar la cotizacion: " + response.Content;
+                        VerMensaje = true;
+                    }
+                }
+            }
+        }
+
+        //private async void DescargarCotizacion(object parameter)
+        private void DescargarCotizacion(object parameter)
+        {
+            string numCot = parameter as string;
+            var rest = new RestClient(Localhost);
+            var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + numCot, Method.GET);
+            req.AddHeader("Content-Type", "application/pdf");
+            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+            byte[] archivo = rest.DownloadData(req);
+            File.WriteAllBytes(Path.GetTempPath() + "CTZ_" + numCot + ".pdf", archivo);
+            System.Diagnostics.Process.Start(Path.GetTempPath() + "CTZ_" + numCot + ".pdf");
+        }
+
+        private bool ValidarCorreo()
+        {
+            bool error = false;
+            string[] correos = Regex.Split(CorreosElectronicos, @"\r\n");
+            foreach (string cad in correos)
+            {
+
+                error = !Regex.IsMatch(cad, @"^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$");
+                if (error == true)
+                    break;
+            }
+            return error;
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;

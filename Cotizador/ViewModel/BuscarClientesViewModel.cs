@@ -114,6 +114,7 @@ namespace Cotizador.ViewModel
                     };
                     CvsClientes.Filter += new FilterEventHandler(FiltroPaginas);
                     IndicePagActual = 0;
+                    ActualizarPagina();
                     CalcularPagsTotales();
                     ActivarBotones();
                 }

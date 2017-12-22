@@ -36,7 +36,7 @@
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
         <!--TITULO-->
-        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Editar Item:"/>
+        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Editar Partida:"/>
         <!--AREA DEL ITEM A EDITAR-->
         <mdWpf:Card Grid.Row="1" Margin="4 4 0 0" Background="{DynamicResource MaterialDesignPaper}" 
                     Foreground="{DynamicResource PrimaryHueLightForegroundBrush}">
@@ -70,7 +70,7 @@
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedButton}" IsEnabled="{Binding ActivoSeleccionar}"
+            <Button Style="{DynamicResource MaterialDesignRaisedButton}" IsEnabled="{Binding ActivoSeleccionar}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="OK" Content="ACTUALIZAR"/>
             <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">

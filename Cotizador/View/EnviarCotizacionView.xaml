@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Cotizador.View.MensajeView"
+﻿<UserControl x:Class="Cotizador.View.EnviarCotizacionView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,7 +14,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource PrimaryHueLightBrush}"
              FontFamily="{StaticResource MaterialDesignFont}"
-             Height="200" Width="400">
+             Height="300" Width="400">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,25 +22,33 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <BooleanToVisibilityConverter x:Key="VerBoton"/>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
             <RowDefinition/>
+            <RowDefinition Height="1.5*"/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
-        <!--TITULO DEL MENSAJE-->
-        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="{Binding TituloMensaje}" FontStyle="Oblique" TextDecorations="Underline"/>
-        <!--CUERPO DEL MENSAJE-->
-        <TextBlock Grid.Row="1" Style="{DynamicResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="{Binding CuerpoMensaje}"
-                   VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <!--TITULO DE VENTANA-->
+        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Enviar Cotización:" FontStyle="Italic" TextDecorations="Underline"/>
+        <!--CUERPO DE LA VENTANA-->        
+            <TextBox Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding NumCotizacion}" IsReadOnly="True">
+                <mdWpf:HintAssist.Hint>
+                    <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
+                        <mdWpf:PackIcon Kind="Receipt" Margin="2"/>
+                        <TextBlock Text="Número de la Cotizacion a Enviar"/>
+                    </StackPanel>
+                </mdWpf:HintAssist.Hint>
+            </TextBox>
+        <TextBox Grid.Row="2" Margin="5" VerticalAlignment="Top" mdWpf:HintAssist.Hint="Ingrese un email por cada línea" AcceptsReturn="True"
+                     Style="{StaticResource MaterialDesignTextAreaTextBox}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding CorreosElectronicos}"/>
         <!--BOTONES DE LA VENTANA-->
-        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding ActivoSeleccionar}"
-                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="ACEPTAR" Content="ACEPTAR"/>
-            <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}" Visibility="{Binding MostrarCancelar, Converter={StaticResource VerBoton}}"
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 16 0 0" HorizontalAlignment="Right">
+            <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding ActivoEnviar}"
+                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="ENVIAR" Content="ENVIAR"/>
+            <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="CANCELAR" Content="CANCELAR"/>
         </StackPanel>
     </Grid>

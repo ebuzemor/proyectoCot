@@ -129,7 +129,7 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <TextBox mdWpf:HintAssist.Hint="# Cantidad"
+                        <TextBox mdWpf:HintAssist.Hint="# Cantidad" 
                                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
                                  Margin="5" Grid.Column="0" Text="{Binding TxtCantidad}"/>
                         <TextBox mdWpf:HintAssist.Hint="% Descuento" 
@@ -149,7 +149,7 @@
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedButton}"
+            <Button Style="{DynamicResource MaterialDesignRaisedButton}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" IsEnabled="{Binding ActivoSeleccionar}">
                 <Button.CommandParameter>
                     SelProducto
