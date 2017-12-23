@@ -106,6 +106,7 @@
     <Compile Include="Common\Validations\CamposVaciosValidationRule.cs" />
     <Compile Include="Common\Validations\FechaAntesValidationRule.cs" />
     <Compile Include="Common\Validations\hiddenRowConverter.cs" />
+    <Compile Include="Common\Validations\PorcentajeValidationRule.cs" />
     <Compile Include="Model\ApiKey.cs" />
     <Compile Include="Model\Cliente.cs" />
     <Compile Include="Model\ComprobanteGenerado.cs" />

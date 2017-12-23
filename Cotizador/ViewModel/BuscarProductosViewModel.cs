@@ -92,6 +92,7 @@ namespace Cotizador.ViewModel
                 _txtDescuento = value;
                 OnPropertyChanged("TxtDescuento");
                 CalcularDescuento(_txtDescuento);
+                ActivarBtnSeleccionar();
             }
         }
         public Producto NvoProducto
@@ -270,7 +271,7 @@ namespace Cotizador.ViewModel
         {
             try
             {
-                if (descuento > 0 && TxtCantidad > 0)
+                if (descuento > 0 && TxtCantidad > 0 && descuento <= 0.9999)
                 {
                     TxtImporteDesc = Convert.ToDouble(descuento) * NvoProducto.PrecioUnitario * TxtCantidad;
                     TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad) - TxtImporteDesc;
@@ -296,7 +297,8 @@ namespace Cotizador.ViewModel
 
         private void ActivarBtnSeleccionar()
         {
-            ActivoSeleccionar = (TxtCantidad > 0) ? true : false;
+            bool desctoValido = (TxtDescuento >= 0 && TxtDescuento <= 0.9999) ? true : false;
+            ActivoSeleccionar = (TxtCantidad > 0 && desctoValido == true) ? true : false;
         }
 
         private void SeleccionarProducto()

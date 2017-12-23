@@ -65,7 +65,8 @@ namespace Cotizador.ViewModel
         private Boolean _pendienteSeleccionado;
         private Boolean _definitivaSeleccionado;
         private Boolean _aceptaCambios;
-        
+        private Boolean _aceptaCambiosCliente;
+
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
         public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged("DatosCliente"); } }
         public string CteRazonSocial { get => _cteRazonSocial; set { _cteRazonSocial = value; OnPropertyChanged("CteRazonSocial"); } }
@@ -105,7 +106,8 @@ namespace Cotizador.ViewModel
         public bool BorradorSeleccionado { get => _borradorSeleccionado; set { _borradorSeleccionado = value; OnPropertyChanged("BorradorSeleccionado"); } }
         public bool PendienteSeleccionado { get => _pendienteSeleccionado; set { _pendienteSeleccionado = value; OnPropertyChanged("PendienteSeleccionado"); } }
         public bool DefinitivaSeleccionado { get => _definitivaSeleccionado; set { _definitivaSeleccionado = value; OnPropertyChanged("DefinitivaSeleccionado"); } }
-        public bool AceptaCambios { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged("AceptaCambios"); } }
+        public bool AceptaCambiosCtz { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged("AceptaCambiosCtz"); } }
+        public bool AceptaCambiosCliente { get => _aceptaCambiosCliente; set { _aceptaCambiosCliente = value; OnPropertyChanged("AceptaCambiosCliente"); } }
         #endregion
 
         #region Constructor
@@ -123,7 +125,8 @@ namespace Cotizador.ViewModel
             ActivaFechaCot = true;
             ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
             BorradorSeleccionado = true;
-            AceptaCambios = true;
+            AceptaCambiosCtz = true;
+            AceptaCambiosCliente = true;
         }        
         #endregion
 
@@ -565,7 +568,9 @@ namespace Cotizador.ViewModel
             ActivaFechaCot = true;
             Observaciones = null;
             NumCotizacion = null;
-            AceptaCambios = true;
+            AceptaCambiosCtz = true;
+            AceptaCambiosCliente = true;            
+            InfoCotizacion = null;
             IndexEstatusCtz = 0;
         }
 
@@ -659,44 +664,51 @@ namespace Cotizador.ViewModel
 
         public void ActualizarEstatus()
         {
-            switch (IndexEstatusCtz)
+            try
             {
-                case 0:
-                    BorradorSeleccionado = true;
-                    PendienteSeleccionado = false;
-                    DefinitivaSeleccionado = false;
-                    ClaveEstatusCtz = 160;
-                    AceptaCambios = true;
-                    break;
-                case 1:
-                    if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
-                    {
-                        BorradorSeleccionado = false;
-                        PendienteSeleccionado = true;
-                        DefinitivaSeleccionado = false;
-                        ClaveEstatusCtz = 161;
-                        AceptaCambios = true;
-                    }
-                    else
-                        IndexEstatusCtz = 0;
-                    break;
-                case 2:
-                    if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
-                    {
-                        BorradorSeleccionado = false;
+                switch (IndexEstatusCtz)
+                {
+                    case 0:
+                        BorradorSeleccionado = true;
                         PendienteSeleccionado = false;
-                        DefinitivaSeleccionado = true;
-                        ClaveEstatusCtz = 162;
-                        EstatusDefinitiva();
-                        AceptaCambios = false;
-                    }
-                    else
-                        IndexEstatusCtz = 0;
-                    break;
-                default:
-                    break;
+                        DefinitivaSeleccionado = false;
+                        ClaveEstatusCtz = 160;
+                        AceptaCambiosCtz = true;
+                        AceptaCambiosCliente = (InfoCotizacion != null) ? false : true;
+                        break;
+                    case 1:
+                        if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
+                        {
+                            BorradorSeleccionado = false;
+                            PendienteSeleccionado = true;
+                            DefinitivaSeleccionado = false;
+                            ClaveEstatusCtz = 161;
+                            AceptaCambiosCtz = true;
+                            AceptaCambiosCliente = false;
+                        }
+                        else
+                            IndexEstatusCtz = 0;
+                        break;
+                    case 2:
+                        if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
+                        {
+                            BorradorSeleccionado = false;
+                            PendienteSeleccionado = false;
+                            DefinitivaSeleccionado = true;
+                            ClaveEstatusCtz = 162;
+                            EstatusDefinitiva();
+                            AceptaCambiosCtz = false;
+                            AceptaCambiosCliente = false;
+                        }
+                        else
+                            IndexEstatusCtz = 0;
+                        break;
+                    default:
+                        break;
+                }
+                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == ClaveEstatusCtz);
             }
-            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == ClaveEstatusCtz);
+            catch (Exception) { }
         }
 
         private async void EstatusDefinitiva()

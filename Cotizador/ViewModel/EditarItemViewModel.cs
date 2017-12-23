@@ -35,6 +35,7 @@ namespace Cotizador.ViewModel
                 _txtDescuento = value;
                 OnPropertyChanged("TxtDescuento");
                 CalcularDescuento(_txtDescuento);
+                ActivarBtnActualizar();
             }
         }
         public double TxtImporteDesc { get => _txtImporteDesc; set { _txtImporteDesc = value; OnPropertyChanged("TxtImporteDesc"); } }
@@ -101,7 +102,8 @@ namespace Cotizador.ViewModel
 
         private void ActivarBtnActualizar()
         {
-            ActivoSeleccionar = (TxtCantidad > 0) ? true : false;
+            bool desctoValido = (TxtDescuento >= 0 && TxtDescuento <= 0.9999) ? true : false;
+            ActivoSeleccionar = (TxtCantidad > 0 && desctoValido == true) ? true : false;
         }
 
         public void ActualizarProducto()
