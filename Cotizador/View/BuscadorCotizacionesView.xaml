@@ -119,17 +119,17 @@
                   mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding CvsCotizaciones.View}">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="1.8*">
+                    <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="1.6*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding RazonSocial}" ToolTip="{Binding RazonSocial}"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Clave Comp." IsReadOnly="True" Width="1.1*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                    <DataGridTemplateColumn Header="Código Comp." IsReadOnly="True" Width="1.4*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding ClaveComprobanteDeCotizacion}" ToolTip="{Binding ClaveComprobanteDeCotizacion}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding CodigoDeComprobante}" ToolTip="{Binding CodigoDeComprobante}" TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -140,10 +140,10 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Partidas" IsReadOnly="True" Width=".5*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                    <DataGridTemplateColumn Header="Part." IsReadOnly="True" Width=".5*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Partidas}" ToolTip="{Binding Partidas}" TextAlignment="Center"/>
+                                <TextBlock Text="{Binding Partidas}" ToolTip="Número de Partida(s)" TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
@@ -157,21 +157,33 @@
                     <DataGridTemplateColumn Header="Importe" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Subtotal, StringFormat=C2}" ToolTip="{Binding Subtotal, StringFormat=C2}" TextAlignment="Right"/>
+                                <TextBlock Text="{Binding Subtotal, StringFormat=C2}" TextAlignment="Right">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{Binding Subtotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Descuento, StringFormat=C2}" ToolTip="{Binding Descuento, StringFormat=C2}" TextAlignment="Right"/>
+                                <TextBlock Text="{Binding Descuento, StringFormat=C2}" TextAlignment="Right">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{Binding Descuento, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Total" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Total, StringFormat=C2}" ToolTip="{Binding Total, StringFormat=C2}" TextAlignment="Right"/>
+                                <TextBlock Text="{Binding Total, StringFormat=C2}" TextAlignment="Right">
+                                    <TextBlock.ToolTip>
+                                        <TextBlock Text="{Binding Total, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

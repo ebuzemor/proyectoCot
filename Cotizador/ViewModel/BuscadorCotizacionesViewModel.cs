@@ -300,7 +300,7 @@ namespace Cotizador.ViewModel
                     ListaProductosCtz = new ObservableCollection<ProductoSeleccionado>();
                     foreach (InfoDetallesCotizacion fila in detalles)
                     {
-                        double pdesc = Math.Round(fila.ImporteDescuento / fila.PrecioUnitario, 2);
+                        double pdesc = Math.Round(fila.ImporteDescuento / (fila.PrecioUnitario * fila.Cantidad), 2);
                         ProductoSeleccionado psel = new ProductoSeleccionado
                         {
                             Cantidad = fila.Cantidad,
@@ -367,6 +367,7 @@ namespace Cotizador.ViewModel
                     req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                     req.AddParameter("claveComprobante", prmCotizacion);
                     req.AddParameter("emails", prmEmails);
+                    req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
 
                     IRestResponse response = rest.Execute(req);
                     if(response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
@@ -386,14 +387,22 @@ namespace Cotizador.ViewModel
         //private async void DescargarCotizacion(object parameter)
         private void DescargarCotizacion(object parameter)
         {
-            string numCot = parameter as string;
-            var rest = new RestClient(Localhost);
-            var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + numCot, Method.GET);
-            req.AddHeader("Content-Type", "application/pdf");
-            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-            byte[] archivo = rest.DownloadData(req);
-            File.WriteAllBytes(Path.GetTempPath() + "CTZ_" + numCot + ".pdf", archivo);
-            System.Diagnostics.Process.Start(Path.GetTempPath() + "CTZ_" + numCot + ".pdf");
+            try
+            {
+                string numCot = parameter as string;
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + numCot, Method.GET);
+                req.AddHeader("Content-Type", "application/pdf");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                byte[] archivo = rest.DownloadData(req);
+                File.WriteAllBytes(Path.GetTempPath() + "CTZ_" + numCot + ".pdf", archivo);
+                System.Diagnostics.Process.Start(Path.GetTempPath() + "CTZ_" + numCot + ".pdf");
+            }
+            catch (Exception e)
+            {
+                TxtMensaje = "Error al descargar: " + e.Message;
+                VerMensaje = true;
+            }
         }
 
         private bool ValidarCorreo()

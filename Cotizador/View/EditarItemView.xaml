@@ -6,7 +6,6 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              xmlns:common="clr-namespace:Cotizador.Common"
-             xmlns:validar="clr-namespace:Cotizador.Common.Validations"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              TextElement.Foreground="Black"
@@ -61,18 +60,11 @@
                          Margin="5" Grid.Column="0" Text="{Binding TxtCantidad}"/>
                 <TextBox mdWpf:HintAssist.Hint="Descuento %" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
                          Margin="5" Grid.Column="1" Text="{Binding TxtDescuento, Converter={StaticResource PorcentajeConv}, StringFormat=P2}">
-                    <!--<TextBox.Text>
-                        <Binding Path="TxtDescuento" StringFormat="P2" Converter="{StaticResource PorcentajeConv}" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <validar:PorcentajeValidationRule ValidatesOnTargetUpdated="True"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>-->
                 </TextBox>
-                <TextBox mdWpf:HintAssist.Hint="$ Importe Desc." Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
-                         Margin="5" Grid.Column="2" Text="{Binding TxtImporteDesc, StringFormat=C2}" IsEnabled="False"/>
                 <TextBox mdWpf:HintAssist.Hint="$ Importe" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
-                         Margin="5" Grid.Column="3" Text="{Binding TxtImporte, StringFormat=C2}" IsEnabled="False"/>
+                         Margin="5" Grid.Column="2" Text="{Binding TxtImporte, StringFormat=C2}" IsEnabled="False"/>
+                <TextBox mdWpf:HintAssist.Hint="$ Importe Desc." Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
+                         Margin="5" Grid.Column="3" Text="{Binding TxtImporteDesc, StringFormat=C2}" IsEnabled="False"/>
             </Grid>
         </UniformGrid>
         <!--BOTONES DE LA VENTANA-->

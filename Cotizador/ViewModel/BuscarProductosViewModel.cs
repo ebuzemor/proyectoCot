@@ -274,7 +274,7 @@ namespace Cotizador.ViewModel
                 if (descuento > 0 && TxtCantidad > 0 && descuento <= 0.9999)
                 {
                     TxtImporteDesc = Convert.ToDouble(descuento) * NvoProducto.PrecioUnitario * TxtCantidad;
-                    TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad) - TxtImporteDesc;
+                    //TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad) - TxtImporteDesc;
                 }
                 else if (descuento == 0 && TxtCantidad > 0)
                 {

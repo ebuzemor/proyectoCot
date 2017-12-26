@@ -20,6 +20,7 @@ namespace Cotizador.ViewModel
         #region Commands
         public RelayCommand ValidarUsuarioCommand { get; set; }
         public RelayCommand CerrarMensajeCommand { get; set; }
+        public RelayCommand ConfigurarConexionCommand { get; set; }
         #endregion
 
         #region Variables
@@ -57,43 +58,51 @@ namespace Cotizador.ViewModel
         #region Constructor
         public LoginViewModel()
         {
-            Titulo = "Iniciar Sesión";
-            ValidarUsuarioCommand = new RelayCommand(ValidarUsuario);
-            CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
-            var appconfig = ConfigurationManager.GetSection("cfgApiRestCotizador") as NameValueCollection;
-            Localhost = appconfig["localhost"].ToString();
-            ClaveEF_Empresa = appconfig["claveEF_empresa"].ToString();
-            string nombreUsuario = appconfig["api_user"].ToString();
-            string password = appconfig["api_password"].ToString();
-            string apikey = appconfig["api_key"].ToString();
-            //verifica que exista un token, en caso contrario genera uno nuevo
-            if (string.IsNullOrEmpty(apikey) != true)
+            try
             {
-                AppKey = new ApiKey(apikey);
-            }
-            else
-            {
-                ObtenerToken(nombreUsuario, password);
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
-                foreach (XmlElement element in xmlDoc.DocumentElement)
+                Titulo = "Iniciar Sesión";
+                ValidarUsuarioCommand = new RelayCommand(ValidarUsuario);
+                CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
+                ConfigurarConexionCommand = new RelayCommand(ConfigurarConexion);
+                var appconfig = ConfigurationManager.GetSection("cfgApiRestCotizador") as NameValueCollection;
+                Localhost = appconfig["localhost"].ToString();
+                ClaveEF_Empresa = appconfig["claveEF_empresa"].ToString();
+                string nombreUsuario = appconfig["api_user"].ToString();
+                string password = appconfig["api_password"].ToString();
+                string apikey = appconfig["api_key"].ToString();
+                //verifica que exista un token, en caso contrario genera uno nuevo
+                if (string.IsNullOrEmpty(apikey) != true)
                 {
-                    if (element.Name.Equals("cfgApiRestCotizador"))
-                    {
-                        foreach (XmlNode node in element.ChildNodes)
-                        {
-                            if (node.Attributes[0].Value.Equals("api_key"))
-                            {
-                                node.Attributes[1].Value = AppKey.Token; break;
-                            }
-                        }
-                        break;
-                    }
+                    AppKey = new ApiKey(apikey);
                 }
-                xmlDoc.Save(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
-                ConfigurationManager.RefreshSection("cfgApiRestCotizador");
+                else
+                {
+                    ObtenerToken(nombreUsuario, password);
+                    XmlDocument xmlDoc = new XmlDocument();
+                    xmlDoc.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+                    foreach (XmlElement element in xmlDoc.DocumentElement)
+                    {
+                        if (element.Name.Equals("cfgApiRestCotizador"))
+                        {
+                            foreach (XmlNode node in element.ChildNodes)
+                            {
+                                if (node.Attributes[0].Value.Equals("api_key"))
+                                {
+                                    node.Attributes[1].Value = AppKey.Token; break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                    xmlDoc.Save(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
+                    ConfigurationManager.RefreshSection("cfgApiRestCotizador");
+                }
+                CargarSucursales();
             }
-            CargarSucursales();
+            catch (Exception e)
+            {
+                Console.Write(e.Message);
+            }
         }
         #endregion
 
@@ -181,29 +190,37 @@ namespace Cotizador.ViewModel
 
         private void CargarSucursales()
         {
-            var rest = new RestClient(Localhost);
-            var reqSuc = new RestRequest("listaSucursales/" + ClaveEF_Empresa, Method.GET);
-            reqSuc.AddHeader("Accept", "application/json");
-            reqSuc.AddHeader("Authorization", "Bearer " + AppKey.Token);
+            try
+            {
+                var rest = new RestClient(Localhost);
+                var reqSuc = new RestRequest("listaSucursales/" + ClaveEF_Empresa, Method.GET);
+                reqSuc.AddHeader("Accept", "application/json");
+                reqSuc.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
-            IRestResponse<SucursalesJson> respSuc = rest.Execute<SucursalesJson>(reqSuc);
-            if (respSuc.IsSuccessful && respSuc.StatusCode == HttpStatusCode.OK)
-            {
-                SucursalesJson = JsonConvert.DeserializeObject<SucursalesJson>(respSuc.Content);
-                ListaSucursales = new ObservableCollection<Sucursal>(SucursalesJson.Sucursales);
-            }
-            else
-            {
-                if (respSuc.StatusCode == HttpStatusCode.Unauthorized)
-                    TxtMensaje = "ERROR DE CONEXION: Acesso no autorizado, verifique token";
+                IRestResponse<SucursalesJson> respSuc = rest.Execute<SucursalesJson>(reqSuc);
+                if (respSuc.IsSuccessful && respSuc.StatusCode == HttpStatusCode.OK)
+                {
+                    SucursalesJson = JsonConvert.DeserializeObject<SucursalesJson>(respSuc.Content);
+                    ListaSucursales = new ObservableCollection<Sucursal>(SucursalesJson.Sucursales);
+                }
                 else
-                    TxtMensaje = "ERROR DE CONEXION: " + respSuc.ErrorMessage;
-                VerMensaje = true;
+                {
+                    if (respSuc.StatusCode == HttpStatusCode.Unauthorized)
+                        TxtMensaje = "ERROR DE CONEXION: Acesso no autorizado, verifique token";
+                    else
+                        TxtMensaje = "ERROR DE CONEXION: " + respSuc.ErrorMessage;
+                    VerMensaje = true;
+                }
             }
-
+            catch (Exception) { }
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;
+
+        private async void ConfigurarConexion(object parameter)
+        {
+            
+        }
         #endregion
     }
 }

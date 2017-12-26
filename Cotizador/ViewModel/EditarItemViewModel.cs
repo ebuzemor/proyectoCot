@@ -80,7 +80,7 @@ namespace Cotizador.ViewModel
                 if (descuento > 0 && TxtCantidad > 0)
                 {
                     TxtImporteDesc = Convert.ToDouble(descuento) * ProdSeleccionado.Producto.PrecioUnitario * TxtCantidad;
-                    TxtImporte = (ProdSeleccionado.Producto.PrecioUnitario * TxtCantidad) - TxtImporteDesc;
+                    //TxtImporte = (ProdSeleccionado.Producto.PrecioUnitario * TxtCantidad) - TxtImporteDesc;
                 }
                 else if (descuento == 0 && TxtCantidad > 0)
                 {

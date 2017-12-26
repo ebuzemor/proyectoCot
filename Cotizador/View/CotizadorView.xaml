@@ -74,32 +74,11 @@
                 </Grid.RowDefinitions>
                 <DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha de Cotización:" IsEnabled="{Binding ActivaFechaCot}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" DisplayDate="{Binding FechaCotizacion}" SelectedDate="{Binding FechaCotizacion}">
-                    <!--<DatePicker.SelectedDate>
-                        <Binding Path="FechaCotizacion" UpdateSourceTrigger="PropertyChanged">
-                            <Binding.ValidationRules>
-                                <val:FechaAntesValidationRule ValidatesOnTargetUpdated="True"/>
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </DatePicker.SelectedDate>-->
                 </DatePicker>
                 <DatePicker Grid.Row="2" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaVigencia}"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
                 <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Vertical" Margin="1" HorizontalAlignment="Center">
-                    <!--<ComboBox IsEditable="{Binding CambiarEstatusCtz}" Style="{StaticResource MaterialDesignFloatingHintComboBox}" 
-                              ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding EstatusCotizacion}">
-                        <mdWpf:HintAssist.Hint>
-                            <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
-                                <mdWpf:PackIcon Kind="TrafficLight" Margin="2"/>
-                                <TextBlock>Estatus de Cotizacion:</TextBlock>
-                            </StackPanel>
-                        </mdWpf:HintAssist.Hint>
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Descripcion}"/>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>-->
-                    <ListBox SelectedIndex="{Binding IndexEstatusCtz}" Style="{StaticResource MaterialDesignToolToggleListBox}" IsEnabled="{Binding AceptaCambios}">
+                    <ListBox SelectedIndex="{Binding IndexEstatusCtz}" Style="{StaticResource MaterialDesignToolToggleListBox}" IsEnabled="{Binding AceptaCambiosCtz}">
                         <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Borrador" VerticalAlignment="Center"/>
@@ -173,7 +152,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Grid.Column="1" ToolTip="Agregar Producto" Command="{Binding AgregarProductoCommand}"
-                        Style="{StaticResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding AceptaCambios}">
+                        Style="{StaticResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding AceptaCambiosCtz}">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <mdWpf:PackIcon Width="24" Height="24" Kind="CartPlus"/>
@@ -181,7 +160,7 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}" IsEnabled="{Binding AceptaCambios}"
+                <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}" IsEnabled="{Binding AceptaCambiosCtz}"
                           CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False"  SelectionMode="Single"
                           SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
                           VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -204,8 +183,11 @@
                         <DataGridTemplateColumn Header="Imp." x:Name="Importado" IsReadOnly="True">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <CheckBox IsChecked="{Binding Producto.EsImportado}" ToolTip="Se mostrará seleccionado si el producto es importado"
-                                              Style="{StaticResource MaterialDesignLightCheckBox}" IsHitTestVisible="False"/>
+                                    <CheckBox IsChecked="{Binding Producto.EsImportado}" Style="{StaticResource MaterialDesignLightCheckBox}" IsHitTestVisible="False">
+                                        <CheckBox.ToolTip>
+                                            <TextBlock Text="Se mostrará seleccionado si el producto es importado"/>
+                                        </CheckBox.ToolTip>
+                                    </CheckBox>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -213,23 +195,23 @@
                                                 IsReadOnly="True" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Producto.PrecioUnitario, StringFormat=C2}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding Producto.PrecioUnitario, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding Producto.PrecioUnitario, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="Cant." x:Name="Cantidad" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}"
-                                                IsReadOnly="True" Width="50">
+                                                IsReadOnly="True" Width="70">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Cantidad, StringFormat=N2}" TextAlignment="Right"/>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Importe Desc." x:Name="Descuento" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
-                                                IsReadOnly="True" Width="*">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ImporteDesc, StringFormat=C2}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding Cantidad, StringFormat=N2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding Cantidad, StringFormat=N2}" TextAlignment="Right"/>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -237,7 +219,23 @@
                                                 IsReadOnly="True" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Importe, StringFormat=C2}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding Importe, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding Importe, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Descuento" x:Name="Descuento" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
+                                                IsReadOnly="True" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ImporteDesc, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding ImporteDesc, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -245,7 +243,11 @@
                                                 IsReadOnly="True" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Impuesto, StringFormat=C2}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding Impuesto, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding Impuesto, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -253,7 +255,11 @@
                                                 IsReadOnly="True" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding SubTotal, StringFormat=C2}" TextAlignment="Right"/>
+                                    <TextBlock Text="{Binding SubTotal, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding SubTotal, StringFormat=C2}" TextAlignment="Right"  FontWeight="Bold"/>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -301,12 +307,12 @@
                         <TextBlock Text="Cant." TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                     </Grid>
-                    <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
-                        <TextBlock Text="Importe Desc." TextAlignment="Right" FontWeight="Bold"
-                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                    </Grid>
                     <Grid Width="{Binding ElementName=Importe, Path=ActualWidth}">
                         <TextBlock Text="Importe" TextAlignment="Right" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
+                        <TextBlock Text="Descuento" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                     </Grid>
                     <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
@@ -331,12 +337,12 @@
                         <TextBlock Text="{Binding CantidadTotal, StringFormat=N2}" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                     </Grid>
-                    <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
-                        <TextBlock Text="{Binding DescuentoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
-                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                    </Grid>
                     <Grid Width="{Binding ElementName=Importe, Path=ActualWidth}">
                         <TextBlock Text="{Binding ImporteTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                               Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </Grid>
+                    <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
+                        <TextBlock Text="{Binding DescuentoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                     </Grid>
                     <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
@@ -374,7 +380,7 @@
                     <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" Content="Guardar Cotizacion" Command="{Binding GuardarCtzCommand}" IsEnabled="{Binding AceptaCambios}"/>
+                <Button Grid.Column="1" Content="Guardar Cotizacion" Command="{Binding GuardarCtzCommand}" IsEnabled="{Binding AceptaCambiosCtz}"/>
                 <Button Grid.Column="3" Content="Nueva Cotización" Command="{Binding CancelarCtzCommand}"/>
             </Grid>
             <!--AREA DE MENSAJES-->
