@@ -24,7 +24,7 @@ namespace Cotizador.ViewModel
             {
                 _correosElectronicos = value;
                 OnPropertyChanged("CorreosElectronicos");
-                ActivoEnviar = (value != string.Empty) ? true : false;
+                ActivarBtnEnviar();
             }
         }        
         #endregion
@@ -32,6 +32,16 @@ namespace Cotizador.ViewModel
         #region Constructor
         public EnviarCotizacionViewModel()
         {            
+        }
+        #endregion
+
+        #region Métodos
+        private void ActivarBtnEnviar()
+        {
+            if (string.IsNullOrEmpty(CorreosElectronicos) == true || string.IsNullOrWhiteSpace(CorreosElectronicos) == true)
+                ActivoEnviar = false;
+            else
+                ActivoEnviar = true;
         }
         #endregion
     }

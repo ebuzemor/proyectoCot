@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Cotizador.ViewModel
 {
@@ -59,6 +60,7 @@ namespace Cotizador.ViewModel
         private List<DetalleComprobantes> _listaDetalleComprobantes;
         private Boolean _activaFechaCot;
         private String _numCotizacion;
+        private String _correosElectronicos;
         private int _indexEstatusCtz;
         private long _claveEstatusCtz;
         private Boolean _borradorSeleccionado;
@@ -108,6 +110,7 @@ namespace Cotizador.ViewModel
         public bool DefinitivaSeleccionado { get => _definitivaSeleccionado; set { _definitivaSeleccionado = value; OnPropertyChanged("DefinitivaSeleccionado"); } }
         public bool AceptaCambiosCtz { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged("AceptaCambiosCtz"); } }
         public bool AceptaCambiosCliente { get => _aceptaCambiosCliente; set { _aceptaCambiosCliente = value; OnPropertyChanged("AceptaCambiosCliente"); } }
+        public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged("CorreosElectronicos"); } }
         #endregion
 
         #region Constructor
@@ -316,7 +319,7 @@ namespace Cotizador.ViewModel
             }
             else
             {
-                if (ClienteSel != null)
+                if (ClienteSel != null && ListaProductos.Count > 0)
                 {
                     var host = Dns.GetHostEntry(Dns.GetHostName());
                     string direccionIP = host.AddressList.FirstOrDefault(h => h.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
@@ -390,7 +393,7 @@ namespace Cotizador.ViewModel
                         DetallesDeComprobante = JsonConvert.SerializeObject(ListaDetalleComprobantes)
                     };
                     String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
-                    
+
                     //se procede a guardar la cotizacion
                     var rest = new RestClient(Localhost);
                     var req = new RestRequest("guardarCotizacion", Method.POST);
@@ -403,11 +406,12 @@ namespace Cotizador.ViewModel
                     if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
                     {
                         List<ComprobanteGenerado> compgen = JsonConvert.DeserializeObject<List<ComprobanteGenerado>>(response.Content);
+                        NumCotizacion = compgen.First().FolioCodigoComprobante;
                         var vmMensaje = new MensajeViewModel
                         {
                             TituloMensaje = "Aviso",
                             MostrarCancelar = false,
-                            CuerpoMensaje = "La cotizacion " + compgen.First().FolioCodigoComprobante + " fue generada de manera exitosa."
+                            CuerpoMensaje = "La cotizacion " + NumCotizacion + " fue generada de manera exitosa."
                         };
                         var vwMensaje = new MensajeView
                         {
@@ -416,6 +420,11 @@ namespace Cotizador.ViewModel
                         var result = await DialogHost.Show(vwMensaje, "CotizadorView");
                         LimpiarCotizacion();
                     }
+                }
+                else
+                {
+                    TxtMensaje = "Para guardar una cotización debe tener un Cliente seleccionado y al menos un producto en la lista.";
+                    VerMensaje = true;
                 }
             }
         }
@@ -690,7 +699,7 @@ namespace Cotizador.ViewModel
                             IndexEstatusCtz = 0;
                         break;
                     case 2:
-                        if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
+                        if (ListaProductos.Count > 0)
                         {
                             BorradorSeleccionado = false;
                             PendienteSeleccionado = false;
@@ -729,6 +738,7 @@ namespace Cotizador.ViewModel
                 if (result.Equals("ACEPTAR"))
                 {
                     GuardarCotizacion(ClienteSel);
+                    EnviarCotizacion();
                 }
                 else
                 {
@@ -739,6 +749,86 @@ namespace Cotizador.ViewModel
             {
 
             }
+        }
+
+        private async void EnviarCotizacion()
+        {
+            if (string.IsNullOrEmpty(NumCotizacion) == false)
+            {
+                if (InfoCotizacion != null)
+                {
+                    CorreosElectronicos = InfoCotizacion.CorreoElectronico;
+                    NumCotizacion = InfoCotizacion.CodigoDeComprobante;
+                }
+                else if (string.IsNullOrEmpty(ClienteSel.CorreoElectronico) == false)
+                    CorreosElectronicos = ClienteSel.CorreoElectronico;
+                else
+                    CorreosElectronicos = string.Empty;
+
+                var vmEnviarCtz = new EnviarCotizacionViewModel
+                {
+                    NumCotizacion = NumCotizacion,
+                    CorreosElectronicos = CorreosElectronicos
+                };
+                var vwEnviarCtz = new EnviarCotizacionView
+                {
+                    DataContext = vmEnviarCtz
+                };
+                var result = await DialogHost.Show(vwEnviarCtz, "Cotizador");
+                if (result.Equals("ENVIAR"))
+                {
+                    CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
+                    bool existeError = ValidarCorreo();
+                    if (existeError == true)
+                    {
+                        TxtMensaje = "La cotización no puede ser enviada hasta que las direcciones de email estén escritas de manera correcta y no existan espacios en blanco.";
+                        VerMensaje = true;
+                    }
+                    else
+                    {
+                        string prmCotizacion = vmEnviarCtz.NumCotizacion;                        
+                        string prmEmails = String.Join(",", Regex.Split(CorreosElectronicos, @"\r\n"));
+                        var rest = new RestClient(Localhost);
+                        var req = new RestRequest("enviarMail", Method.POST);
+                        req.AddHeader("Accept", "application/json");
+                        req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                        req.AddParameter("claveComprobante", prmCotizacion);
+                        req.AddParameter("emails", prmEmails);
+                        req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
+
+                        IRestResponse response = rest.Execute(req);
+                        if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                        {
+                            TxtMensaje = "La cotización fue enviada correctamente";
+                            VerMensaje = true;
+                        }
+                        else
+                        {
+                            TxtMensaje = "Hubo un error al enviar la cotizacion: " + response.Content;
+                            VerMensaje = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool ValidarCorreo()
+        {
+            bool error = false;
+            if (string.IsNullOrEmpty(CorreosElectronicos) == true || string.IsNullOrWhiteSpace(CorreosElectronicos) == true)
+                error = true;
+            else
+            {
+                string[] correos = Regex.Split(CorreosElectronicos, @"\r\n");
+                foreach (string cad in correos)
+                {
+
+                    error = !Regex.IsMatch(cad, @"^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$");
+                    if (error == true)
+                        break;
+                }
+            }
+            return error;
         }
         #endregion
     }

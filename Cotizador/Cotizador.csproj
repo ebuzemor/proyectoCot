@@ -29,8 +29,8 @@
     <ProductName>Cotizador</ProductName>
     <PublisherName>Sistemas APROSI</PublisherName>
     <SuiteName>APROSI</SuiteName>
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>0.9.3.4</ApplicationVersion>
+    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationVersion>0.9.3.8</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

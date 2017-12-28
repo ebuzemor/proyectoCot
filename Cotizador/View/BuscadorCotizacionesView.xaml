@@ -216,8 +216,7 @@
                 </DataGrid.Columns>
             </DataGrid>
             <!--MENSAJES DE ERROR-->
-            <mdWpf:Snackbar Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}"
-                        >
+            <mdWpf:Snackbar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}">
                 <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
                     <mdWpf:SnackbarMessage.Content>
                         <TextBlock Text="{Binding TxtMensaje}" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueDarkBrush}" TextWrapping="Wrap"/>

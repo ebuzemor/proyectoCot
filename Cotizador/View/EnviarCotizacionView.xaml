@@ -33,11 +33,11 @@
         <!--TITULO DE VENTANA-->
         <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Enviar Cotización:" FontStyle="Italic" TextDecorations="Underline"/>
         <!--CUERPO DE LA VENTANA-->        
-            <TextBox Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding NumCotizacion}" IsReadOnly="True">
+            <TextBox Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding NumCotizacion}" IsReadOnly="True" TextAlignment="Center">
                 <mdWpf:HintAssist.Hint>
                     <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
                         <mdWpf:PackIcon Kind="Receipt" Margin="2"/>
-                        <TextBlock Text="Número de la Cotizacion a Enviar"/>
+                    <TextBlock Text="Código de Cotizacion a Enviar" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
                     </StackPanel>
                 </mdWpf:HintAssist.Hint>
             </TextBox>

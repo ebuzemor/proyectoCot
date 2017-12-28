@@ -78,7 +78,10 @@ namespace Cotizador.ViewModel
             get => _txtCantidad;
             set
             {
-                _txtCantidad = value;
+                if (NvoProducto.EsFraccionable == 0)
+                    _txtCantidad = Convert.ToInt32(value);
+                else
+                    _txtCantidad = Convert.ToDouble(value);
                 OnPropertyChanged("TxtCantidad");
                 CalcularImporte(_txtCantidad);
                 ActivarBtnSeleccionar();
@@ -251,11 +254,8 @@ namespace Cotizador.ViewModel
             {
                 if (cantidad > 0)
                 {
+                    TxtImporte = Convert.ToDouble(cantidad * NvoProducto.PrecioUnitario);// - TxtImporteDesc;
                     CalcularDescuento(TxtDescuento);
-                    if (NvoProducto.EsFraccionable == 0)
-                        TxtImporte = Convert.ToInt32(cantidad) * NvoProducto.PrecioUnitario - TxtImporteDesc;
-                    else
-                        TxtImporte = Convert.ToDouble(cantidad) * NvoProducto.PrecioUnitario - TxtImporteDesc;                    
                 }
                 else
                     TxtImporte = 0;
@@ -270,11 +270,11 @@ namespace Cotizador.ViewModel
         private void CalcularDescuento(double? descuento)
         {
             try
-            {
+            {                
                 if (descuento > 0 && TxtCantidad > 0 && descuento <= 0.9999)
                 {
                     TxtImporteDesc = Convert.ToDouble(descuento) * NvoProducto.PrecioUnitario * TxtCantidad;
-                    //TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad) - TxtImporteDesc;
+                    TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad);// - TxtImporteDesc;
                 }
                 else if (descuento == 0 && TxtCantidad > 0)
                 {
@@ -298,19 +298,20 @@ namespace Cotizador.ViewModel
         private void ActivarBtnSeleccionar()
         {
             bool desctoValido = (TxtDescuento >= 0 && TxtDescuento <= 0.9999) ? true : false;
-            ActivoSeleccionar = (TxtCantidad > 0 && desctoValido == true) ? true : false;
+            ActivoSeleccionar = (TxtCantidad > 0 && desctoValido == true && TxtImporte > 0) ? true : false;
         }
 
         private void SeleccionarProducto()
         {
             SelProducto.Producto = NvoProducto;
-            SelProducto.Cantidad = TxtCantidad;
-            SelProducto.Descuento = TxtDescuento;
-            SelProducto.ImporteDesc = TxtImporteDesc;
-            SelProducto.Importe = TxtImporte;
-            double impuestos = Math.Round(TxtImporte * (SelProducto.Producto.SumaImpuestos / 100.0), 2);
-            SelProducto.Impuesto = impuestos;
-            SelProducto.SubTotal = Math.Round(TxtImporte + impuestos, 2);
+            SelProducto.Cantidad = Math.Round(TxtCantidad, 2);
+            SelProducto.Descuento = Math.Round(TxtDescuento, 4);
+            SelProducto.ImporteDesc = Math.Round(TxtImporteDesc, 2);
+            SelProducto.Importe = Math.Round(TxtImporte, 2);
+            double importeNeto = Math.Round(TxtImporte - TxtImporteDesc, 2);
+            double impuestos = importeNeto * (SelProducto.Producto.SumaImpuestos / 100.0);
+            SelProducto.Impuesto = Math.Round(impuestos, 2);
+            SelProducto.SubTotal = Math.Round(importeNeto + impuestos, 2);
         }
         #endregion
     }

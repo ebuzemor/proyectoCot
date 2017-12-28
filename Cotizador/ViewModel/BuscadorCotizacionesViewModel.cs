@@ -340,7 +340,7 @@ namespace Cotizador.ViewModel
             CorreosElectronicos = InfoCotizacion.CorreoElectronico;
             var vmEnviarCtz = new EnviarCotizacionViewModel
             {
-                NumCotizacion = InfoCotizacion.ClaveComprobanteDeCotizacion,
+                NumCotizacion = InfoCotizacion.CodigoDeComprobante,
                 CorreosElectronicos = CorreosElectronicos
             };
             var vwEnviarCtz = new EnviarCotizacionView
@@ -354,12 +354,12 @@ namespace Cotizador.ViewModel
                 bool existeError = ValidarCorreo();
                 if(existeError == true)
                 {
-                    TxtMensaje = "La cotización no puede ser enviada hasta que las direcciones de email estén escritas de manera correcta o hay un espacio en blanco.";
+                    TxtMensaje = "La cotización no puede ser enviada hasta que las direcciones de email estén escritas de manera correcta y no existan espacios en blanco.";
                     VerMensaje = true;
                 }
                 else
                 {
-                    string prmCotizacion = InfoCotizacion.ClaveComprobanteDeCotizacion;
+                    string prmCotizacion = InfoCotizacion.CodigoDeComprobante;
                     string prmEmails = String.Join(",", Regex.Split(CorreosElectronicos, @"\r\n"));
                     var rest = new RestClient(Localhost);
                     var req = new RestRequest("enviarMail", Method.POST);
@@ -390,13 +390,14 @@ namespace Cotizador.ViewModel
             try
             {
                 string numCot = parameter as string;
+                InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
                 var rest = new RestClient(Localhost);
-                var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + numCot, Method.GET);
+                var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + InfoCotizacion.CodigoDeComprobante, Method.GET);
                 req.AddHeader("Content-Type", "application/pdf");
                 req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                 byte[] archivo = rest.DownloadData(req);
-                File.WriteAllBytes(Path.GetTempPath() + "CTZ_" + numCot + ".pdf", archivo);
-                System.Diagnostics.Process.Start(Path.GetTempPath() + "CTZ_" + numCot + ".pdf");
+                File.WriteAllBytes(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf", archivo);
+                System.Diagnostics.Process.Start(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf");
             }
             catch (Exception e)
             {
@@ -408,13 +409,18 @@ namespace Cotizador.ViewModel
         private bool ValidarCorreo()
         {
             bool error = false;
-            string[] correos = Regex.Split(CorreosElectronicos, @"\r\n");
-            foreach (string cad in correos)
+            if (string.IsNullOrEmpty(CorreosElectronicos) == true || string.IsNullOrWhiteSpace(CorreosElectronicos) == true)
+                error = true;
+            else
             {
+                string[] correos = Regex.Split(CorreosElectronicos, @"\r\n");
+                foreach (string cad in correos)
+                {
 
-                error = !Regex.IsMatch(cad, @"^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$");
-                if (error == true)
-                    break;
+                    error = !Regex.IsMatch(cad, @"^[a-zA-Z][\w\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]$");
+                    if (error == true)
+                        break;
+                }
             }
             return error;
         }
