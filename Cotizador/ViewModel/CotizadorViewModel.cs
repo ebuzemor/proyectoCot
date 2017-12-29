@@ -125,7 +125,7 @@ namespace Cotizador.ViewModel
             CancelarCtzCommand = new RelayCommand(CancelarCotizacion);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
-            ActivaFechaCot = true;
+            ActivaFechaCot = false;
             ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
             BorradorSeleccionado = true;
             AceptaCambiosCtz = true;
@@ -686,7 +686,7 @@ namespace Cotizador.ViewModel
                         AceptaCambiosCliente = (InfoCotizacion != null) ? false : true;
                         break;
                     case 1:
-                        if (ListaProductos.Count > 0 && string.IsNullOrEmpty(NumCotizacion) != true)
+                        if (ListaProductos.Count > 0)// && string.IsNullOrEmpty(NumCotizacion) != true)
                         {
                             BorradorSeleccionado = false;
                             PendienteSeleccionado = true;

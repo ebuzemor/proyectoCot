@@ -123,7 +123,7 @@ namespace Cotizador.ViewModel
                 if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
                 {
                     List<EstatusCotizacion> lista = JsonConvert.DeserializeObject<List<EstatusCotizacion>>(resp.Content);
-                    ListaEstatusCtz = new ObservableCollection<EstatusCotizacion>(lista);
+                    ListaEstatusCtz = new ObservableCollection<EstatusCotizacion>(lista.Where(x => x.ClaveTipoDeStatusDeComprobante != 161).ToList());
                     //se crea y se inserta una opción que permite buscar por todos los tipos de estatus
                     EstatusCotizacion estcual = new EstatusCotizacion { ClaveTipoDeComprobante = 0, ClaveTipoDeStatusDeComprobante = 0, Descripcion = "Cualquiera" };
                     ListaEstatusCtz.Insert(0, estcual);
@@ -205,7 +205,7 @@ namespace Cotizador.ViewModel
                         if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
                         {
                             List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
-                            ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);
+                            ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);// lista.Where(x => x.ClaveEstatus != 161).ToList());
 
                             ///Paginacion de los resultados
                             CvsCotizaciones = new CollectionViewSource
@@ -384,7 +384,6 @@ namespace Cotizador.ViewModel
             }
         }
 
-        //private async void DescargarCotizacion(object parameter)
         private void DescargarCotizacion(object parameter)
         {
             try

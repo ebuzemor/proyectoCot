@@ -61,13 +61,16 @@
             <!--CONTROLES DE SELECCIONAR CLIENTE-->
             <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
                 <TextBlock Text="Seleccione Cliente: " Width="150" VerticalAlignment="Center"/>
-                <TextBox Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding TxtCliente}">
+                <TextBox Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding TxtCliente, UpdateSourceTrigger=PropertyChanged}">
                     <mdWpf:HintAssist.Hint>
                         <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
                             <mdWpf:PackIcon Kind="Account" Margin="2"/>
                             <TextBlock Text="Ingrese Código o Razón Social o RFC del Cliente"/>
                         </StackPanel>
                     </mdWpf:HintAssist.Hint>
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding BuscarCotizacionesCommand}" Key="Return"/>
+                    </TextBox.InputBindings>
                 </TextBox>
             </StackPanel>
             <!--CONTROLES DE SELECCIONAR ESTATUS-->
@@ -154,7 +157,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Importe" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                    <!--<DataGridTemplateColumn Header="Importe" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Subtotal, StringFormat=C2}" TextAlignment="Right">
@@ -164,7 +167,7 @@
                                 </TextBlock>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    </DataGridTemplateColumn>-->
                     <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

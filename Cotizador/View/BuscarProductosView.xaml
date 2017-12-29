@@ -47,7 +47,11 @@
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Agregar Producto:"/>
         <!--AREA DE BUSQUEDA-->
         <TextBox mdWpf:HintAssist.Hint="Ingrese el Código o Nombre del Producto" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
-                 Margin="0 6 0 0" Grid.Row="1" Grid.Column="0" Text="{Binding TxtProducto}"/>
+                 Margin="0 6 0 0" Grid.Row="1" Grid.Column="0" Text="{Binding TxtProducto, UpdateSourceTrigger=PropertyChanged}">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding BuscarProductoCommand}" Key="Return"/>
+            </TextBox.InputBindings>
+        </TextBox>
         <Button Grid.Row="1" Grid.Column="1" Content="Buscar Producto" Margin="0 6 0 0"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 Command="{Binding BuscarProductoCommand}"/>
