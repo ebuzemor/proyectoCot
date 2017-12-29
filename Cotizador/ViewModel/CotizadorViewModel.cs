@@ -574,7 +574,7 @@ namespace Cotizador.ViewModel
             ImpuestoTotal = 0;
             PrecioUniTotal = 0;
             SumaSubTotal = 0;
-            ActivaFechaCot = true;
+            //ActivaFechaCot = true;
             Observaciones = null;
             NumCotizacion = null;
             AceptaCambiosCtz = true;
