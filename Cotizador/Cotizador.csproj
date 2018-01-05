@@ -29,8 +29,8 @@
     <ProductName>Cotizador</ProductName>
     <PublisherName>Sistemas APROSI</PublisherName>
     <SuiteName>APROSI</SuiteName>
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>0.9.4.4</ApplicationVersion>
+    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationVersion>0.9.4.5</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -169,6 +169,7 @@
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
+    <Compile Include="ViewModel\SeleccionarSucursalViewModel.cs" />
     <Compile Include="View\BuscadorCotizacionesView.xaml.cs">
       <DependentUpon>BuscadorCotizacionesView.xaml</DependentUpon>
     </Compile>
@@ -207,6 +208,9 @@
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="View\MensajeView.xaml.cs">
       <DependentUpon>MensajeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SeleccionarSucursalView.xaml.cs">
+      <DependentUpon>SeleccionarSucursalView.xaml</DependentUpon>
     </Compile>
     <Page Include="View\BuscadorCotizacionesView.xaml">
       <SubType>Designer</SubType>
@@ -249,6 +253,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MensajeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SeleccionarSucursalView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -19,11 +19,11 @@ namespace Cotizador.ViewModel
         private ProductosJson _productosJson;
         private String _txtProducto;
         //private String _txtFiltrar;
+        //private ICollectionView _icvProductos;
         private ApiKey _appKey;
-        private Usuario _usuario;
-        private ICollectionView _icvProductos;
-        private String _localhost;
+        private Usuario _usuario;        
         private CollectionViewSource _cvsProductos;
+        private String _localhost;        
         private int _pagsTotales;
         private int _indicePagActual;        
         private int _itemsPorPag;
@@ -42,10 +42,10 @@ namespace Cotizador.ViewModel
         public ProductosJson ProductosJson { get => _productosJson; set { _productosJson = value; OnPropertyChanged("ProdutosJson"); } }
         public string TxtProducto { get => _txtProducto; set { _txtProducto = value; OnPropertyChanged("TxtProducto"); } }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
-        public ICollectionView IcvProductos { get => _icvProductos; set { _icvProductos = value; OnPropertyChanged("CvProductos"); } }
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }        
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
         ///Filtra resultados mientras se escribe 1/2
+        //public ICollectionView IcvProductos { get => _icvProductos; set { _icvProductos = value; OnPropertyChanged("CvProductos"); } }
         //public string TxtFiltrar
         //{
         //    get => _txtFiltrar;
@@ -147,7 +147,8 @@ namespace Cotizador.ViewModel
             try
             {
                 var rest = new RestClient(Localhost);
-                var req = new RestRequest("buscarProductos/" + Usuario.ClaveEntidadFiscalInmueble + "/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtProducto, Method.GET);
+                var clvEFInmueble = (Usuario.Sucursal == 3001) ? 300000108 : Usuario.ClaveEntidadFiscalInmueble;
+                var req = new RestRequest("buscarProductos/" + clvEFInmueble + "/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtProducto, Method.GET);
                 req.AddHeader("Accept", "application/json");
                 req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 

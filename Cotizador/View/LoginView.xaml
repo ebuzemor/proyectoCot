@@ -51,7 +51,7 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
-                        <RowDefinition/>
+                        <!--<RowDefinition/>-->
                         <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Image Source="/Images/logo_aprosi.png" Grid.Column="1"  Grid.Row="1"/>
@@ -71,7 +71,7 @@
                             </StackPanel>
                         </mdWpf:HintAssist.Hint>
                     </PasswordBox>
-                    <ComboBox Grid.Column="1" Grid.Row="4" Style="{StaticResource MaterialDesignFloatingHintComboBox}" IsEditable="True"
+                    <!--<ComboBox Grid.Column="1" Grid.Row="4" Style="{StaticResource MaterialDesignFloatingHintComboBox}" IsEditable="True"
                           ItemsSource="{Binding ListaSucursales}" SelectedItem="{Binding MiSucursal}">
                         <mdWpf:HintAssist.Hint>
                             <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
@@ -84,12 +84,12 @@
                                 <TextBlock Text="{Binding NombreCorto}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
-                    </ComboBox>
-                    <Button Content="Iniciar Sesión..." Grid.Column="1"  Grid.Row="5" 
+                    </ComboBox>-->
+                    <Button Content="Iniciar Sesión..." Grid.Column="1"  Grid.Row="4" 
                         Style="{StaticResource MaterialDesignRaisedAccentButton}"
                         Command="{Binding ValidarUsuarioCommand}" 
                         CommandParameter="{Binding ElementName=txtPassword}"/>
-                    <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource PrimaryHueDarkBrush}"
+                    <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource PrimaryHueDarkBrush}"
                                          ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionMidButton}">
                         <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
                             <mdWpf:SnackbarMessage.Content>

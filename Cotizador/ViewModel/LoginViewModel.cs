@@ -1,14 +1,15 @@
 ﻿using Cotizador.Common;
 using Cotizador.Model;
 using Cotizador.View;
+using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Linq;
 using System.Net;
 using System.Windows.Controls;
 using System.Xml;
@@ -20,7 +21,6 @@ namespace Cotizador.ViewModel
         #region Commands
         public RelayCommand ValidarUsuarioCommand { get; set; }
         public RelayCommand CerrarMensajeCommand { get; set; }
-        public RelayCommand ConfigurarConexionCommand { get; set; }
         #endregion
 
         #region Variables
@@ -63,7 +63,6 @@ namespace Cotizador.ViewModel
                 Titulo = "Iniciar Sesión";
                 ValidarUsuarioCommand = new RelayCommand(ValidarUsuario);
                 CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
-                ConfigurarConexionCommand = new RelayCommand(ConfigurarConexion);
                 var appconfig = ConfigurationManager.GetSection("cfgApiRestCotizador") as NameValueCollection;
                 Localhost = appconfig["localhost"].ToString();
                 ClaveEF_Empresa = appconfig["claveEF_empresa"].ToString();
@@ -107,19 +106,35 @@ namespace Cotizador.ViewModel
         #endregion
 
         #region Metodos
-        private void ValidarUsuario(object parameter)
+        private async void ValidarUsuario(object parameter)
         {
             PasswordBox pwbox = parameter as PasswordBox;
             TxtPassword = pwbox.Password;
             ValidarCredenciales(TxtLogin, TxtPassword);
             if (EsValido == true)
             {
-                InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
-                InicioView vwInicio = new InicioView
+                var vmSeleccionar = new SeleccionarSucursalViewModel
                 {
-                    DataContext = vmInicio
+                    ListaUsuarios = UsuariosJson.ListaUsuarios
                 };
-                Navigator.NavigationService.Navigate(vwInicio);
+                var vwSeleccionar = new SeleccionarSucursalView
+                {
+                    DataContext = vmSeleccionar
+                };
+                var result = await DialogHost.Show(vwSeleccionar, "LoginView");
+                if (result.Equals("OK") == true)
+                {
+                    Usuario = vmSeleccionar.UsuarioSel;
+                    if (Usuario != null)
+                    {
+                        InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
+                        InicioView vwInicio = new InicioView
+                        {
+                            DataContext = vmInicio
+                        };
+                        Navigator.NavigationService.Navigate(vwInicio);
+                    }
+                }                
             }
         }
 
@@ -128,7 +143,7 @@ namespace Cotizador.ViewModel
             try
             {
                 var rest = new RestClient(Localhost);
-                var req = new RestRequest("buscarUsuario/" + ClaveEF_Empresa + "/" + MiSucursal.ClaveEntidadFiscalInmueble + "/" + TxtLogin + "/" + TxtPassword, Method.GET);
+                var req = new RestRequest("buscarUsuario/" + ClaveEF_Empresa + "/" + TxtLogin + "/" + TxtPassword, Method.GET);
                 req.AddHeader("Accept", "application/json");
                 req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
@@ -144,7 +159,6 @@ namespace Cotizador.ViewModel
                     else
                     {
                         UsuariosJson = JsonConvert.DeserializeObject<UsuariosJson>(resp.Content);
-                        Usuario = UsuariosJson.ListaUsuarios.First();                        
                         EsValido = true;
                     }
                 }
@@ -217,7 +231,7 @@ namespace Cotizador.ViewModel
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;
 
-        private async void ConfigurarConexion(object parameter)
+        private async void SeleccionarSucursal(List<Usuario> lista)
         {
             
         }
