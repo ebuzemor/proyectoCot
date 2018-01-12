@@ -55,7 +55,7 @@
                     <GridViewColumn Header="Nombre Sucursal">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding NombreCorto}" TextAlignment="Left" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
+                                <TextBlock Text="{Binding NombreCorto}"  TextAlignment="Left" Style="{StaticResource MaterialDesignSubheadingTextBlock}"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

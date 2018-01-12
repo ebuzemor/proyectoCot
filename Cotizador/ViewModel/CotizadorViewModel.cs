@@ -21,8 +21,9 @@ namespace Cotizador.ViewModel
         public RelayCommand EditarProductoCommand { get; set; }
         public RelayCommand QuitarProductoCommand { get; set; }
         public RelayCommand CerrarMensajeCommand { get; set; }
+        public RelayCommand FechaEntregaCommand { get; set; }
         public RelayCommand GuardarCtzCommand { get; set; }
-        public RelayCommand CancelarCtzCommand { get; set; }
+        public RelayCommand NuevaCtzCommand { get; set; }
         #endregion
 
         #region Variables
@@ -46,8 +47,8 @@ namespace Cotizador.ViewModel
         private Boolean _verMensaje;
         private String _txtMensaje;
         private DateTime _fechaCotizacion;
-        private DateTime _fechaVigencia;
-        private DateTime _fechaEntrega;
+        private DateTime _fechaCtzVigencia;
+        private DateTime _fechaCtzEntrega;
         private Sucursal _sucursalSel;
         private String _txtSucursal;
         private EstatusCotizacion _estatusCotizacion;
@@ -57,8 +58,7 @@ namespace Cotizador.ViewModel
         private InfoCotizaciones _infoCotizacion;
         private List<ComprobantesImpuestos> _listaCotizacionImpuestos;
         private List<ComprobantesImpuestos> _listaImpuestosXlinea;
-        private List<DetalleComprobantes> _listaDetalleComprobantes;
-        private Boolean _activaFechaCot;
+        private List<DetalleComprobantes> _listaDetalleComprobantes;        
         private String _numCotizacion;
         private String _correosElectronicos;
         private int _indexEstatusCtz;
@@ -86,9 +86,9 @@ namespace Cotizador.ViewModel
         public bool EsImportado { get => _esImportado; set { _esImportado = value; OnPropertyChanged("EsImportado"); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
-        public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged("FechaCotizacion");  ChecarVigencia(_fechaCotizacion); ChecarFechaEntrega(); } }
-        public DateTime FechaVigencia { get => _fechaVigencia; set { _fechaVigencia = value; OnPropertyChanged("FechaVigencia"); } }
-        public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; OnPropertyChanged("FechaEntrega"); } }
+        public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged("FechaCotizacion");  ChecarVigencia(_fechaCotizacion); } }
+        public DateTime FechaCtzVigencia { get => _fechaCtzVigencia; set { _fechaCtzVigencia = value; OnPropertyChanged("FechaCtzVigencia"); } }
+        public DateTime FechaCtzEntrega { get => _fechaCtzEntrega; set { _fechaCtzEntrega = value; OnPropertyChanged("FechaCtzEntrega"); } }
         public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged("SucursalSel"); } }
         public string TxtSucursal { get => _txtSucursal; set { _txtSucursal = value; OnPropertyChanged("TxtSucursal"); } }
         public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged("ListaEstatusCtz"); } }
@@ -99,8 +99,7 @@ namespace Cotizador.ViewModel
         public List<ComprobantesImpuestos> ListaCotizacionImpuestos { get => _listaCotizacionImpuestos; set => _listaCotizacionImpuestos = value; }
         public List<ComprobantesImpuestos> ListaImpuestosXlinea { get => _listaImpuestosXlinea; set => _listaImpuestosXlinea = value; }
         public List<DetalleComprobantes> ListaDetalleComprobantes { get => _listaDetalleComprobantes; set => _listaDetalleComprobantes = value; }
-        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged("InfoCotizacion"); } }
-        public bool ActivaFechaCot { get => _activaFechaCot; set { _activaFechaCot = value; OnPropertyChanged("ActivaFechaCot"); } }
+        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged("InfoCotizacion"); } }        
         public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged("ListaDetalles"); } }
         public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged("NumCotizacion"); } }
         public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged("IndexEstatusCtz"); ActualizarEstatus(); } }
@@ -121,11 +120,11 @@ namespace Cotizador.ViewModel
             EditarProductoCommand = new RelayCommand(EditarProducto);
             QuitarProductoCommand = new RelayCommand(QuitarProducto);
             CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
+            FechaEntregaCommand = new RelayCommand(DefineFechaEntrega);
             GuardarCtzCommand = new RelayCommand(GuardarCotizacion);
-            CancelarCtzCommand = new RelayCommand(CancelarCotizacion);
+            NuevaCtzCommand = new RelayCommand(NuevaCotizacion);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
-            ActivaFechaCot = false;
             ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
             BorradorSeleccionado = true;
             AceptaCambiosCtz = true;
@@ -193,7 +192,7 @@ namespace Cotizador.ViewModel
                             TxtMensaje = "El producto seleccionado ya fue agregado, proceda a editar la cantidad y descuento en la partida correspondiente";
                             VerMensaje = true;
                         }
-                        ChecarFechaEntrega();
+                        ChecarFechaEntrega(FechaCotizacion, ListaProductos);
                     }
                 }
                 else
@@ -254,7 +253,7 @@ namespace Cotizador.ViewModel
             ListaProductos.Remove(producto);
             ActualizarListaDetalles(producto, 0);
             CalcularTotales();
-            ChecarFechaEntrega();
+            ChecarFechaEntrega(FechaCotizacion, ListaProductos);
         }
 
         public void CalcularTotales()
@@ -286,29 +285,21 @@ namespace Cotizador.ViewModel
 
         private void ChecarVigencia(DateTime fecha)
         {
-            FechaVigencia = FechaCotizacion.AddDays(15);
-            ChecarFechaEntrega();
+            FechaCtzVigencia = FechaCotizacion.AddDays(15);
+            FechaCtzEntrega = FechaCtzVigencia;
         }
 
-        private void ChecarFechaEntrega()
-        {
-            foreach(ProductoSeleccionado p in ListaProductos)
+        public void ChecarFechaEntrega(DateTime FechaCtz, ObservableCollection<ProductoSeleccionado> Lista)
+        {            
+            int dias = 0;
+            foreach(ProductoSeleccionado p in Lista)
             {
-                EsImportado = false;
-                if(p.Producto.EsImportado == 1)
+                if (p.DiasEntrega > dias)
                 {
-                    EsImportado = true;
-                    break;
+                    dias = p.DiasEntrega;
+                    FechaCtzEntrega = FechaCtz.AddDays(dias);
                 }
-            }
-            if (EsImportado == false)
-            {
-                FechaEntrega = FechaVigencia.AddDays(6);
-            }
-            else
-            {
-                FechaEntrega = FechaVigencia.AddDays(45);
-            }
+            }            
         }
 
         private async void GuardarCotizacion(object parameter)
@@ -354,7 +345,8 @@ namespace Cotizador.ViewModel
                             ImporteDescuento = item.ImporteDesc,
                             Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
                             NumeroPartidas = c,
-                            PrecioUnitario = item.Producto.PrecioUnitario
+                            PrecioUnitario = item.Producto.PrecioUnitario,
+                            DiasDeEntrega = item.DiasEntrega
                         };
                         c += 1;
                         ListaDetalleComprobantes.Add(detCom);
@@ -384,7 +376,7 @@ namespace Cotizador.ViewModel
                         ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
                         ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
                         ClaveListaDePrecios = 1,
-                        FechaVigencia = FechaVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
+                        FechaVigencia = FechaCtzVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
                         SubTotal = ImporteTotal,
                         Descuento = DescuentoTotal,
                         Impuestos = ImpuestoTotal,
@@ -469,7 +461,8 @@ namespace Cotizador.ViewModel
                     NumeroPartidas = c,
                     PrecioUnitario = item.Producto.PrecioUnitario,
                     Estatus = item.Estatus,
-                    ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante
+                    ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante,
+                    DiasDeEntrega = item.DiasEntrega
                 };
                 c += 1;
                 ListaDetalleComprobantes.Add(detCom);
@@ -500,7 +493,7 @@ namespace Cotizador.ViewModel
                 ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
                 ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
                 ClaveListaDePrecios = 1,
-                FechaVigencia = FechaVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
+                FechaVigencia = FechaCtzVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
                 SubTotal = ImporteTotal,
                 Descuento = DescuentoTotal,
                 Impuestos = ImpuestoTotal,
@@ -538,7 +531,7 @@ namespace Cotizador.ViewModel
             }
         }
 
-        private async void CancelarCotizacion(object parameter)
+        private async void NuevaCotizacion(object parameter)
         {
             if (ClienteSel != null)
             {
@@ -560,6 +553,31 @@ namespace Cotizador.ViewModel
             }
         }
 
+        private async void DefineFechaEntrega(object parameter)
+        {
+            Int64 clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
+            ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
+            var vmFecEntrega = new FechaEntregaViewModel
+            {
+                ProdSeleccionado = prodsel,
+                FechaLimite = FechaCotizacion,
+                FechaEntrega = FechaCotizacion.AddDays(prodsel.DiasEntrega)
+            };
+            var vwFecEntrega = new FechaEntregaView
+            {
+                DataContext = vmFecEntrega
+            };
+            var result = await DialogHost.Show(vwFecEntrega, "CotizadorView");
+            if(result.Equals("OK") == true)
+            {
+                prodsel.FechaEntrega = vmFecEntrega.FechaEntrega;
+                TimeSpan ts = vmFecEntrega.FechaEntrega - FechaCotizacion.Date;
+                prodsel.DiasEntrega = ts.Days;
+                ActualizarListaDetalles(prodsel, 1);
+                ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+            }
+        }
+
         private void LimpiarCotizacion()
         {
             ListaProductos.Clear();
@@ -574,7 +592,6 @@ namespace Cotizador.ViewModel
             ImpuestoTotal = 0;
             PrecioUniTotal = 0;
             SumaSubTotal = 0;
-            //ActivaFechaCot = true;
             Observaciones = null;
             NumCotizacion = null;
             AceptaCambiosCtz = true;
@@ -595,6 +612,7 @@ namespace Cotizador.ViewModel
                     {
                         var prod = ListaDetalles.First(x => x.Producto.ClaveProducto == prodsel.Producto.ClaveProducto);
                         prod.Estatus = estatus;
+                        prod.DiasEntrega = prodsel.DiasEntrega;
                         break;
                     }
             }
@@ -684,21 +702,8 @@ namespace Cotizador.ViewModel
                         ClaveEstatusCtz = 160;
                         AceptaCambiosCtz = true;
                         AceptaCambiosCliente = (InfoCotizacion != null) ? false : true;
-                        break;
+                        break;                    
                     case 1:
-                        if (ListaProductos.Count > 0)// && string.IsNullOrEmpty(NumCotizacion) != true)
-                        {
-                            BorradorSeleccionado = false;
-                            PendienteSeleccionado = true;
-                            DefinitivaSeleccionado = false;
-                            ClaveEstatusCtz = 161;
-                            AceptaCambiosCtz = true;
-                            AceptaCambiosCliente = false;
-                        }
-                        else
-                            IndexEstatusCtz = 0;
-                        break;
-                    case 2:
                         if (ListaProductos.Count > 0)
                         {
                             BorradorSeleccionado = false;

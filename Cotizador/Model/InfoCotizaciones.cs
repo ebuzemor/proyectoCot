@@ -31,6 +31,9 @@ namespace Cotizador.Model
         [JsonProperty("fechaEmision")]
         public string FechaEmision { get; set; }
 
+        [JsonProperty("fechaVigencia")]
+        public string FechaVigencia { get; set; }
+
         [JsonProperty("impuesto")]
         public double Impuesto { get; set; }
 

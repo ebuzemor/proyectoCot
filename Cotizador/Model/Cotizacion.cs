@@ -114,5 +114,8 @@ namespace Cotizador.Model
 
         [JsonProperty("Estatus")]
         public int Estatus { get; set; }
+
+        [JsonProperty("DiasDeEntrega")]
+        public int DiasDeEntrega { get; set; }
     }
 }

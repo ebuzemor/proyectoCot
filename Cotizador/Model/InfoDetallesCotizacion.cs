@@ -45,5 +45,8 @@ namespace Cotizador.Model
 
         [JsonProperty("subtotal")]
         public double Subtotal { get; set; }
+
+        [JsonProperty("diasdeentrega")]
+        public int DiasDeEntrega { get; set; }
     }
 }

@@ -18,8 +18,6 @@ namespace Cotizador.ViewModel
         private ProductoSeleccionado _selProducto;
         private ProductosJson _productosJson;
         private String _txtProducto;
-        //private String _txtFiltrar;
-        //private ICollectionView _icvProductos;
         private ApiKey _appKey;
         private Usuario _usuario;        
         private CollectionViewSource _cvsProductos;
@@ -36,29 +34,16 @@ namespace Cotizador.ViewModel
         private Double _txtCantidad;
         private Double _txtDescuento;
         private Double _txtImporteDesc;
-        private Double _txtImporte;        
+        private Double _txtImporte;
+        private Boolean _verMensaje;
+        private String _txtMensaje;
 
         public ObservableCollection<Producto> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged("ListaProductos"); } }        
         public ProductosJson ProductosJson { get => _productosJson; set { _productosJson = value; OnPropertyChanged("ProdutosJson"); } }
         public string TxtProducto { get => _txtProducto; set { _txtProducto = value; OnPropertyChanged("TxtProducto"); } }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }        
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
-        ///Filtra resultados mientras se escribe 1/2
-        //public ICollectionView IcvProductos { get => _icvProductos; set { _icvProductos = value; OnPropertyChanged("CvProductos"); } }
-        //public string TxtFiltrar
-        //{
-        //    get => _txtFiltrar;
-        //    set
-        //    {
-        //        if(value!=_txtFiltrar)
-        //        {
-        //            _txtFiltrar = value;
-        //            IcvProductos.Refresh();        
-        //            OnPropertyChanged("TxtFiltrar");
-        //        }                
-        //    }
-        //}
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }        
 
         public ProductoSeleccionado SelProducto { get => _selProducto; set { _selProducto = value; OnPropertyChanged("SelProducto"); } }
         public CollectionViewSource CvsProductos { get => _cvsProductos; set { _cvsProductos = value; OnPropertyChanged("CvsProductos"); } }
@@ -110,6 +95,8 @@ namespace Cotizador.ViewModel
                 ActivarBtnSeleccionar();
             }
         }
+        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
         #endregion
 
         #region Commands
@@ -118,7 +105,8 @@ namespace Cotizador.ViewModel
         public RelayCommand InicioCommand { get; set; }
         public RelayCommand AnteriorCommand { get; set; }
         public RelayCommand SiguienteCommand { get; set; }
-        public RelayCommand FinalCommand { get; set; }        
+        public RelayCommand FinalCommand { get; set; }
+        public RelayCommand CerrarMensajeCommand { get; set; }
         #endregion
 
         #region Constructor
@@ -130,6 +118,7 @@ namespace Cotizador.ViewModel
             AnteriorCommand = new RelayCommand(Anterior);
             SiguienteCommand = new RelayCommand(Siguiente);
             FinalCommand = new RelayCommand(Final);
+            CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
             SelProducto = new ProductoSeleccionado();
             IndicePagActual = 0;
             ItemsPorPag = 10;
@@ -146,35 +135,41 @@ namespace Cotizador.ViewModel
         {
             try
             {
-                var rest = new RestClient(Localhost);
-                var clvEFInmueble = (Usuario.Sucursal == 3001) ? 300000108 : Usuario.ClaveEntidadFiscalInmueble;
-                var req = new RestRequest("buscarProductos/" + clvEFInmueble + "/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtProducto, Method.GET);
-                req.AddHeader("Accept", "application/json");
-                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-
-                IRestResponse<ProductosJson> resp = rest.Execute<ProductosJson>(req);
-                if (resp.IsSuccessful)
+                if (string.IsNullOrEmpty(TxtProducto) != true)
                 {
-                    if (resp.StatusCode == HttpStatusCode.OK)
+                    var rest = new RestClient(Localhost);
+                    var clvEFInmueble = (Usuario.Sucursal == 3001) ? 300000108 : Usuario.ClaveEntidadFiscalInmueble;
+                    var req = new RestRequest("buscarProductos/" + clvEFInmueble + "/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtProducto, Method.GET);
+                    req.AddHeader("Accept", "application/json");
+                    req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+
+                    IRestResponse<ProductosJson> resp = rest.Execute<ProductosJson>(req);
+                    if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                     {
                         ProductosJson = JsonConvert.DeserializeObject<ProductosJson>(resp.Content);
                         ListaProductos = new ObservableCollection<Producto>(ProductosJson.Productos);
-                        ///Filtra resultados mientras se escribe 2/2
-                        //IcvProductos = CollectionViewSource.GetDefaultView(ListaProductos);
-                        //IcvProductos.Filter = (x => String.IsNullOrEmpty(TxtFiltrar) ? true : ((Producto)x).Descripcion.Contains(TxtFiltrar.ToUpper()));
-
                         ///Paginación de los resultados
                         CvsProductos = new CollectionViewSource
                         {
                             Source = ListaProductos
                         };
-                        CvsProductos.Filter += new FilterEventHandler(FiltroPaginas);                    
-                        IndicePagActual = 0;
-                        ActualizarPagina();
-                        CalcularPagsTotales();
-                        ActivarBotones();
+                        CvsProductos.Filter += new FilterEventHandler(FiltroPaginas);                        
+                    }
+                    if (ListaProductos != null && ListaProductos.Count == 0)
+                    {
+                        TxtMensaje = "La búsqueda no obtuvo resultados, intente de nuevo.";
+                        VerMensaje = true;
                     }
                 }
+                else
+                {
+                    TxtMensaje = "Debe escribir algo para realizar la búsqueda de Clientes.";
+                    VerMensaje = true;
+                }
+                IndicePagActual = 0;
+                ActualizarPagina();
+                CalcularPagsTotales();
+                ActivarBotones();
             }
             catch (Exception ex)
             {
@@ -240,7 +235,7 @@ namespace Cotizador.ViewModel
 
         private void ActivarBotones()
         {
-            if (ListaProductos.Count > 0)
+            if (ListaProductos != null && ListaProductos.Count > 0)
             {
                 ActivoInicio = (IndicePagActual != 0) ? true : false;
                 ActivoAnterior = (IndicePagActual != 0) ? true : false;
@@ -314,6 +309,8 @@ namespace Cotizador.ViewModel
             SelProducto.Impuesto = Math.Round(impuestos, 2);
             SelProducto.SubTotal = Math.Round(importeNeto + impuestos, 2);
         }
+
+        private void CerrarMensaje(object paramter) => VerMensaje = false;
         #endregion
     }
 }

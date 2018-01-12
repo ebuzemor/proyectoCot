@@ -9,6 +9,10 @@ namespace Cotizador.ViewModel
 {
     public class SeleccionarSucursalViewModel : Notificador
     {
+        #region Commands
+        
+        #endregion
+
         #region Variables
         private List<Usuario> _listaUsuarios;
         private Usuario _usuarioSel;

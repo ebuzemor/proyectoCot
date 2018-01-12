@@ -22,6 +22,8 @@ namespace Cotizador.Model
         private double _subTotal;
         private int _estatus; // 0-borrar, 1-actualizar, 2-agregar, 3-sincambios
         private string _claveDetalleDeComprobante;
+        private DateTime _fechaEntrega;
+        private int _diasEntrega;
 
         public Producto Producto { get => _producto; set { _producto = value; NotifyPropertyChanged(); } }
         public double Cantidad { get => _cantidad; set { _cantidad = value; NotifyPropertyChanged(); } }
@@ -32,5 +34,7 @@ namespace Cotizador.Model
         public double SubTotal { get => _subTotal; set { _subTotal = value; NotifyPropertyChanged(); } }
         public int Estatus { get => _estatus; set { _estatus = value; NotifyPropertyChanged(); } }
         public string ClaveDetalleDeComprobante { get => _claveDetalleDeComprobante; set { _claveDetalleDeComprobante = value; NotifyPropertyChanged(); } }
+        public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; NotifyPropertyChanged(); } }
+        public int DiasEntrega { get => _diasEntrega; set { _diasEntrega = value; NotifyPropertyChanged(); } }
     }
 }

@@ -157,17 +157,6 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <!--<DataGridTemplateColumn Header="Importe" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Subtotal, StringFormat=C2}" TextAlignment="Right">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Subtotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>-->
                     <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>

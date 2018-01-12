@@ -23,6 +23,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Snackbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -101,9 +102,6 @@
                     Content="{mdWpf:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Final" Command="{Binding FinalCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronDoubleRight, Size=24}" IsEnabled="{Binding ActivoFinal}"/>
-            <!--<TextBox mdWpf:HintAssist.Hint="Filtrar por Descripcion" Width="200" MaxWidth="200" MinWidth="200" Margin="50 0 0 0"
-                 Style="{DynamicResource MaterialDesignFloatingHintTextBox}" 
-                 Text="{Binding Path=TxtFiltrar, UpdateSourceTrigger=PropertyChanged}"/>-->
         </StackPanel>
         <!--AREA DE PRODUCTO SELECCIONADO-->
         <GroupBox Margin="5" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" mdWpf:ShadowAssist.ShadowDepth="Depth3"
@@ -149,6 +147,15 @@
                 </UniformGrid>
             </Grid>
         </GroupBox>
+        <!--AREA DE MENSAJES-->
+        <mdWpf:Snackbar Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueMidBrush}"
+                        ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionLightButton}">
+            <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                <mdWpf:SnackbarMessage.Content>
+                    <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                </mdWpf:SnackbarMessage.Content>
+            </mdWpf:SnackbarMessage>
+        </mdWpf:Snackbar>
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="0 16 0 0" HorizontalAlignment="Right">

@@ -3,8 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"    
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              TextElement.Foreground="Black"
@@ -15,6 +14,15 @@
              Background="{DynamicResource PrimaryHueLightBrush}"
              FontFamily="{StaticResource MaterialDesignFont}"
              Height="480" Width="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Snackbar.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <!--CONTENEDOR PRINCIPAL-->
     <Grid Margin="16">
         <Grid.RowDefinitions>
@@ -31,7 +39,7 @@
         <!--TITULO-->
         <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}">Agregar Cliente:</TextBlock>
         <!--AREA DE BUSQUEDA-->
-        <TextBox wpf:HintAssist.Hint="Ingrese Código o Razón Social o RFC del Cliente" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+        <TextBox mdWpf:HintAssist.Hint="Ingrese Código o Razón Social o RFC del Cliente" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
                  Margin="0 6 0 0" Grid.Row="1" Grid.Column="0" Text="{Binding TxtCliente, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding BuscarClienteCommand}" Key="Return"/>
@@ -56,33 +64,39 @@
         <!--DESPLAZAMIENTO DEL LISTADO POR PAGINAS-->
         <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Inicio" Command="{Binding InicioCommand}"
-                    Content="{materialDesign:PackIcon Kind=ChevronDoubleLeft, Size=24}" IsEnabled="{Binding ActivoInicio}"/>
+                    Content="{mdWpf:PackIcon Kind=ChevronDoubleLeft, Size=24}" IsEnabled="{Binding ActivoInicio}"/>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
-                    Content="{materialDesign:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
+                    Content="{mdWpf:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
             <UniformGrid Columns="3">
                 <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
                 <TextBlock  Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="de "/>
                 <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
             </UniformGrid>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
-                    Content="{materialDesign:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>
+                    Content="{mdWpf:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>
             <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Final" Command="{Binding FinalCommand}"
-                    Content="{materialDesign:PackIcon Kind=ChevronDoubleRight, Size=24}" IsEnabled="{Binding ActivoFinal}"/>
+                    Content="{mdWpf:PackIcon Kind=ChevronDoubleRight, Size=24}" IsEnabled="{Binding ActivoFinal}"/>
         </StackPanel>
-        <!--Se comenta este control para filtrar mientras se escribe-->
-        <!--<TextBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" wpf:HintAssist.Hint="Filtrar resultados por Razon Social" 
-                 Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding Path=TxtFiltrar, UpdateSourceTrigger=PropertyChanged}"/>-->
+        <!--AREA DE MENSAJES-->
+        <mdWpf:Snackbar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueMidBrush}"
+                        ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionLightButton}">
+            <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                <mdWpf:SnackbarMessage.Content>
+                    <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                </mdWpf:SnackbarMessage.Content>
+            </mdWpf:SnackbarMessage>
+        </mdWpf:Snackbar>
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button Style="{DynamicResource MaterialDesignRaisedButton}" Command="{x:Static wpf:DialogHost.CloseDialogCommand}">
+            <Button Style="{DynamicResource MaterialDesignRaisedButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>
                     NvoCliente
                 </Button.CommandParameter>
                 SELECCIONAR
             </Button>
             <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}"
-                    Command="{x:Static wpf:DialogHost.CloseDialogCommand}">
+                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>
                     Null
                 </Button.CommandParameter>

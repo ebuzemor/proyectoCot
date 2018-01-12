@@ -129,7 +129,7 @@ namespace Cotizador.Model
         public string Moneda { get; set; }
 
         [JsonProperty("peso")]
-        public double Peso { get; set; }
+        public string Peso { get; set; }
 
         [JsonProperty("pesoYUnidad")]
         public string PesoYUnidad { get; set; }

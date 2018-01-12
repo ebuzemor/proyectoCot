@@ -175,8 +175,8 @@ namespace Cotizador.ViewModel
             switch (claveEstatus)
             {
                 case 160: clvstat = 0; break;
-                case 161: clvstat = 1; break;
-                case 162: clvstat = 2; break;
+                //case 161: clvstat = 1; break;
+                case 162: clvstat = 1; break;
             }
             return clvstat;
         }
@@ -202,7 +202,7 @@ namespace Cotizador.ViewModel
                         req.AddParameter("claveTipoEstatus", value: (estatus == 0) ? string.Empty : Convert.ToString(estatus));
 
                         IRestResponse resp = rest.Execute(req);
-                        if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
+                        if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                         {
                             List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
                             ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);// lista.Where(x => x.ClaveEstatus != 161).ToList());
@@ -255,9 +255,9 @@ namespace Cotizador.ViewModel
             vmInicio.VmCotizador.Observaciones = InfoCotizacion.Observaciones;
             vmInicio.VmCotizador.CteRazonSocial = ClienteCtz.RazonSocial + " | RFC:" + ClienteCtz.Rfc + " | Codigo:" + ClienteCtz.CodigoDeCliente;
             vmInicio.VmCotizador.DatosCliente = "Contacto(s):" + ClienteCtz.Contacto + " | Teléfono(s): " + ClienteCtz.NumeroTelefono + " | Direccion: " + ClienteCtz.Direccion;
-            vmInicio.VmCotizador.ActivaFechaCot = false;
             vmInicio.VmCotizador.FechaCotizacion = Convert.ToDateTime(InfoCotizacion.FechaEmision);
             vmInicio.VmCotizador.ListaProductos = ListaProductosCtz;
+            vmInicio.VmCotizador.ChecarFechaEntrega(Convert.ToDateTime(InfoCotizacion.FechaEmision), ListaProductosCtz);
             vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
             vmInicio.VmCotizador.CalcularTotales();
             vmInicio.VmCotizador.NumCotizacion = "COTIZACION: " + InfoCotizacion.CodigoDeComprobante;
@@ -311,6 +311,7 @@ namespace Cotizador.ViewModel
                             SubTotal = fila.Subtotal,
                             Estatus = 3,
                             ClaveDetalleDeComprobante = fila.ClaveDetalleDeComprobante,
+                            DiasEntrega = fila.DiasDeEntrega,
                             Producto = new Producto
                             {
                                 ClaveProducto = fila.ClaveProducto,

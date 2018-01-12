@@ -29,8 +29,8 @@
     <ProductName>Cotizador</ProductName>
     <PublisherName>Sistemas APROSI</PublisherName>
     <SuiteName>APROSI</SuiteName>
-    <ApplicationRevision>5</ApplicationRevision>
-    <ApplicationVersion>0.9.4.5</ApplicationVersion>
+    <ApplicationRevision>8</ApplicationRevision>
+    <ApplicationVersion>0.9.4.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -162,10 +162,10 @@
     <Compile Include="ViewModel\BuscadorCotizacionesViewModel.cs" />
     <Compile Include="ViewModel\BuscarClientesViewModel.cs" />
     <Compile Include="ViewModel\BuscarProductosViewModel.cs" />
-    <Compile Include="ViewModel\ConfigurarCxnViewModel.cs" />
     <Compile Include="ViewModel\CotizadorViewModel.cs" />
     <Compile Include="ViewModel\EditarItemViewModel.cs" />
     <Compile Include="ViewModel\EnviarCotizacionViewModel.cs" />
+    <Compile Include="ViewModel\FechaEntregaViewModel.cs" />
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
@@ -179,9 +179,6 @@
     <Compile Include="View\BuscarProductosView.xaml.cs">
       <DependentUpon>BuscarProductosView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ConfigurarCxnView.xaml.cs">
-      <DependentUpon>ConfigurarCxnView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\CotizadorView.xaml.cs">
       <DependentUpon>CotizadorView.xaml</DependentUpon>
     </Compile>
@@ -190,6 +187,9 @@
     </Compile>
     <Compile Include="View\EnviarCotizacionView.xaml.cs">
       <DependentUpon>EnviarCotizacionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FechaEntregaView.xaml.cs">
+      <DependentUpon>FechaEntregaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\InicioView.xaml.cs">
       <DependentUpon>InicioView.xaml</DependentUpon>
@@ -224,10 +224,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\ConfigurarCxnView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\CotizadorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -237,6 +233,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EnviarCotizacionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FechaEntregaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
