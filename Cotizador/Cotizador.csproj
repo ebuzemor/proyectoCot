@@ -152,6 +152,7 @@
     <Compile Include="Model\CondicionesComerciales.cs" />
     <Compile Include="Model\Cotizacion.cs" />
     <Compile Include="Model\EstatusCotizacion.cs" />
+    <Compile Include="Model\Existencias.cs" />
     <Compile Include="Model\InfoCotizaciones.cs" />
     <Compile Include="Model\InfoDetallesCotizacion.cs" />
     <Compile Include="Model\ListaProductos.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="ViewModel\CotizadorViewModel.cs" />
     <Compile Include="ViewModel\EditarItemViewModel.cs" />
     <Compile Include="ViewModel\EnviarCotizacionViewModel.cs" />
+    <Compile Include="ViewModel\ExistenciasViewModel.cs" />
     <Compile Include="ViewModel\FechaEntregaViewModel.cs" />
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
@@ -187,6 +189,9 @@
     </Compile>
     <Compile Include="View\EnviarCotizacionView.xaml.cs">
       <DependentUpon>EnviarCotizacionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ExistenciasView.xaml.cs">
+      <DependentUpon>ExistenciasView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\FechaEntregaView.xaml.cs">
       <DependentUpon>FechaEntregaView.xaml</DependentUpon>
@@ -233,6 +238,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EnviarCotizacionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ExistenciasView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

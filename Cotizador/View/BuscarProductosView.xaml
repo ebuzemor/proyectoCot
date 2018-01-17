@@ -28,151 +28,165 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <!--CONTENEDOR PRINCIPAL-->
-    <Grid Margin="16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30" />
-            <RowDefinition Height="45"/>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition Height="45"/>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition Height="45"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-        <!--TITULO-->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Agregar Producto:"/>
-        <!--AREA DE BUSQUEDA-->
-        <TextBox mdWpf:HintAssist.Hint="Ingrese el Código o Nombre del Producto" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+    <mdWpf:DialogHost Identifier="BuscarProductos">
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="45"/>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="45"/>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <!--TITULO-->
+            <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Agregar Producto:"/>
+            <!--AREA DE BUSQUEDA-->
+            <TextBox mdWpf:HintAssist.Hint="Ingrese el Código o Nombre del Producto" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
                  Margin="0 6 0 0" Grid.Row="1" Grid.Column="0" Text="{Binding TxtProducto, UpdateSourceTrigger=PropertyChanged}">
-            <TextBox.InputBindings>
-                <KeyBinding Command="{Binding BuscarProductoCommand}" Key="Return"/>
-            </TextBox.InputBindings>
-        </TextBox>
-        <Button Grid.Row="1" Grid.Column="1" Content="Buscar Producto" Margin="0 6 0 0"
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding BuscarProductoCommand}" Key="Return"/>
+                </TextBox.InputBindings>
+            </TextBox>
+            <Button Grid.Row="1" Grid.Column="1" Content="Buscar Producto" Margin="0 6 0 0"
                 Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 Command="{Binding BuscarProductoCommand}"/>
-        <!--LISTA DE PRODUCTOS OBTENIDOS EN LA BUSQUEDA-->
-        <ListView x:Name="Lista" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" ItemsSource="{Binding CvsProductos.View}"
+            <!--LISTA DE PRODUCTOS OBTENIDOS EN LA BUSQUEDA-->
+            <ListView x:Name="Lista" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" ItemsSource="{Binding CvsProductos.View}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   SelectedItem="{Binding NvoProducto}" SelectionMode="Single">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Código" Width="100" DisplayMemberBinding="{Binding CodigoInterno}"/>
-                    <GridViewColumn Header="Descripción" Width="280" DisplayMemberBinding="{Binding Descripcion}"/>
-                    <GridViewColumn Header="Precio Unit." Width="110">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding PrecioUnitario, StringFormat=C2}" TextAlignment="Right"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Existencias" Width="110">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Existencia, StringFormat=N2}" TextAlignment="Right"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <!--DESPLAZAMIENTO DEL LISTADO DE PAGINAS-->
-        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Inicio" Command="{Binding InicioCommand}"
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Código" Width="100" DisplayMemberBinding="{Binding CodigoInterno}"/>
+                        <GridViewColumn Header="Descripción" Width="250" DisplayMemberBinding="{Binding Descripcion}"/>
+                        <GridViewColumn Header="Precio Unit." Width="110">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding PrecioUnitario, StringFormat=C2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Existencias" Width="100">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Existencia, StringFormat=N2}" TextAlignment="Right"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        Margin="0 0 8 0" HorizontalAlignment="Left"
+                                        Content="{mdWpf:PackIcon Kind=Store}" 
+                                        ToolTip="Existencia en otros almacenes" Height="22" Width="22"
+                                        Command="{Binding ElementName=Lista, Path=DataContext.ExistenciasProductoCommand}"
+                                        CommandParameter="{Binding ClaveProducto}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <!--DESPLAZAMIENTO DEL LISTADO DE PAGINAS-->
+            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Inicio" Command="{Binding InicioCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronDoubleLeft, Size=24}" IsEnabled="{Binding ActivoInicio}"/>
-            <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
-            <UniformGrid Columns="3">
-                <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
-                <TextBlock  Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="de "/>
-                <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
-            </UniformGrid>
-            <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
+                <UniformGrid Columns="3">
+                    <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
+                    <TextBlock  Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="de "/>
+                    <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
+                </UniformGrid>
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>
-            <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Final" Command="{Binding FinalCommand}"
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Final" Command="{Binding FinalCommand}"
                     Content="{mdWpf:PackIcon Kind=ChevronDoubleRight, Size=24}" IsEnabled="{Binding ActivoFinal}"/>
-        </StackPanel>
-        <!--AREA DE PRODUCTO SELECCIONADO-->
-        <GroupBox Margin="5" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" mdWpf:ShadowAssist.ShadowDepth="Depth3"
+            </StackPanel>
+            <!--AREA DE PRODUCTO SELECCIONADO-->
+            <GroupBox Margin="5" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" mdWpf:ShadowAssist.ShadowDepth="Depth3"
                   BorderThickness="0" Header="Producto Seleccionado:" Style="{DynamicResource MaterialDesignGroupBox}">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <mdWpf:Card Margin="4 4 0 0" Background="{DynamicResource MaterialDesignPaper}"
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <mdWpf:Card Margin="4 4 0 0" Background="{DynamicResource MaterialDesignPaper}"
                       Foreground="{DynamicResource PrimaryHueLightForegroundBrush}" Grid.Row="0">
-                    <TextBlock Style="{DynamicResource MaterialDesignSubheadingTextBlock}">
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat=" {0} | {1:C2}">
-                                <Binding Path="NvoProducto.Descripcion"/>
-                                <Binding Path="NvoProducto.PrecioUnitario"/>
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </mdWpf:Card>
-                <UniformGrid Grid.Row="1">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <TextBox mdWpf:HintAssist.Hint="# Cantidad" 
+                        <TextBlock Style="{DynamicResource MaterialDesignSubheadingTextBlock}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat=" {0} | {1:C2}">
+                                    <Binding Path="NvoProducto.Descripcion"/>
+                                    <Binding Path="NvoProducto.PrecioUnitario"/>
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </mdWpf:Card>
+                    <UniformGrid Grid.Row="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox mdWpf:HintAssist.Hint="# Cantidad" 
                                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
                                  Margin="5" Grid.Column="0" Text="{Binding TxtCantidad}"/>
-                        <TextBox mdWpf:HintAssist.Hint="% Descuento" 
+                            <TextBox mdWpf:HintAssist.Hint="% Descuento" 
                                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
                                  Margin="5" Grid.Column="1" SelectedText="" 
                                  Text="{Binding TxtDescuento, Converter={StaticResource PorcentajeConv}, StringFormat=P2}"/>
-                        <TextBox mdWpf:HintAssist.Hint="$ Importe" IsEnabled="False"
+                            <TextBox mdWpf:HintAssist.Hint="$ Importe" IsEnabled="False"
                                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
                                  Margin="5" Grid.Column="2" Text="{Binding TxtImporte, StringFormat=C2}"/>
-                        <TextBox mdWpf:HintAssist.Hint="$ Importe Desc." IsEnabled="False"
+                            <TextBox mdWpf:HintAssist.Hint="$ Importe Desc." IsEnabled="False"
                                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
                                  Margin="5" Grid.Column="3" Text="{Binding TxtImporteDesc, StringFormat=C2}"/>
-                    </Grid>
-                </UniformGrid>
-            </Grid>
-        </GroupBox>
-        <!--AREA DE MENSAJES-->
-        <mdWpf:Snackbar Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueMidBrush}"
+                        </Grid>
+                    </UniformGrid>
+                </Grid>
+            </GroupBox>
+            <!--AREA DE MENSAJES-->
+            <mdWpf:Snackbar Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}"
                         ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionLightButton}">
-            <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
-                <mdWpf:SnackbarMessage.Content>
-                    <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                </mdWpf:SnackbarMessage.Content>
-            </mdWpf:SnackbarMessage>
-        </mdWpf:Snackbar>
-        <!--BOTONES DE LA VENTANA-->
-        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
+                <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                    <mdWpf:SnackbarMessage.Content>
+                        <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                    </mdWpf:SnackbarMessage.Content>
+                </mdWpf:SnackbarMessage>
+            </mdWpf:Snackbar>
+            <!--BOTONES DE LA VENTANA-->
+            <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                     Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button Style="{DynamicResource MaterialDesignRaisedButton}"
+                <Button Style="{DynamicResource MaterialDesignRaisedButton}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" IsEnabled="{Binding ActivoSeleccionar}">
-                <Button.CommandParameter>
-                    SelProducto
-                </Button.CommandParameter>
-                SELECCIONAR
-            </Button>
-            <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}"
+                    <Button.CommandParameter>
+                        SelProducto
+                    </Button.CommandParameter>
+                    SELECCIONAR
+                </Button>
+                <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">
-                <Button.CommandParameter>
-                    <system:Boolean>False</system:Boolean>
-                </Button.CommandParameter>
-                CANCELAR
-            </Button>
-        </StackPanel>
-    </Grid>
+                    <Button.CommandParameter>
+                        <system:Boolean>False</system:Boolean>
+                    </Button.CommandParameter>
+                    CANCELAR
+                </Button>
+            </StackPanel>
+        </Grid>
+    </mdWpf:DialogHost>
 </UserControl>

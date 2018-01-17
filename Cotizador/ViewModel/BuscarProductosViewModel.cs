@@ -1,10 +1,12 @@
 ﻿using Cotizador.Common;
 using Cotizador.Model;
+using Cotizador.View;
 using Newtonsoft.Json;
+using MaterialDesignThemes.Wpf;
 using RestSharp;
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Net;
 using System.Windows.Data;
 
@@ -12,6 +14,17 @@ namespace Cotizador.ViewModel
 {
     public class BuscarProductosViewModel : Notificador
     {
+        #region Commands
+        public RelayCommand BuscarProductoCommand { get; set; }
+        public RelayCommand SeleccionadoCommand { get; set; }
+        public RelayCommand InicioCommand { get; set; }
+        public RelayCommand AnteriorCommand { get; set; }
+        public RelayCommand SiguienteCommand { get; set; }
+        public RelayCommand FinalCommand { get; set; }
+        public RelayCommand CerrarMensajeCommand { get; set; }
+        public RelayCommand ExistenciasProductoCommand { get; set; }
+        #endregion
+
         #region Variables
         private ObservableCollection<Producto> _listaProductos;
         private Producto _nvoProducto;
@@ -37,6 +50,7 @@ namespace Cotizador.ViewModel
         private Double _txtImporte;
         private Boolean _verMensaje;
         private String _txtMensaje;
+        private ObservableCollection<Existencias> _listaExistencias;
 
         public ObservableCollection<Producto> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged("ListaProductos"); } }        
         public ProductosJson ProductosJson { get => _productosJson; set { _productosJson = value; OnPropertyChanged("ProdutosJson"); } }
@@ -44,7 +58,6 @@ namespace Cotizador.ViewModel
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }        
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }        
-
         public ProductoSeleccionado SelProducto { get => _selProducto; set { _selProducto = value; OnPropertyChanged("SelProducto"); } }
         public CollectionViewSource CvsProductos { get => _cvsProductos; set { _cvsProductos = value; OnPropertyChanged("CvsProductos"); } }
         public int ItemsPorPag { get => _itemsPorPag; set => _itemsPorPag = value; }
@@ -97,16 +110,7 @@ namespace Cotizador.ViewModel
         }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
-        #endregion
-
-        #region Commands
-        public RelayCommand BuscarProductoCommand { get; set; }
-        public RelayCommand SeleccionadoCommand { get; set; }
-        public RelayCommand InicioCommand { get; set; }
-        public RelayCommand AnteriorCommand { get; set; }
-        public RelayCommand SiguienteCommand { get; set; }
-        public RelayCommand FinalCommand { get; set; }
-        public RelayCommand CerrarMensajeCommand { get; set; }
+        public ObservableCollection<Existencias> ListaExistencias { get => _listaExistencias; set { _listaExistencias = value; OnPropertyChanged("ListaExistencias"); } }
         #endregion
 
         #region Constructor
@@ -119,6 +123,7 @@ namespace Cotizador.ViewModel
             SiguienteCommand = new RelayCommand(Siguiente);
             FinalCommand = new RelayCommand(Final);
             CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
+            ExistenciasProductoCommand = new RelayCommand(ExistenciasProducto);
             SelProducto = new ProductoSeleccionado();
             IndicePagActual = 0;
             ItemsPorPag = 10;
@@ -311,6 +316,48 @@ namespace Cotizador.ViewModel
         }
 
         private void CerrarMensaje(object paramter) => VerMensaje = false;
+
+        private async void ExistenciasProducto(object parameter)
+        {
+            string claveProducto = Convert.ToString(parameter);            
+            var rest = new RestClient(Localhost);
+            var req = new RestRequest("buscarExistencias/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + claveProducto, Method.GET);
+            req.AddHeader("Accept", "application/json");
+            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+
+            try
+            {
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
+                {
+                    ExistenciasJson lista = JsonConvert.DeserializeObject<ExistenciasJson>(resp.Content);
+                    ListaExistencias = new ObservableCollection<Existencias>(lista.Existencias);
+                }
+                if (ListaExistencias != null && ListaExistencias.Count == 0)
+                {
+                    TxtMensaje = "El producto no tiene existencias registradas en ningún almacen.";
+                    VerMensaje = true;
+                }
+                else
+                {
+                    var vmExistencias = new ExistenciasViewModel
+                    {
+                        ListaExistencias = ListaExistencias,
+                        TxtProducto = ListaExistencias[0].Descripcion
+                    };
+                    var vwExistencias = new ExistenciasView
+                    {
+                        DataContext = vmExistencias
+                    };
+                    var result = await DialogHost.Show(vwExistencias, "BuscarProductos");
+                }
+            }
+            catch (Exception ex)
+            {
+                TxtMensaje = "Error: " + ex.Message;
+                VerMensaje = true;
+            }            
+        }
         #endregion
     }
 }

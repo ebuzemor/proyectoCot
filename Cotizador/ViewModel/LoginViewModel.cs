@@ -230,11 +230,6 @@ namespace Cotizador.ViewModel
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;
-
-        private async void SeleccionarSucursal(List<Usuario> lista)
-        {
-            
-        }
         #endregion
     }
 }
