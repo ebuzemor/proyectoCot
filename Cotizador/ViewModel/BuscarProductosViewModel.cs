@@ -335,7 +335,7 @@ namespace Cotizador.ViewModel
                 }
                 if (ListaExistencias != null && ListaExistencias.Count == 0)
                 {
-                    TxtMensaje = "El producto no tiene existencias registradas en ningún almacen.";
+                    TxtMensaje = "No existen movimientos de inventario registrados de este producto.";
                     VerMensaje = true;
                 }
                 else

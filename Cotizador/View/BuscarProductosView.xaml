@@ -161,7 +161,7 @@
                 </Grid>
             </GroupBox>
             <!--AREA DE MENSAJES-->
-            <mdWpf:Snackbar Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}"
+            <mdWpf:Snackbar Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueDarkBrush}"
                         ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionLightButton}">
                 <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
                     <mdWpf:SnackbarMessage.Content>

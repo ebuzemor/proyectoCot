@@ -35,7 +35,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <!--TITULO DEL VENTANA-->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Existencias en Almacenes" FontStyle="Oblique" TextDecorations="Underline"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Existencias en otras Sucursales" FontStyle="Oblique" TextDecorations="Underline"/>
         <!--DESCRIPCION PRODUCTO-->
         <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding TxtProducto}"/>
         <!--CUERPO DE VENTANA-->
