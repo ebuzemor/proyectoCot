@@ -195,9 +195,9 @@ namespace Cotizador.ViewModel
                         req.AddHeader("Accept", "application/json");
                         req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                         req.AddParameter("claveEF_Inmueble", MiSucursal.ClaveEntidadFiscalInmueble);
+                        req.AddParameter("claveEF_Responsable", string.Empty);
                         req.AddParameter("fechaInicial", FechaInicial.ToString("yyyy-MM-dd"));
                         req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
-                        //if(FechaInicial == DateTime.MinValue)
                         req.AddParameter("txtCliente", TxtCliente ?? string.Empty); //reduccion del operador condicional ternario
                         req.AddParameter("claveTipoEstatus", value: (estatus == 0) ? string.Empty : Convert.ToString(estatus));
 
@@ -205,7 +205,7 @@ namespace Cotizador.ViewModel
                         if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                         {
                             List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
-                            ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);// lista.Where(x => x.ClaveEstatus != 161).ToList());
+                            ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);
 
                             ///Paginacion de los resultados
                             CvsCotizaciones = new CollectionViewSource

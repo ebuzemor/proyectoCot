@@ -76,8 +76,10 @@ namespace Cotizador.ViewModel
             get => _txtCantidad;
             set
             {
-                if (NvoProducto.EsFraccionable == 0)
+                if (NvoProducto != null && NvoProducto.EsFraccionable == 0)
+                {
                     _txtCantidad = Convert.ToInt32(value);
+                }
                 else
                     _txtCantidad = Convert.ToDouble(value);
                 OnPropertyChanged("TxtCantidad");
@@ -253,14 +255,17 @@ namespace Cotizador.ViewModel
         {
             try
             {
-                if (cantidad > 0)
+                if (NvoProducto != null)
                 {
-                    TxtImporte = Convert.ToDouble(cantidad * NvoProducto.PrecioUnitario);// - TxtImporteDesc;
-                    CalcularDescuento(TxtDescuento);
+                    if (cantidad > 0)
+                    {
+                        TxtImporte = Convert.ToDouble(cantidad * NvoProducto.PrecioUnitario); // - TxtImporteDesc;
+                        CalcularDescuento(TxtDescuento);
+                    }
+                    else
+                        TxtImporte = 0;
+                    SeleccionarProducto();
                 }
-                else
-                    TxtImporte = 0;
-                SeleccionarProducto();
             }
             catch(Exception)
             {
@@ -271,23 +276,26 @@ namespace Cotizador.ViewModel
         private void CalcularDescuento(double? descuento)
         {
             try
-            {                
-                if (descuento > 0 && TxtCantidad > 0 && descuento <= 0.9999)
+            {
+                if (NvoProducto != null)
                 {
-                    TxtImporteDesc = Convert.ToDouble(descuento) * NvoProducto.PrecioUnitario * TxtCantidad;
-                    TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad);// - TxtImporteDesc;
+                    if (descuento > 0 && TxtCantidad > 0 && descuento <= 0.9999)
+                    {
+                        TxtImporteDesc = Convert.ToDouble(descuento) * NvoProducto.PrecioUnitario * TxtCantidad;
+                        TxtImporte = (NvoProducto.PrecioUnitario * TxtCantidad);// - TxtImporteDesc;
+                    }
+                    else if (descuento == 0 && TxtCantidad > 0)
+                    {
+                        TxtImporte = NvoProducto.PrecioUnitario * TxtCantidad;
+                        TxtImporteDesc = 0;
+                    }
+                    else
+                    {
+                        TxtImporte = 0;
+                        TxtImporteDesc = 0;
+                    }
+                    SeleccionarProducto();
                 }
-                else if (descuento == 0 && TxtCantidad > 0)
-                {
-                    TxtImporte = NvoProducto.PrecioUnitario * TxtCantidad;
-                    TxtImporteDesc = 0;
-                }
-                else
-                {
-                    TxtImporte = 0;
-                    TxtImporteDesc = 0;
-                }
-                SeleccionarProducto();
             }
             catch (Exception)
             {
@@ -304,15 +312,18 @@ namespace Cotizador.ViewModel
 
         private void SeleccionarProducto()
         {
-            SelProducto.Producto = NvoProducto;
-            SelProducto.Cantidad = Math.Round(TxtCantidad, 2);
-            SelProducto.Descuento = Math.Round(TxtDescuento, 4);
-            SelProducto.ImporteDesc = Math.Round(TxtImporteDesc, 2);
-            SelProducto.Importe = Math.Round(TxtImporte, 2);
-            double importeNeto = Math.Round(TxtImporte - TxtImporteDesc, 2);
-            double impuestos = importeNeto * (SelProducto.Producto.SumaImpuestos / 100.0);
-            SelProducto.Impuesto = Math.Round(impuestos, 2);
-            SelProducto.SubTotal = Math.Round(importeNeto + impuestos, 2);
+            if (NvoProducto != null)
+            {
+                SelProducto.Producto = NvoProducto;
+                SelProducto.Cantidad = Math.Round(TxtCantidad, 2);
+                SelProducto.Descuento = Math.Round(TxtDescuento, 4);
+                SelProducto.ImporteDesc = Math.Round(TxtImporteDesc, 2);
+                SelProducto.Importe = Math.Round(TxtImporte, 2);
+                double importeNeto = Math.Round(TxtImporte - TxtImporteDesc, 2);
+                double impuestos = importeNeto * (SelProducto.Producto.SumaImpuestos / 100.0);
+                SelProducto.Impuesto = Math.Round(impuestos, 2);
+                SelProducto.SubTotal = Math.Round(importeNeto + impuestos, 2);
+            }
         }
 
         private void CerrarMensaje(object paramter) => VerMensaje = false;
