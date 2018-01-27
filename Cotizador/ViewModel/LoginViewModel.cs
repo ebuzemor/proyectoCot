@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Configuration;
@@ -113,28 +112,35 @@ namespace Cotizador.ViewModel
             ValidarCredenciales(TxtLogin, TxtPassword);
             if (EsValido == true)
             {
-                var vmSeleccionar = new SeleccionarSucursalViewModel
+                if (UsuariosJson.ListaUsuarios.Count > 1)
                 {
-                    ListaUsuarios = UsuariosJson.ListaUsuarios
-                };
-                var vwSeleccionar = new SeleccionarSucursalView
-                {
-                    DataContext = vmSeleccionar
-                };
-                var result = await DialogHost.Show(vwSeleccionar, "LoginView");
-                if (result.Equals("OK") == true)
-                {
-                    Usuario = vmSeleccionar.UsuarioSel;
-                    if (Usuario != null)
+                    var vmSeleccionar = new SeleccionarSucursalViewModel
                     {
-                        InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
-                        InicioView vwInicio = new InicioView
-                        {
-                            DataContext = vmInicio
-                        };
-                        Navigator.NavigationService.Navigate(vwInicio);
+                        ListaUsuarios = UsuariosJson.ListaUsuarios
+                    };
+                    var vwSeleccionar = new SeleccionarSucursalView
+                    {
+                        DataContext = vmSeleccionar
+                    };
+                    var result = await DialogHost.Show(vwSeleccionar, "LoginView");
+                    if (result.Equals("OK") == true)
+                    {
+                        Usuario = vmSeleccionar.UsuarioSel;
                     }
-                }                
+                }
+                else
+                {
+                    Usuario = UsuariosJson.ListaUsuarios[0];
+                }
+                if (Usuario != null)
+                {
+                    InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
+                    InicioView vwInicio = new InicioView
+                    {
+                        DataContext = vmInicio
+                    };
+                    Navigator.NavigationService.Navigate(vwInicio);
+                }
             }
         }
 
