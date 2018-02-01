@@ -16,6 +16,12 @@ namespace Cotizador.Model
         [JsonProperty("claveEntidadFiscalCliente")]
         public long ClaveEntidadFiscalCliente { get; set; }
 
+        [JsonProperty("claveEntidadFiscalResponsable")]
+        public long ClaveEntidadFiscalResponsable { get; set; }
+
+        [JsonProperty("claveEntidadFiscalInmueble")]
+        public long ClaveEntidadFiscalInmueble { get; set; }
+
         [JsonProperty("codigoDeCliente")]
         public string CodigoDeCliente { get; set; }
 

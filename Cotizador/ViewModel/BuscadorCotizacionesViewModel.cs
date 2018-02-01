@@ -195,7 +195,7 @@ namespace Cotizador.ViewModel
                         req.AddHeader("Accept", "application/json");
                         req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                         req.AddParameter("claveEF_Inmueble", MiSucursal.ClaveEntidadFiscalInmueble);
-                        req.AddParameter("claveEF_Responsable", string.Empty);
+                        req.AddParameter("claveEF_Responsable", Usuario.ClaveEntidadFiscalEmpleado);
                         req.AddParameter("fechaInicial", FechaInicial.ToString("yyyy-MM-dd"));
                         req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
                         req.AddParameter("txtCliente", TxtCliente ?? string.Empty); //reduccion del operador condicional ternario
@@ -205,7 +205,7 @@ namespace Cotizador.ViewModel
                         if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                         {
                             List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
-                            ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);
+                            ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista.OrderBy(x => x.CodigoDeComprobante));
 
                             ///Paginacion de los resultados
                             CvsCotizaciones = new CollectionViewSource
@@ -261,6 +261,8 @@ namespace Cotizador.ViewModel
             vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
             vmInicio.VmCotizador.CalcularTotales();
             vmInicio.VmCotizador.NumCotizacion = "COTIZACION: " + InfoCotizacion.CodigoDeComprobante;
+            vmInicio.VmCotizador.EditaSucursal = InfoCotizacion.ClaveEntidadFiscalInmueble;
+            vmInicio.VmCotizador.EditaUsuario = InfoCotizacion.ClaveEntidadFiscalResponsable;
             //vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
             vmInicio.VmCotizador.IndexEstatusCtz = CargarEstatusCotizacion(InfoCotizacion.ClaveEstatus);
 

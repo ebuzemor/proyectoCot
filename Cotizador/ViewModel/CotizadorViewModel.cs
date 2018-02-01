@@ -63,6 +63,8 @@ namespace Cotizador.ViewModel
         private String _correosElectronicos;
         private int _indexEstatusCtz;
         private long _claveEstatusCtz;
+        private long _editaSucursal;
+        private long _editaUsuario;
         private Boolean _borradorSeleccionado;
         private Boolean _pendienteSeleccionado;
         private Boolean _definitivaSeleccionado;
@@ -110,6 +112,8 @@ namespace Cotizador.ViewModel
         public bool AceptaCambiosCtz { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged("AceptaCambiosCtz"); } }
         public bool AceptaCambiosCliente { get => _aceptaCambiosCliente; set { _aceptaCambiosCliente = value; OnPropertyChanged("AceptaCambiosCliente"); } }
         public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged("CorreosElectronicos"); } }
+        public long EditaSucursal { get => _editaSucursal; set { _editaSucursal = value; OnPropertyChanged("BusquedaSucursal"); } }
+        public long EditaUsuario { get => _editaUsuario; set { _editaUsuario = value; OnPropertyChanged("EditaUsuario"); } }
         #endregion
 
         #region Constructor
@@ -129,6 +133,8 @@ namespace Cotizador.ViewModel
             BorradorSeleccionado = true;
             AceptaCambiosCtz = true;
             AceptaCambiosCliente = true;
+            EditaSucursal = 0;
+            EditaUsuario = 0;
         }        
         #endregion
 
@@ -359,7 +365,6 @@ namespace Cotizador.ViewModel
                                               ClaveImpuesto = y.Key,
                                               Importe = Math.Round(y.Sum(z => z.Importe), 2)
                                           });
-
                     MiCotizacion = new Cotizacion
                     {
                         Empresa = Usuario.Empresa,
@@ -485,9 +490,9 @@ namespace Cotizador.ViewModel
                 FechaEmision = FechaCotizacion.ToString("yyyy-MM-dd HH:mm:ss"),
                 Partidas = ListaProductos.Count,
                 ClaveMoneda = 1,
-                ClaveEntidadFiscalInmueble = Usuario.ClaveEntidadFiscalInmueble,
-                ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,
-                ClaveEntidadFiscalResponsable = Usuario.ClaveEntidadFiscalEmpleado,
+                ClaveEntidadFiscalInmueble = (EditaSucursal > 0) ? EditaSucursal : Usuario.ClaveEntidadFiscalInmueble,
+                ClaveEntidadFiscalResponsable = (EditaUsuario > 0) ? EditaUsuario : Usuario.ClaveEntidadFiscalEmpleado,
+                ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,                
                 ClaveComprobante = InfoCotizacion.ClaveComprobanteDeCotizacion,
                 CodigoDeComprobante = InfoCotizacion.CodigoDeComprobante,
                 ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
@@ -598,6 +603,8 @@ namespace Cotizador.ViewModel
             AceptaCambiosCliente = true;            
             InfoCotizacion = null;
             IndexEstatusCtz = 0;
+            EditaSucursal = 0;
+            EditaUsuario = 0;
         }
 
         private void ActualizarListaDetalles(ProductoSeleccionado prodsel, int estatus)
@@ -747,7 +754,7 @@ namespace Cotizador.ViewModel
                 }
                 else
                 {
-                    IndexEstatusCtz = 1;
+                    IndexEstatusCtz = 0;
                 }
             }
             catch (Exception)
