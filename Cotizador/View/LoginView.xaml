@@ -76,8 +76,8 @@
                         Command="{Binding ValidarUsuarioCommand}" 
                         CommandParameter="{Binding ElementName=txtPassword}"/>
                     <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource PrimaryHueDarkBrush}"
-                                         ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionMidButton}">
-                        <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                                    ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionMidButton}" HorizontalAlignment="Stretch">
+                        <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar" >
                             <mdWpf:SnackbarMessage.Content>
                                 <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}" TextWrapping="Wrap"/>
                             </mdWpf:SnackbarMessage.Content>

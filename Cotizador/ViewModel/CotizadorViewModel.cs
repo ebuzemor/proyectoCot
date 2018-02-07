@@ -428,111 +428,119 @@ namespace Cotizador.ViewModel
 
         private async void EditarCotizacion()
         {
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            string direccionIP = host.AddressList.FirstOrDefault(h => h.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-            ListaDetalleComprobantes = new List<DetalleComprobantes>();
-            ComprobantesImpuestos ImpuestoLinea = new ComprobantesImpuestos();
-            ListaCotizacionImpuestos = new List<ComprobantesImpuestos>();
-            ListaImpuestosXlinea = new List<ComprobantesImpuestos>();
-            int c = 1;
-
-            foreach (ProductoSeleccionado item in ListaDetalles)
+            if (ClienteSel != null && ListaProductos.Count > 0)
             {
-                string[] cadTasas = item.Producto.Tasas.Split(',');
-                string[] cadClave = item.Producto.ClavesImpuestos.Split(',');
+                var host = Dns.GetHostEntry(Dns.GetHostName());
+                string direccionIP = host.AddressList.FirstOrDefault(h => h.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
+                ListaDetalleComprobantes = new List<DetalleComprobantes>();
+                ComprobantesImpuestos ImpuestoLinea = new ComprobantesImpuestos();
+                ListaCotizacionImpuestos = new List<ComprobantesImpuestos>();
+                ListaImpuestosXlinea = new List<ComprobantesImpuestos>();
+                int c = 1;
 
-                for (int i = 0; i < cadTasas.Length; i++)
+                foreach (ProductoSeleccionado item in ListaDetalles)
                 {
-                    if (item.Estatus != 0)
+                    string[] cadTasas = item.Producto.Tasas.Split(',');
+                    string[] cadClave = item.Producto.ClavesImpuestos.Split(',');
+
+                    for (int i = 0; i < cadTasas.Length; i++)
                     {
-                        ImpuestoLinea = new ComprobantesImpuestos
+                        if (item.Estatus != 0)
                         {
-                            ClaveImpuesto = Convert.ToInt64(cadClave[i]),
-                            Importe = Math.Round((item.Cantidad * item.Producto.PrecioUnitario - item.ImporteDesc) * (Convert.ToDouble(cadTasas[i]) / 100), 2)
-                        };
-                        ListaImpuestosXlinea.Add(ImpuestoLinea);
-                        ListaCotizacionImpuestos.Add(ImpuestoLinea);
-                    }                    
+                            ImpuestoLinea = new ComprobantesImpuestos
+                            {
+                                ClaveImpuesto = Convert.ToInt64(cadClave[i]),
+                                Importe = Math.Round((item.Cantidad * item.Producto.PrecioUnitario - item.ImporteDesc) * (Convert.ToDouble(cadTasas[i]) / 100), 2)
+                            };
+                            ListaImpuestosXlinea.Add(ImpuestoLinea);
+                            ListaCotizacionImpuestos.Add(ImpuestoLinea);
+                        }
+                    }
+
+                    DetalleComprobantes detCom = new DetalleComprobantes
+                    {
+                        Cantidad = item.Cantidad,
+                        ClaveUnidadDeMedida = item.Producto.ClaveUnidadDeMedida,
+                        ClaveProducto = item.Producto.ClaveProducto,
+                        Importe = item.Cantidad * item.Producto.PrecioUnitario, //item.Importe,
+                        ImporteDescuento = item.ImporteDesc,
+                        Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
+                        NumeroPartidas = c,
+                        PrecioUnitario = item.Producto.PrecioUnitario,
+                        Estatus = item.Estatus,
+                        ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante,
+                        DiasDeEntrega = item.DiasEntrega
+                    };
+                    c += 1;
+                    ListaDetalleComprobantes.Add(detCom);
+                    ListaImpuestosXlinea.Clear();
                 }
-
-                DetalleComprobantes detCom = new DetalleComprobantes
+                // utilizando Linq, se hace una sumatoria por tipo de impuesto y se guarda en una variable
+                var listaSumaImpuestos = ListaCotizacionImpuestos.GroupBy(x => x.ClaveImpuesto)
+                                      .Select(y => new
+                                      {
+                                          ClaveImpuesto = y.Key,
+                                          Importe = Math.Round(y.Sum(z => z.Importe), 2)
+                                      });
+                MiCotizacion = new Cotizacion
                 {
-                    Cantidad = item.Cantidad,
-                    ClaveUnidadDeMedida = item.Producto.ClaveUnidadDeMedida,
-                    ClaveProducto = item.Producto.ClaveProducto,
-                    Importe = item.Cantidad * item.Producto.PrecioUnitario, //item.Importe,
-                    ImporteDescuento = item.ImporteDesc,
-                    Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
-                    NumeroPartidas = c,
-                    PrecioUnitario = item.Producto.PrecioUnitario,
-                    Estatus = item.Estatus,
-                    ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante,
-                    DiasDeEntrega = item.DiasEntrega
+                    Empresa = Usuario.Empresa,
+                    Equipo = direccionIP,
+                    Usuario = Usuario.NombreUsuario,
+                    ClaveInmueble = Usuario.Sucursal,
+                    ClaveTipoDeComprobante = EstatusCotizacion.ClaveTipoDeComprobante,
+                    FechaEmision = FechaCotizacion.ToString("yyyy-MM-dd HH:mm:ss"),
+                    Partidas = ListaProductos.Count,
+                    ClaveMoneda = 1,
+                    ClaveEntidadFiscalInmueble = (EditaSucursal > 0) ? EditaSucursal : Usuario.ClaveEntidadFiscalInmueble,
+                    ClaveEntidadFiscalResponsable = (EditaUsuario > 0) ? EditaUsuario : Usuario.ClaveEntidadFiscalEmpleado,
+                    ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,
+                    ClaveComprobante = InfoCotizacion.ClaveComprobanteDeCotizacion,
+                    CodigoDeComprobante = InfoCotizacion.CodigoDeComprobante,
+                    ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
+                    ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
+                    ClaveListaDePrecios = 1,
+                    FechaVigencia = FechaCtzVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
+                    SubTotal = ImporteTotal,
+                    Descuento = DescuentoTotal,
+                    Impuestos = ImpuestoTotal,
+                    Total = SumaSubTotal,
+                    Observaciones = Observaciones,
+                    DetallesDeComprobante = JsonConvert.SerializeObject(ListaDetalleComprobantes)
                 };
-                c += 1;
-                ListaDetalleComprobantes.Add(detCom);
-                ListaImpuestosXlinea.Clear();
+                String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
+
+                // se procede a editar la cotizacion
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("editarCotizacion", Method.POST);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                req.AddParameter("text/json", AprosiCtz, ParameterType.RequestBody);
+
+                req.RequestFormat = DataFormat.Json;
+
+                IRestResponse response = rest.Execute(req);
+                if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                {
+                    var respuesta = JsonConvert.DeserializeObject(response.Content);
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Aviso",
+                        MostrarCancelar = false,
+                        CuerpoMensaje = "Se guardaron los cambios correctamente en la cotizacion: " + InfoCotizacion.CodigoDeComprobante
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    LimpiarCotizacion();
+                }
             }
-            // utilizando Linq, se hace una sumatoria por tipo de impuesto y se guarda en una variable
-            var listaSumaImpuestos = ListaCotizacionImpuestos.GroupBy(x => x.ClaveImpuesto)
-                                  .Select(y => new
-                                  {
-                                      ClaveImpuesto = y.Key,
-                                      Importe = Math.Round(y.Sum(z => z.Importe), 2)
-                                  });
-            MiCotizacion = new Cotizacion
+            else
             {
-                Empresa = Usuario.Empresa,
-                Equipo = direccionIP,
-                Usuario = Usuario.NombreUsuario,
-                ClaveInmueble = Usuario.Sucursal,
-                ClaveTipoDeComprobante = EstatusCotizacion.ClaveTipoDeComprobante,
-                FechaEmision = FechaCotizacion.ToString("yyyy-MM-dd HH:mm:ss"),
-                Partidas = ListaProductos.Count,
-                ClaveMoneda = 1,
-                ClaveEntidadFiscalInmueble = (EditaSucursal > 0) ? EditaSucursal : Usuario.ClaveEntidadFiscalInmueble,
-                ClaveEntidadFiscalResponsable = (EditaUsuario > 0) ? EditaUsuario : Usuario.ClaveEntidadFiscalEmpleado,
-                ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,                
-                ClaveComprobante = InfoCotizacion.ClaveComprobanteDeCotizacion,
-                CodigoDeComprobante = InfoCotizacion.CodigoDeComprobante,
-                ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
-                ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
-                ClaveListaDePrecios = 1,
-                FechaVigencia = FechaCtzVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
-                SubTotal = ImporteTotal,
-                Descuento = DescuentoTotal,
-                Impuestos = ImpuestoTotal,
-                Total = SumaSubTotal,
-                Observaciones = Observaciones,
-                DetallesDeComprobante = JsonConvert.SerializeObject(ListaDetalleComprobantes)
-            };
-            String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
-
-            // se procede a editar la cotizacion
-            var rest = new RestClient(Localhost);
-            var req = new RestRequest("editarCotizacion", Method.POST);
-            req.AddHeader("Accept", "application/json");
-            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-            req.AddParameter("text/json", AprosiCtz, ParameterType.RequestBody);
-
-            req.RequestFormat = DataFormat.Json;
-
-            IRestResponse response = rest.Execute(req);
-            if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
-            {
-                var respuesta = JsonConvert.DeserializeObject(response.Content);
-                var vmMensaje = new MensajeViewModel
-                {
-                    TituloMensaje = "Aviso",
-                    MostrarCancelar = false,
-                    CuerpoMensaje = "Se guardaron los cambios correctamente en la cotizacion: " + InfoCotizacion.CodigoDeComprobante
-                };
-                var vwMensaje = new MensajeView
-                {
-                    DataContext = vmMensaje
-                };
-                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
-                LimpiarCotizacion();
+                TxtMensaje = "Para guardar una cotización debe tener un Cliente seleccionado y al menos un producto en la lista.";
+                VerMensaje = true;
             }
         }
 

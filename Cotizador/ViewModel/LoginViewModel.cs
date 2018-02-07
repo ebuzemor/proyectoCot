@@ -171,14 +171,14 @@ namespace Cotizador.ViewModel
                 else 
                 {
                     EsValido = false;
-                    TxtMensaje = resp.StatusDescription;
+                    TxtMensaje = "ERROR DE WEBSERVICE: Ocurrió un error al ejecutar el WebService para validar credenciales de Usuario. Contacte al administrador del sistema";
                     VerMensaje = true;
                 }
             }
             catch(Exception)
             {
                 EsValido = false;
-                TxtMensaje = "ERROR DE VALIDACION: Para iniciar sesión debe escribir nombre de usuario, password y elegir una sucursal.";
+                TxtMensaje = "ERROR DE EJECUCIÓN: Ocurrió una excepción al validar las credenciales del Usuario, reinicie la aplicación.";
                 VerMensaje = true;
             }
         }

@@ -60,78 +60,97 @@
                 <RowDefinition Height="10"/>
             </Grid.RowDefinitions>
             <!--AREA DE FECHAS Y ESTATUS-->
-            <Grid Margin="10" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="6">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha de Cotización:" IsEnabled="False"
+            <ScrollViewer Grid.Row="0" Grid.RowSpan="3" Grid.Column="1" Grid.ColumnSpan="6" IsDeferredScrollingEnabled="True" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Grid Margin="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <!--<DatePicker x:Name="FechaCotizacion" Grid.Row="0" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha de Cotización:" IsEnabled="False" FontSize="10"
                             Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" DisplayDate="{Binding FechaCotizacion}" SelectedDate="{Binding FechaCotizacion}">
-                </DatePicker>
-                <DatePicker Grid.Row="2" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaCtzVigencia}"
-                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
-                <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Vertical" Margin="1" HorizontalAlignment="Center">
-                    <ListBox SelectedIndex="{Binding IndexEstatusCtz}" Style="{StaticResource MaterialDesignToolToggleListBox}" IsEnabled="{Binding AceptaCambiosCtz}">
-                        <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Borrador" VerticalAlignment="Center"/>
-                                <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
+                        </DatePicker>                        
+                        <DatePicker Grid.Row="2" Grid.Column="0" mdWpf:HintAssist.Hint="Fecha Vigencia:" SelectedDate="{Binding FechaCtzVigencia}"
+                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>-->
+                        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10 0 0" Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="Calendar" Margin="2"/>
+                            <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="Fecha Cotizacion: "/>
+                            <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding FechaCotizacion, StringFormat=dd-MM-yyyy}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 10 0 0" Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="CalendarCheck" Margin="2"/>
+                            <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="Fecha Vigencia: "/>
+                            <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding FechaCtzVigencia, StringFormat=dd-MM-yyyy}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Vertical" Margin="1" HorizontalAlignment="Center">
+                            <ListBox SelectedIndex="{Binding IndexEstatusCtz}" Style="{StaticResource MaterialDesignToolToggleListBox}" IsEnabled="{Binding AceptaCambiosCtz}">
+                                <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Borrador" VerticalAlignment="Center"/>
+                                        <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
                                                 Visibility="{Binding BorradorSeleccionado, Converter={StaticResource EstatusSeleccionado}}"/>
-                            </StackPanel>
-                        </ListBoxItem>
-                        <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Definitiva" VerticalAlignment="Center"/>
-                                <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
+                                    </StackPanel>
+                                </ListBoxItem>
+                                <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Definitiva" VerticalAlignment="Center"/>
+                                        <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
                                                 Visibility="{Binding DefinitivaSeleccionado, Converter={StaticResource EstatusSeleccionado}}"/>
-                            </StackPanel>
-                        </ListBoxItem>
-                    </ListBox>
-                </StackPanel>
-                <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                    </StackPanel>
+                                </ListBoxItem>
+                            </ListBox>
+                        </StackPanel>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" 
                            Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding NumCotizacion}"/>
-                <DatePicker Grid.Row="0" Grid.Column="3" mdWpf:HintAssist.Hint="Fecha de Entrega:" SelectedDate="{Binding FechaCtzEntrega}"
-                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>
-                <StackPanel Grid.Row="2" Grid.Column="3" Orientation="Horizontal">
-                    <mdWpf:PackIcon Kind="City" Margin="2"/>
-                    <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding TxtSucursal}"/>
-                </StackPanel>
-            </Grid>
-            <!--CONTENEDOR CLIENTES-->
-            <StackPanel  Margin="5" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="2">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="58"/>
-                        <ColumnDefinition Width="3*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}" IsEnabled="{Binding AceptaCambiosCliente}">
-                        <mdWpf:PackIcon Width="24" Height="24" Kind="AccountPlus" />
-                    </Button>
-                    <mdWpf:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
+                        <!--<DatePicker Grid.Row="0" Grid.Column="3" mdWpf:HintAssist.Hint="Fecha de Entrega:" SelectedDate="{Binding FechaCtzEntrega}"
+                            Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" IsEnabled="False"/>-->
+                        <StackPanel Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0 10 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <mdWpf:PackIcon Kind="CalendarClock" Margin="2"/>
+                            <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="Fecha Entrega: "/>
+                            <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding FechaCtzEntrega, StringFormat=dd-MM-yyyy}"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="3" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Right">
+                            <mdWpf:PackIcon Kind="City" Margin="2"/>
+                            <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding TxtSucursal}"/>
+                        </StackPanel>
+                    </Grid>
+                    <!--CONTENEDOR CLIENTES-->
+                    <StackPanel  Margin="5">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="58"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Agregar Cliente" Command="{Binding AgregarClienteCommand}" IsEnabled="{Binding AceptaCambiosCliente}">
+                                <mdWpf:PackIcon Width="24" Height="24" Kind="AccountPlus" />
+                            </Button>
+                            <mdWpf:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
                                 Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5">
-                        <Grid ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="30"/>
-                                <RowDefinition Height="30"/>
-                                <RowDefinition Height="30"/>
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
-                                <mdWpf:PackIcon Kind="AccountCardDetails"/>
-                                <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Bold" Text="Datos del Cliente a Cotizar:"/>
-                            </StackPanel>
-                            <TextBlock Grid.Row="1" Text="{Binding CteRazonSocial}"/>
-                            <TextBlock TextWrapping="Wrap" Grid.Row="2" Text="{Binding DatosCliente}"/>
+                                <Grid ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="30"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                        <mdWpf:PackIcon Kind="AccountCardDetails"/>
+                                        <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Bold" Text="Datos del Cliente a Cotizar:"/>
+                                    </StackPanel>
+                                    <TextBlock Grid.Row="1" Text="{Binding CteRazonSocial}"/>
+                                    <TextBlock TextWrapping="Wrap" Grid.Row="2" Text="{Binding DatosCliente}"/>
+                                </Grid>
+                            </mdWpf:Card>
                         </Grid>
-                    </mdWpf:Card>
-                </Grid>
-            </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>            
             <!--CONTENEDOR PRODUCTOS-->
             <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="6" Grid.RowSpan="3">
                 <Grid.ColumnDefinitions>

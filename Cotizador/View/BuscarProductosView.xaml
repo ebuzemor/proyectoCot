@@ -15,7 +15,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource PrimaryHueLightBrush}"
              FontFamily="{StaticResource MaterialDesignFont}"
-             Height="600" Width="650">
+             Height="550" Width="650">
     <UserControl.Resources>
         <ResourceDictionary>
             <common:ConvertidorPorcentaje x:Key="PorcentajeConv"/>
@@ -38,7 +38,7 @@
                 <RowDefinition />
                 <RowDefinition Height="45"/>
                 <RowDefinition />
-                <RowDefinition />
+                <RowDefinition Height="1.5*"/>
                 <RowDefinition Height="45"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
