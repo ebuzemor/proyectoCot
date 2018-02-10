@@ -65,8 +65,7 @@ namespace Cotizador.ViewModel
         private long _claveEstatusCtz;
         private long _editaSucursal;
         private long _editaUsuario;
-        private Boolean _borradorSeleccionado;
-        private Boolean _pendienteSeleccionado;
+        private Boolean _borradorSeleccionado;        
         private Boolean _definitivaSeleccionado;
         private Boolean _aceptaCambios;
         private Boolean _aceptaCambiosCliente;
@@ -107,7 +106,6 @@ namespace Cotizador.ViewModel
         public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged("IndexEstatusCtz"); ActualizarEstatus(); } }
         public long ClaveEstatusCtz { get => _claveEstatusCtz; set { _claveEstatusCtz = value; OnPropertyChanged("ClaveEstatusCtz"); } }
         public bool BorradorSeleccionado { get => _borradorSeleccionado; set { _borradorSeleccionado = value; OnPropertyChanged("BorradorSeleccionado"); } }
-        public bool PendienteSeleccionado { get => _pendienteSeleccionado; set { _pendienteSeleccionado = value; OnPropertyChanged("PendienteSeleccionado"); } }
         public bool DefinitivaSeleccionado { get => _definitivaSeleccionado; set { _definitivaSeleccionado = value; OnPropertyChanged("DefinitivaSeleccionado"); } }
         public bool AceptaCambiosCtz { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged("AceptaCambiosCtz"); } }
         public bool AceptaCambiosCliente { get => _aceptaCambiosCliente; set { _aceptaCambiosCliente = value; OnPropertyChanged("AceptaCambiosCliente"); } }
@@ -712,7 +710,6 @@ namespace Cotizador.ViewModel
                 {
                     case 0:
                         BorradorSeleccionado = true;
-                        PendienteSeleccionado = false;
                         DefinitivaSeleccionado = false;
                         ClaveEstatusCtz = 160;
                         AceptaCambiosCtz = true;
@@ -722,7 +719,6 @@ namespace Cotizador.ViewModel
                         if (ListaProductos.Count > 0)
                         {
                             BorradorSeleccionado = false;
-                            PendienteSeleccionado = false;
                             DefinitivaSeleccionado = true;
                             ClaveEstatusCtz = 162;
                             EstatusDefinitiva();

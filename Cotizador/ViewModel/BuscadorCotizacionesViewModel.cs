@@ -303,6 +303,7 @@ namespace Cotizador.ViewModel
                     foreach (InfoDetallesCotizacion fila in detalles)
                     {
                         double pdesc = Math.Round(fila.ImporteDescuento / (fila.PrecioUnitario * fila.Cantidad), 2);
+                        DateTime fecEntrega = (fila.DiasDeEntrega == 0) ? Convert.ToDateTime(InfoCotizacion.FechaVigencia) : Convert.ToDateTime(InfoCotizacion.FechaEmision).AddDays(fila.DiasDeEntrega);
                         ProductoSeleccionado psel = new ProductoSeleccionado
                         {
                             Cantidad = fila.Cantidad,
@@ -314,6 +315,7 @@ namespace Cotizador.ViewModel
                             Estatus = 3,
                             ClaveDetalleDeComprobante = fila.ClaveDetalleDeComprobante,
                             DiasEntrega = fila.DiasDeEntrega,
+                            FechaEntrega = fecEntrega,
                             Producto = new Producto
                             {
                                 ClaveProducto = fila.ClaveProducto,
