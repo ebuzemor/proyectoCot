@@ -176,6 +176,9 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
     <Compile Include="ViewModel\SeleccionarSucursalViewModel.cs" />
+    <Compile Include="View\AutorizarCotizacionesView.xaml.cs">
+      <DependentUpon>AutorizarCotizacionesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\BuscadorCotizacionesView.xaml.cs">
       <DependentUpon>BuscadorCotizacionesView.xaml</DependentUpon>
     </Compile>
@@ -221,6 +224,10 @@
     <Compile Include="View\SeleccionarSucursalView.xaml.cs">
       <DependentUpon>SeleccionarSucursalView.xaml</DependentUpon>
     </Compile>
+    <Page Include="View\AutorizarCotizacionesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\BuscadorCotizacionesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -245,7 +245,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Entrega" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}" IsReadOnly="True" Width="*">
+                        <DataGridTemplateColumn Header="Entrega" x:Name="Entrega" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}" IsReadOnly="True" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding FechaEntrega, StringFormat=dd-MM-yy}" TextAlignment="Center">
@@ -317,6 +317,7 @@
                         <TextBlock Text="Total" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                     </Grid>
+                    <Grid Width="{Binding ElementName=Entrega, Path=ActualWidth}"/>
                     <Grid Width="{Binding ElementName=Acciones, Path=ActualWidth}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="1" Margin="5" HorizontalAlignment="Left" Orientation="Horizontal">
@@ -342,6 +343,7 @@
                         <TextBlock Text="{Binding SumaSubTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
                                Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                     </Grid>
+                    <Grid Width="{Binding ElementName=Entrega, Path=ActualWidth}"/>
                     <Grid Width="{Binding ElementName=Acciones, Path=ActualWidth}"/>
                 </StackPanel>
             </Grid>
