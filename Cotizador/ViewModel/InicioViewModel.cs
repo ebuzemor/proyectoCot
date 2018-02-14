@@ -1,10 +1,9 @@
 ﻿using Cotizador.Common;
 using Cotizador.Model;
 using Cotizador.View;
-using System;
 using MaterialDesignThemes.Wpf;
+using System;
 using System.Windows;
-using System.ComponentModel;
 
 namespace Cotizador.ViewModel
 {
@@ -27,14 +26,14 @@ namespace Cotizador.ViewModel
         private BuscadorCotizacionesViewModel _vmBuscadorCot;
 
         public MenuOpciones[] MenuOpcion { get; set; }
-        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
-        public CotizadorView VwCotizador { get => _vwCotizador; set { _vwCotizador = value; OnPropertyChanged("VwCotizador"); } }
-        public CotizadorViewModel VmCotizador { get => _vmCotizador; set { _vmCotizador = value; OnPropertyChanged("VmCotizador"); } }
-        public BuscadorCotizacionesView VwBuscadorCot { get => _vwBuscadorCot; set { _vwBuscadorCot = value; OnPropertyChanged("VwBuscadorCot"); } }
-        public BuscadorCotizacionesViewModel VmBuscadorCot { get => _vmBuscadorCot; set { _vmBuscadorCot = value; OnPropertyChanged("VmBuscadorCot"); } }
-        public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged("IdVentana"); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
+        public CotizadorView VwCotizador { get => _vwCotizador; set { _vwCotizador = value; OnPropertyChanged(); } }
+        public CotizadorViewModel VmCotizador { get => _vmCotizador; set { _vmCotizador = value; OnPropertyChanged(); } }
+        public BuscadorCotizacionesView VwBuscadorCot { get => _vwBuscadorCot; set { _vwBuscadorCot = value; OnPropertyChanged(); } }
+        public BuscadorCotizacionesViewModel VmBuscadorCot { get => _vmBuscadorCot; set { _vmBuscadorCot = value; OnPropertyChanged(); } }
+        public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor

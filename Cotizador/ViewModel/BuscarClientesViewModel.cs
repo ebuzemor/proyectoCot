@@ -41,24 +41,24 @@ namespace Cotizador.ViewModel
         private Boolean _verMensaje;
         private String _txtMensaje;
 
-        public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged("ListaClientes"); } }
-        public Cliente NvoCliente { get => _NvoCliente; set { _NvoCliente = value; OnPropertyChanged("NvoCliente"); } }
-        public string TxtCliente { get => _TxtCliente; set { _TxtCliente = value; OnPropertyChanged("TxtCliente"); } }
-        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
-        public ClientesJson ClientesJson { get => _clientesJson; set { _clientesJson = value; OnPropertyChanged("ClientesJson"); } }
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }    
-        public CollectionViewSource CvsClientes { get => _cvsClientes; set { _cvsClientes = value; OnPropertyChanged("CvsClientes"); } }
+        public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged(); } }
+        public Cliente NvoCliente { get => _NvoCliente; set { _NvoCliente = value; OnPropertyChanged(); } }
+        public string TxtCliente { get => _TxtCliente; set { _TxtCliente = value; OnPropertyChanged(); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
+        public ClientesJson ClientesJson { get => _clientesJson; set { _clientesJson = value; OnPropertyChanged(); } }
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }    
+        public CollectionViewSource CvsClientes { get => _cvsClientes; set { _cvsClientes = value; OnPropertyChanged(); } }
         public int ItemsPorPag { get => _itemsPorPag; set => _itemsPorPag = value; }
-        public int PagsTotales { get => _pagsTotales; set { _pagsTotales = value; OnPropertyChanged("PagsTotales"); } }
-        public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged("IndicePagActual"); } }
-        public int PagActual { get => _pagActual + 1; set { _pagActual = value; OnPropertyChanged("PagActual"); } }
-        public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged("ActivoInicio"); } }
-        public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged("ActivoAnterior"); } }
-        public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged("ActivoSiguiente"); } }
-        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged("ActivoFinal"); } }
-        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
-        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
+        public int PagsTotales { get => _pagsTotales; set { _pagsTotales = value; OnPropertyChanged(); } }
+        public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged(); } }
+        public int PagActual { get => _pagActual + 1; set { _pagActual = value; OnPropertyChanged(); } }
+        public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged(); } }
+        public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged(); } }
+        public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged(); } }
+        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }
+        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
         #endregion
 
 

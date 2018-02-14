@@ -60,5 +60,7 @@ namespace Cotizador.Model
 
         [JsonProperty("observaciones")]
         public string Observaciones { get; set; }
+        
+        public int VigenciaEstatus { get; set; }
     }
 }

@@ -19,8 +19,8 @@ namespace Cotizador.ViewModel
         private String _txtFiltro;
         private ICollectionView _icvUsuarios;
 
-        public List<Usuario> ListaUsuarios { get => _listaUsuarios; set { _listaUsuarios = value; OnPropertyChanged("ListaUsuarios"); } }
-        public Usuario UsuarioSel { get => _usuarioSel; set { _usuarioSel = value; OnPropertyChanged("UsuarioSel"); } }
+        public List<Usuario> ListaUsuarios { get => _listaUsuarios; set { _listaUsuarios = value; OnPropertyChanged(); } }
+        public Usuario UsuarioSel { get => _usuarioSel; set { _usuarioSel = value; OnPropertyChanged(); } }
         public string TxtFiltro
         {
             get => _txtFiltro;
@@ -29,11 +29,11 @@ namespace Cotizador.ViewModel
                 {
                     _txtFiltro = value;
                     FiltrarSucursales(_txtFiltro);
-                    OnPropertyChanged("TxtFiltro");
+                    OnPropertyChanged();
                 }
             }                 
         }
-        public ICollectionView IcvUsuarios { get => _icvUsuarios; set { _icvUsuarios = value; OnPropertyChanged("IcvUsuarios"); } }
+        public ICollectionView IcvUsuarios { get => _icvUsuarios; set { _icvUsuarios = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor

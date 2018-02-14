@@ -150,6 +150,7 @@
     <Compile Include="Common\Validations\FechaAntesValidationRule.cs" />
     <Compile Include="Common\Validations\hiddenRowConverter.cs" />
     <Compile Include="Common\Validations\PorcentajeValidationRule.cs" />
+    <Compile Include="Common\VigenciaEstatusConverter.cs" />
     <Compile Include="Model\ApiKey.cs" />
     <Compile Include="Model\Cliente.cs" />
     <Compile Include="Model\ComprobanteGenerado.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
+    <Compile Include="ViewModel\ObservacionesViewModel.cs" />
     <Compile Include="ViewModel\SeleccionarSucursalViewModel.cs" />
     <Compile Include="View\AutorizarCotizacionesView.xaml.cs">
       <DependentUpon>AutorizarCotizacionesView.xaml</DependentUpon>
@@ -220,6 +222,9 @@
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="View\MensajeView.xaml.cs">
       <DependentUpon>MensajeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ObservacionesView.xaml.cs">
+      <DependentUpon>ObservacionesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SeleccionarSucursalView.xaml.cs">
       <DependentUpon>SeleccionarSucursalView.xaml</DependentUpon>
@@ -273,6 +278,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MensajeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ObservacionesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

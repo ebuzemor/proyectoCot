@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mdWpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:common="clr-namespace:Cotizador.Common"
              mc:Ignorable="d" 
              d:DesignHeight="768" d:DesignWidth="1024"
              TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -26,6 +27,7 @@
                 <Setter Property="HorizontalContentAlignment" Value="Right"/>
                 <Setter Property="HorizontalAlignment" Value="Right"/>
             </Style>
+            <common:VigenciaEstatusConverter x:Key="StatVigencia"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
@@ -122,7 +124,14 @@
                   mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding CvsCotizaciones.View}">
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="1.6*">
+                    <DataGridTemplateColumn IsReadOnly="True" Width="0.3*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <mdWpf:PackIcon Kind="Brightness1" Width="12" Height="12" Foreground="{Binding VigenciaEstatus, Converter={StaticResource StatVigencia}}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="2*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding RazonSocial}" ToolTip="{Binding RazonSocial}"/>
@@ -136,28 +145,28 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Fecha Emisión" IsReadOnly="True" Width="*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                    <DataGridTemplateColumn Header="F. Emisión" IsReadOnly="True" Width="0.8*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding FechaEmision, StringFormat=d}" ToolTip="{Binding FechaEmision, StringFormat=d}" TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Part." IsReadOnly="True" Width=".5*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                    <DataGridTemplateColumn Header="Part." IsReadOnly="True" Width="0.5*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Partidas}" ToolTip="Número de Partida(s)" TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Estatus" IsReadOnly="True" Width="*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                    <DataGridTemplateColumn Header="Estatus" IsReadOnly="True" Width="0.7*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Estatus}" ToolTip="{Binding Estatus}" TextAlignment="Center"/>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                    <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width="0.8*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Descuento, StringFormat=C2}" TextAlignment="Right">
@@ -168,7 +177,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Total" IsReadOnly="True" Width=".9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                    <DataGridTemplateColumn Header="Total" IsReadOnly="True" Width="0.9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Total, StringFormat=C2}" TextAlignment="Right">

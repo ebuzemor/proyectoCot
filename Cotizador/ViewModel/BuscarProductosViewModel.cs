@@ -1,12 +1,11 @@
 ﻿using Cotizador.Common;
 using Cotizador.Model;
 using Cotizador.View;
-using Newtonsoft.Json;
 using MaterialDesignThemes.Wpf;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.Net;
 using System.Windows.Data;
 
@@ -52,25 +51,25 @@ namespace Cotizador.ViewModel
         private String _txtMensaje;
         private ObservableCollection<Existencias> _listaExistencias;
 
-        public ObservableCollection<Producto> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged("ListaProductos"); } }        
-        public ProductosJson ProductosJson { get => _productosJson; set { _productosJson = value; OnPropertyChanged("ProdutosJson"); } }
-        public string TxtProducto { get => _txtProducto; set { _txtProducto = value; OnPropertyChanged("TxtProducto"); } }
-        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }        
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }        
-        public ProductoSeleccionado SelProducto { get => _selProducto; set { _selProducto = value; OnPropertyChanged("SelProducto"); } }
-        public CollectionViewSource CvsProductos { get => _cvsProductos; set { _cvsProductos = value; OnPropertyChanged("CvsProductos"); } }
+        public ObservableCollection<Producto> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged(); } }        
+        public ProductosJson ProductosJson { get => _productosJson; set { _productosJson = value; OnPropertyChanged(); } }
+        public string TxtProducto { get => _txtProducto; set { _txtProducto = value; OnPropertyChanged(); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }        
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }        
+        public ProductoSeleccionado SelProducto { get => _selProducto; set { _selProducto = value; OnPropertyChanged(); } }
+        public CollectionViewSource CvsProductos { get => _cvsProductos; set { _cvsProductos = value; OnPropertyChanged(); } }
         public int ItemsPorPag { get => _itemsPorPag; set => _itemsPorPag = value; }
-        public int PagsTotales { get => _pagsTotales; private set { _pagsTotales = value; OnPropertyChanged("PagsTotales"); } }
-        public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged("IndicePagActual"); } }
-        public int PagActual { get => _indicePagActual + 1; set { _pagActual = value; OnPropertyChanged("PagActual"); } }
-        public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged("ActivoInicio"); } }
-        public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged("ActivoAnterior"); } }
-        public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged("ActivoSiguiente"); } }
-        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged("ActivoFinal"); } }                
-        public double TxtImporte { get => _txtImporte; set { _txtImporte = value; OnPropertyChanged("TxtImporte"); } }
-        public double TxtImporteDesc { get => _txtImporteDesc; set { _txtImporteDesc = value; OnPropertyChanged("TxtImporteDesc"); } }
-        public bool ActivoSeleccionar { get => _activoSeleccionar; set { _activoSeleccionar = value; OnPropertyChanged("ActivoSeleccionar"); } }
+        public int PagsTotales { get => _pagsTotales; private set { _pagsTotales = value; OnPropertyChanged(); } }
+        public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged(); } }
+        public int PagActual { get => _indicePagActual + 1; set { _pagActual = value; OnPropertyChanged(); } }
+        public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged(); } }
+        public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged(); } }
+        public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged(); } }
+        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }                
+        public double TxtImporte { get => _txtImporte; set { _txtImporte = value; OnPropertyChanged(); } }
+        public double TxtImporteDesc { get => _txtImporteDesc; set { _txtImporteDesc = value; OnPropertyChanged(); } }
+        public bool ActivoSeleccionar { get => _activoSeleccionar; set { _activoSeleccionar = value; OnPropertyChanged(); } }
         public double TxtCantidad
         {
             get => _txtCantidad;
@@ -82,7 +81,7 @@ namespace Cotizador.ViewModel
                 }
                 else
                     _txtCantidad = Convert.ToDouble(value);
-                OnPropertyChanged("TxtCantidad");
+                OnPropertyChanged();
                 CalcularImporte(_txtCantidad);
                 ActivarBtnSeleccionar();
             }
@@ -93,7 +92,7 @@ namespace Cotizador.ViewModel
             set
             {
                 _txtDescuento = value;
-                OnPropertyChanged("TxtDescuento");
+                OnPropertyChanged();
                 CalcularDescuento(_txtDescuento);
                 ActivarBtnSeleccionar();
             }
@@ -104,15 +103,15 @@ namespace Cotizador.ViewModel
             set
             {
                 _nvoProducto = value;
-                OnPropertyChanged("NvoProducto");
+                OnPropertyChanged();
                 CalcularImporte(TxtCantidad);
                 CalcularDescuento(TxtDescuento);
                 ActivarBtnSeleccionar();
             }
         }
-        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
-        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
-        public ObservableCollection<Existencias> ListaExistencias { get => _listaExistencias; set { _listaExistencias = value; OnPropertyChanged("ListaExistencias"); } }
+        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
+        public ObservableCollection<Existencias> ListaExistencias { get => _listaExistencias; set { _listaExistencias = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor

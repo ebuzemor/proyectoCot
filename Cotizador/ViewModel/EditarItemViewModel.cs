@@ -14,8 +14,8 @@ namespace Cotizador.ViewModel
         private Double _txtImporteDesc;
         private Double _txtImporte;
 
-        public ProductoSeleccionado ProdSeleccionado { get => _prodSeleccionado; set { _prodSeleccionado = value; OnPropertyChanged("Seleccionado"); } }
-        public bool ActivoSeleccionar { get => _activoSeleccionar; set { _activoSeleccionar = value; OnPropertyChanged("ActivoSeleccionar"); } }
+        public ProductoSeleccionado ProdSeleccionado { get => _prodSeleccionado; set { _prodSeleccionado = value; OnPropertyChanged(); } }
+        public bool ActivoSeleccionar { get => _activoSeleccionar; set { _activoSeleccionar = value; OnPropertyChanged(); } }
         public double TxtCantidad
         {
             get => _txtCantidad;
@@ -25,7 +25,7 @@ namespace Cotizador.ViewModel
                     _txtCantidad = Convert.ToInt32(value);
                 else
                     _txtCantidad = Convert.ToDouble(value);
-                OnPropertyChanged("TxtCantidad");
+                OnPropertyChanged();
                 CalcularImporte(_txtCantidad);
                 ActivarBtnActualizar();
             }
@@ -36,13 +36,13 @@ namespace Cotizador.ViewModel
             set
             {
                 _txtDescuento = value;
-                OnPropertyChanged("TxtDescuento");
+                OnPropertyChanged();
                 CalcularDescuento(_txtDescuento);
                 ActivarBtnActualizar();
             }
         }
-        public double TxtImporteDesc { get => _txtImporteDesc; set { _txtImporteDesc = value; OnPropertyChanged("TxtImporteDesc"); } }
-        public double TxtImporte { get => _txtImporte; set { _txtImporte = value; OnPropertyChanged("TxtImporte"); } }
+        public double TxtImporteDesc { get => _txtImporteDesc; set { _txtImporteDesc = value; OnPropertyChanged(); } }
+        public double TxtImporte { get => _txtImporte; set { _txtImporte = value; OnPropertyChanged(); } }
         #endregion
 
         #region Commands
@@ -61,7 +61,7 @@ namespace Cotizador.ViewModel
             {
                 if (cantidad > 0)
                 {                    
-                    TxtImporte = Convert.ToDouble(cantidad) * ProdSeleccionado.Producto.PrecioUnitario;// - TxtImporteDesc;
+                    TxtImporte = Convert.ToDouble(cantidad) * ProdSeleccionado.Producto.PrecioUnitario;
                     CalcularDescuento(TxtDescuento);
                 }
                 else
@@ -80,7 +80,7 @@ namespace Cotizador.ViewModel
                 if (descuento > 0 && TxtCantidad > 0)
                 {
                     TxtImporteDesc = Convert.ToDouble(descuento) * ProdSeleccionado.Producto.PrecioUnitario * TxtCantidad;
-                    TxtImporte = (ProdSeleccionado.Producto.PrecioUnitario * TxtCantidad);// - TxtImporteDesc;
+                    TxtImporte = (ProdSeleccionado.Producto.PrecioUnitario * TxtCantidad);
                 }
                 else if (descuento == 0 && TxtCantidad > 0)
                 {

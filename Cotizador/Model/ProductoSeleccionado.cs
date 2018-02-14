@@ -1,18 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using Cotizador.Common;
+using System;
 
 namespace Cotizador.Model
 {
-    public class ProductoSeleccionado : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
+    public class ProductoSeleccionado : Notificador
+    {        
         private Producto _producto;
         private double _cantidad;
         private double _descuento;
@@ -25,16 +17,16 @@ namespace Cotizador.Model
         private DateTime _fechaEntrega;
         private int _diasEntrega;
 
-        public Producto Producto { get => _producto; set { _producto = value; NotifyPropertyChanged(); } }
-        public double Cantidad { get => _cantidad; set { _cantidad = value; NotifyPropertyChanged(); } }
-        public double Descuento { get => _descuento; set { _descuento = value; NotifyPropertyChanged(); } }
-        public double ImporteDesc { get => _importeDesc; set { _importeDesc = value; NotifyPropertyChanged(); } }
-        public double Importe { get => _importe; set { _importe = value; NotifyPropertyChanged(); } }
-        public double Impuesto { get => _impuesto; set { _impuesto = value; NotifyPropertyChanged(); } }
-        public double SubTotal { get => _subTotal; set { _subTotal = value; NotifyPropertyChanged(); } }
-        public int Estatus { get => _estatus; set { _estatus = value; NotifyPropertyChanged(); } }
-        public string ClaveDetalleDeComprobante { get => _claveDetalleDeComprobante; set { _claveDetalleDeComprobante = value; NotifyPropertyChanged(); } }
-        public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; NotifyPropertyChanged(); } }
-        public int DiasEntrega { get => _diasEntrega; set { _diasEntrega = value; NotifyPropertyChanged(); } }
+        public Producto Producto { get => _producto; set { _producto = value; OnPropertyChanged(); } }
+        public double Cantidad { get => _cantidad; set { _cantidad = value; OnPropertyChanged(); } }
+        public double Descuento { get => _descuento; set { _descuento = value; OnPropertyChanged(); } }
+        public double ImporteDesc { get => _importeDesc; set { _importeDesc = value; OnPropertyChanged(); } }
+        public double Importe { get => _importe; set { _importe = value; OnPropertyChanged(); } }
+        public double Impuesto { get => _impuesto; set { _impuesto = value; OnPropertyChanged(); } }
+        public double SubTotal { get => _subTotal; set { _subTotal = value; OnPropertyChanged(); } }
+        public int Estatus { get => _estatus; set { _estatus = value; OnPropertyChanged(); } }
+        public string ClaveDetalleDeComprobante { get => _claveDetalleDeComprobante; set { _claveDetalleDeComprobante = value; OnPropertyChanged(); } }
+        public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; OnPropertyChanged(); } }
+        public int DiasEntrega { get => _diasEntrega; set { _diasEntrega = value; OnPropertyChanged(); } }
     }
 }

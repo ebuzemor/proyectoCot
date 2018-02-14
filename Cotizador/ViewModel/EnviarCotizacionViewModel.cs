@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Cotizador.Common;
-using Cotizador.Model;
+﻿using Cotizador.Common;
+using System;
 
 namespace Cotizador.ViewModel
 {
@@ -15,15 +10,15 @@ namespace Cotizador.ViewModel
         private Boolean _ActivoEnviar;
         private String _correosElectronicos;
 
-        public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged("NumCotizacion"); } }
-        public bool ActivoEnviar { get => _ActivoEnviar; set { _ActivoEnviar = value; OnPropertyChanged("ActivoEnviar"); } }
+        public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged(); } }
+        public bool ActivoEnviar { get => _ActivoEnviar; set { _ActivoEnviar = value; OnPropertyChanged(); } }
         public string CorreosElectronicos
         {
             get => _correosElectronicos;
             set
             {
                 _correosElectronicos = value;
-                OnPropertyChanged("CorreosElectronicos");
+                OnPropertyChanged();
                 ActivarBtnEnviar();
             }
         }        

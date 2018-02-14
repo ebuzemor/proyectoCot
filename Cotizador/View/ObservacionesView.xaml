@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Cotizador.View.ExistenciasView"
+﻿<UserControl x:Class="Cotizador.View.ObservacionesView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -13,7 +13,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource PrimaryHueLightBrush}"
              FontFamily="{StaticResource MaterialDesignFont}"
-             Height="350" Width="400">
+             Height="300" Width="450">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,7 +26,6 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
-            <RowDefinition Height="35"/>
             <RowDefinition/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
@@ -35,32 +34,12 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <!--TITULO DEL VENTANA-->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Existencias en otras Sucursales" 
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Observaciones de la Cotización:" 
                    FontStyle="Oblique" TextDecorations="Underline"/>
-        <!--DESCRIPCION PRODUCTO-->
-        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding TxtProducto}"/>
-        <!--CUERPO DE VENTANA-->
-        <ListView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding ListaExistencias}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                  ScrollViewer.VerticalScrollBarVisibility="Auto">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListView.ItemContainerStyle>
-            <ListView.View>
-                <GridView>
-                    <!--<GridViewColumn Header="Descripcion" Width="140" DisplayMemberBinding="{Binding Descripcion}"/>-->
-                    <GridViewColumn Header="Sucursal" Width="230" DisplayMemberBinding="{Binding Sucursal}"/>
-                    <GridViewColumn Header="Cantidad" Width="100">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Cantidad, StringFormat=N2}" TextAlignment="Right"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <!--TEXTO DE LA OBSERVACION-->
+        <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" mdWpf:HintAssist.Hint="OBSERVACIONES" AcceptsReturn="True"
+                 Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Observaciones}"
+                 IsReadOnly="{Binding DefinitivaSeleccionado}"/>
         <!--BOTONES DE LA VENTANA-->
         <Button Grid.Row="3" Grid.Column="1" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}"
                 Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="CANCELAR" Content="CERRAR" />

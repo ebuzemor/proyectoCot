@@ -1,17 +1,17 @@
 ﻿using Cotizador.Common;
 using Cotizador.Model;
 using Cotizador.View;
-using System;
 using MaterialDesignThemes.Wpf;
-using System.Linq;
-using RestSharp;
-using System.Collections.Generic;
-using System.Net;
 using Newtonsoft.Json;
+using RestSharp;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Data;
-using System.Text.RegularExpressions;
 using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Windows.Data;
 
 namespace Cotizador.ViewModel
 {
@@ -58,35 +58,38 @@ namespace Cotizador.ViewModel
         private Boolean _activoFinal;
         private CollectionViewSource _cvsCotizaciones;
         private String _correosElectronicos;
+        private int _vigenciaEstatus;
 
-        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
-        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
-        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
-        public EstatusCotizacion ActualEstatus { get => _actualEstatus; set { _actualEstatus = value; OnPropertyChanged("ActualEstatus"); } }
-        public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged("ListaEstatusCtz"); } }
-        public ObservableCollection<Sucursal> ListaSucursales { get => _listaSucursales; set { _listaSucursales = value; OnPropertyChanged("ListaSucursales"); } }
-        public DateTime FechaInicial { get => _fechaInicial; set { _fechaInicial = value; OnPropertyChanged("FechaInicial"); } }
-        public DateTime FechaFinal { get => _fechaFinal; set { _fechaFinal = value; OnPropertyChanged("FechaFinal"); } }
-        public string TxtUsuario { get => _txtUsuario; set { _txtUsuario = value; OnPropertyChanged("TxtUsuario"); } }
-        public Sucursal MiSucursal { get => _miSucursal; set { _miSucursal = value; OnPropertyChanged("MiSucursal"); } }
-        public string ClaveEF_Empresa { get => _claveEF_Empresa; set { _claveEF_Empresa = value; OnPropertyChanged("ClaveEF_Empresa"); } }
-        public ObservableCollection<InfoCotizaciones> ListaCotizaciones { get => _listaCotizaciones; set { _listaCotizaciones = value; OnPropertyChanged("ListaCotizaciones"); } }
-        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged("InfoCotizacion"); } }
-        public string TxtCliente { get => _txtCliente; set { _txtCliente = value; OnPropertyChanged("TxtCliente"); } }
-        public Cliente ClienteCtz { get => _clienteCtz; set { _clienteCtz = value; OnPropertyChanged("ClienteCtz"); } }
-        public ObservableCollection<ProductoSeleccionado> ListaProductosCtz { get => _listaProductosCtz; set { _listaProductosCtz = value; OnPropertyChanged("ListaProductosCtz"); } }
-        public int PagsTotales { get => _pagsTotales; set { _pagsTotales = value; OnPropertyChanged("PagsTotales"); } }
-        public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged("IndicePagActual"); } }
-        public int ItemsPorPag { get => _itemsPorPag; set { _itemsPorPag = value; OnPropertyChanged("ItemsPorPag"); } }
-        public int PagActual { get => _pagActual + 1; set { _pagActual = value; OnPropertyChanged("PagActual"); } }
-        public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged("ActivoInicio"); } }
-        public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged("ActivoAnterior"); } }
-        public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged("ActivoSiguiente"); } }
-        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged("ActivoFinal"); } }
-        public CollectionViewSource CvsCotizaciones { get => _cvsCotizaciones; set { _cvsCotizaciones = value; OnPropertyChanged("CvsCotizaciones"); } }
-        public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged("CorreosElectronicos"); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
+        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
+        public EstatusCotizacion ActualEstatus { get => _actualEstatus; set { _actualEstatus = value; OnPropertyChanged(); } }
+        public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged(); } }
+        public ObservableCollection<Sucursal> ListaSucursales { get => _listaSucursales; set { _listaSucursales = value; OnPropertyChanged(); } }
+        public DateTime FechaInicial { get => _fechaInicial; set { _fechaInicial = value; OnPropertyChanged(); } }
+        public DateTime FechaFinal { get => _fechaFinal; set { _fechaFinal = value; OnPropertyChanged(); } }
+        public string TxtUsuario { get => _txtUsuario; set { _txtUsuario = value; OnPropertyChanged(); } }
+        public Sucursal MiSucursal { get => _miSucursal; set { _miSucursal = value; OnPropertyChanged(); } }
+        public string ClaveEF_Empresa { get => _claveEF_Empresa; set { _claveEF_Empresa = value; OnPropertyChanged(); } }
+        public ObservableCollection<InfoCotizaciones> ListaCotizaciones { get => _listaCotizaciones; set { _listaCotizaciones = value; OnPropertyChanged(); } }
+        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged(); } }
+        public string TxtCliente { get => _txtCliente; set { _txtCliente = value; OnPropertyChanged(); } }
+        public Cliente ClienteCtz { get => _clienteCtz; set { _clienteCtz = value; OnPropertyChanged(); } }
+        public ObservableCollection<ProductoSeleccionado> ListaProductosCtz { get => _listaProductosCtz; set { _listaProductosCtz = value; OnPropertyChanged(); } }
+        public int PagsTotales { get => _pagsTotales; set { _pagsTotales = value; OnPropertyChanged(); } }
+        public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged(); } }
+        public int ItemsPorPag { get => _itemsPorPag; set { _itemsPorPag = value; OnPropertyChanged(); } }
+        public int PagActual { get => _pagActual + 1; set { _pagActual = value; OnPropertyChanged(); } }
+        public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged(); } }
+        public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged(); } }
+        public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged(); } }
+        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }
+        public CollectionViewSource CvsCotizaciones { get => _cvsCotizaciones; set { _cvsCotizaciones = value; OnPropertyChanged(); } }
+        public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
+        public int VigenciaEstatus { get => _vigenciaEstatus; set { _vigenciaEstatus = value; OnPropertyChanged(); } }
+
         #endregion
 
         #region Constructor
@@ -206,6 +209,7 @@ namespace Cotizador.ViewModel
                         {
                             List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
                             ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista.OrderBy(x => x.CodigoDeComprobante));
+                            VerificarVigenciaEstatus();
 
                             ///Paginacion de los resultados
                             CvsCotizaciones = new CollectionViewSource
@@ -239,6 +243,22 @@ namespace Cotizador.ViewModel
                     TxtMensaje = "Ocurrió un error al realizar la consulta, contacte al Administrador.";
                     VerMensaje = true;
                 }
+            }
+        }
+
+        private void VerificarVigenciaEstatus()
+        {
+            foreach (InfoCotizaciones info in ListaCotizaciones)
+            {
+                DateTime fvig = Convert.ToDateTime(info.FechaVigencia);
+                TimeSpan dif = DateTime.Now.Subtract(fvig);
+                int dias = dif.Days;
+                if (dias > 0)
+                    info.VigenciaEstatus = 1;
+                else if (dias >= -7 && dias <= 0)
+                    info.VigenciaEstatus = 2;
+                else
+                    info.VigenciaEstatus = 3;
             }
         }
 

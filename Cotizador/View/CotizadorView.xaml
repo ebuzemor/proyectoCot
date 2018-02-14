@@ -359,8 +359,11 @@
                 <TextBox Margin="5" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Top" mdWpf:HintAssist.Hint="CONDICIONES" AcceptsReturn="True"
                          Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" 
                          Text="{Binding Condiciones.CondicionComercial}" IsReadOnly="True"/>
+                <Button Grid.Column="2" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Content="{mdWpf:PackIcon Kind=CommentTextOutline}" ToolTip="Ver observaciones"
+                        Height="30" Width="30" Command="{Binding VerObservacionCommand}"/>
                 <TextBox Margin="5" Grid.Column="3" Grid.ColumnSpan="2" VerticalAlignment="Top" mdWpf:HintAssist.Hint="OBSERVACIONES" AcceptsReturn="True"
-                         Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Observaciones}"/>
+                         Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Observaciones}"
+                         IsReadOnly="{Binding DefinitivaSeleccionado}"/>
             </Grid>
             <!--BOTONES DE GUARDAR Y CANCELARF-->
             <Grid Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="6">

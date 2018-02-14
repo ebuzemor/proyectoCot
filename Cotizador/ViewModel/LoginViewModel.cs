@@ -38,20 +38,20 @@ namespace Cotizador.ViewModel
         private Boolean _verMensaje;
         private String _txtMensaje;
 
-        public Boolean EsValido { get => _esValido; set { _esValido = value; OnPropertyChanged("EsValido"); } }
-        public String TxtLogin { get => _txtLogin; set { _txtLogin = value; OnPropertyChanged("TxtLogin"); } }
-        public String TxtPassword { get => _txtPassword; set { _txtPassword = value; OnPropertyChanged("TxtPassword"); } }
-        public String Titulo { get => _titulo; set { _titulo = value; OnPropertyChanged("Titulo"); } }
-        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }
-        public UsuariosJson UsuariosJson { get => _usuariosJson; set { _usuariosJson = value; OnPropertyChanged("UsuariosJson"); } }        
-        public SucursalesJson SucursalesJson { get => _sucursalesJson; set { _sucursalesJson = value; OnPropertyChanged("SucursalesJson"); } }
-        public ObservableCollection<Sucursal> ListaSucursales { get => _listaSucursales; set { _listaSucursales = value; OnPropertyChanged("ListaSucursales"); } }
-        public Sucursal MiSucursal { get => _miSucursal; set { _miSucursal = value; OnPropertyChanged("MiSucursal"); } }
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
-        public string ClaveEF_Empresa { get => _claveEF_Empresa; set { _claveEF_Empresa = value; OnPropertyChanged("ClaveEF_Empresa"); } }
-        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
-        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
+        public Boolean EsValido { get => _esValido; set { _esValido = value; OnPropertyChanged(); } }
+        public String TxtLogin { get => _txtLogin; set { _txtLogin = value; OnPropertyChanged(); } }
+        public String TxtPassword { get => _txtPassword; set { _txtPassword = value; OnPropertyChanged(); } }
+        public String Titulo { get => _titulo; set { _titulo = value; OnPropertyChanged(); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
+        public UsuariosJson UsuariosJson { get => _usuariosJson; set { _usuariosJson = value; OnPropertyChanged(); } }        
+        public SucursalesJson SucursalesJson { get => _sucursalesJson; set { _sucursalesJson = value; OnPropertyChanged(); } }
+        public ObservableCollection<Sucursal> ListaSucursales { get => _listaSucursales; set { _listaSucursales = value; OnPropertyChanged(); } }
+        public Sucursal MiSucursal { get => _miSucursal; set { _miSucursal = value; OnPropertyChanged(); } }
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
+        public string ClaveEF_Empresa { get => _claveEF_Empresa; set { _claveEF_Empresa = value; OnPropertyChanged(); } }
+        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor

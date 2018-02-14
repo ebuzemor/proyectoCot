@@ -24,6 +24,7 @@ namespace Cotizador.ViewModel
         public RelayCommand FechaEntregaCommand { get; set; }
         public RelayCommand GuardarCtzCommand { get; set; }
         public RelayCommand NuevaCtzCommand { get; set; }
+        public RelayCommand VerObservacionCommand { get; set; }
         #endregion
 
         #region Variables
@@ -70,48 +71,48 @@ namespace Cotizador.ViewModel
         private Boolean _aceptaCambios;
         private Boolean _aceptaCambiosCliente;
 
-        public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged("NvoCliente"); } }
-        public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged("DatosCliente"); } }
-        public string CteRazonSocial { get => _cteRazonSocial; set { _cteRazonSocial = value; OnPropertyChanged("CteRazonSocial"); } }
-        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged("AppKey"); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged("Usuario"); } }        
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged("Localhost"); } }
-        public ProductoSeleccionado ProductoSel { get => _productoSel; set { _productoSel = value; OnPropertyChanged("ProductoSel"); } }
-        public ObservableCollection<ProductoSeleccionado> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged("ListaProductos"); } }
-        public double PrecioUniTotal { get => _precioUniTotal; set { _precioUniTotal = value; OnPropertyChanged("PrecioUniTotal"); } }
-        public double CantidadTotal { get => _cantidadTotal; set { _cantidadTotal = value;  OnPropertyChanged("CantidadTotal"); } }
-        public double DescuentoTotal { get => _descuentoTotal; set { _descuentoTotal = value; OnPropertyChanged("DescuentoTotal"); } }
-        public double ImporteTotal { get => _importeTotal; set { _importeTotal = value; OnPropertyChanged("ImporteTotal"); } }
-        public double ImpuestoTotal { get => _impuestoTotal; set { _impuestoTotal = value; OnPropertyChanged("ImpuestoTotal"); } }
-        public double SumaSubTotal { get => _sumaSubTotal; set { _sumaSubTotal = value; OnPropertyChanged("SumaSubTotal"); } }
-        public bool EsImportado { get => _esImportado; set { _esImportado = value; OnPropertyChanged("EsImportado"); } }
-        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged("VerMensaje"); } }
-        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged("TxtMensaje"); } }
-        public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged("FechaCotizacion");  ChecarVigencia(_fechaCotizacion); } }
-        public DateTime FechaCtzVigencia { get => _fechaCtzVigencia; set { _fechaCtzVigencia = value; OnPropertyChanged("FechaCtzVigencia"); } }
-        public DateTime FechaCtzEntrega { get => _fechaCtzEntrega; set { _fechaCtzEntrega = value; OnPropertyChanged("FechaCtzEntrega"); } }
-        public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged("SucursalSel"); } }
-        public string TxtSucursal { get => _txtSucursal; set { _txtSucursal = value; OnPropertyChanged("TxtSucursal"); } }
-        public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged("ListaEstatusCtz"); } }
-        public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged("EstatusCotizacion"); } }
-        public string Observaciones { get => _observaciones; set { _observaciones = value; OnPropertyChanged("Observaciones"); } }
-        public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged("Condiciones"); } }
-        public Cotizacion MiCotizacion { get => _miCotizacion; set { _miCotizacion = value; OnPropertyChanged("MiCotizacion"); } }
+        public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged(); } }
+        public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged(); } }
+        public string CteRazonSocial { get => _cteRazonSocial; set { _cteRazonSocial = value; OnPropertyChanged(); } }
+        public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }        
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
+        public ProductoSeleccionado ProductoSel { get => _productoSel; set { _productoSel = value; OnPropertyChanged(); } }
+        public ObservableCollection<ProductoSeleccionado> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged(); } }
+        public double PrecioUniTotal { get => _precioUniTotal; set { _precioUniTotal = value; OnPropertyChanged(); } }
+        public double CantidadTotal { get => _cantidadTotal; set { _cantidadTotal = value;  OnPropertyChanged(); } }
+        public double DescuentoTotal { get => _descuentoTotal; set { _descuentoTotal = value; OnPropertyChanged(); } }
+        public double ImporteTotal { get => _importeTotal; set { _importeTotal = value; OnPropertyChanged(); } }
+        public double ImpuestoTotal { get => _impuestoTotal; set { _impuestoTotal = value; OnPropertyChanged(); } }
+        public double SumaSubTotal { get => _sumaSubTotal; set { _sumaSubTotal = value; OnPropertyChanged(); } }
+        public bool EsImportado { get => _esImportado; set { _esImportado = value; OnPropertyChanged(); } }
+        public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
+        public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged();  ChecarVigencia(_fechaCotizacion); } }
+        public DateTime FechaCtzVigencia { get => _fechaCtzVigencia; set { _fechaCtzVigencia = value; OnPropertyChanged(); } }
+        public DateTime FechaCtzEntrega { get => _fechaCtzEntrega; set { _fechaCtzEntrega = value; OnPropertyChanged(); } }
+        public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged(); } }
+        public string TxtSucursal { get => _txtSucursal; set { _txtSucursal = value; OnPropertyChanged(); } }
+        public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged(); } }
+        public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged(); } }
+        public string Observaciones { get => _observaciones; set { _observaciones = value; OnPropertyChanged(); } }
+        public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged(); } }
+        public Cotizacion MiCotizacion { get => _miCotizacion; set { _miCotizacion = value; OnPropertyChanged(); } }
         public List<ComprobantesImpuestos> ListaCotizacionImpuestos { get => _listaCotizacionImpuestos; set => _listaCotizacionImpuestos = value; }
         public List<ComprobantesImpuestos> ListaImpuestosXlinea { get => _listaImpuestosXlinea; set => _listaImpuestosXlinea = value; }
         public List<DetalleComprobantes> ListaDetalleComprobantes { get => _listaDetalleComprobantes; set => _listaDetalleComprobantes = value; }
-        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged("InfoCotizacion"); } }        
-        public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged("ListaDetalles"); } }
-        public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged("NumCotizacion"); } }
-        public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged("IndexEstatusCtz"); ActualizarEstatus(); } }
-        public long ClaveEstatusCtz { get => _claveEstatusCtz; set { _claveEstatusCtz = value; OnPropertyChanged("ClaveEstatusCtz"); } }
-        public bool BorradorSeleccionado { get => _borradorSeleccionado; set { _borradorSeleccionado = value; OnPropertyChanged("BorradorSeleccionado"); } }
-        public bool DefinitivaSeleccionado { get => _definitivaSeleccionado; set { _definitivaSeleccionado = value; OnPropertyChanged("DefinitivaSeleccionado"); } }
-        public bool AceptaCambiosCtz { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged("AceptaCambiosCtz"); } }
-        public bool AceptaCambiosCliente { get => _aceptaCambiosCliente; set { _aceptaCambiosCliente = value; OnPropertyChanged("AceptaCambiosCliente"); } }
-        public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged("CorreosElectronicos"); } }
-        public long EditaSucursal { get => _editaSucursal; set { _editaSucursal = value; OnPropertyChanged("BusquedaSucursal"); } }
-        public long EditaUsuario { get => _editaUsuario; set { _editaUsuario = value; OnPropertyChanged("EditaUsuario"); } }
+        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged(); } }        
+        public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged(); } }
+        public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged(); } }
+        public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged(); ActualizarEstatus(); } }
+        public long ClaveEstatusCtz { get => _claveEstatusCtz; set { _claveEstatusCtz = value; OnPropertyChanged(); } }
+        public bool BorradorSeleccionado { get => _borradorSeleccionado; set { _borradorSeleccionado = value; OnPropertyChanged(); } }
+        public bool DefinitivaSeleccionado { get => _definitivaSeleccionado; set { _definitivaSeleccionado = value; OnPropertyChanged(); } }
+        public bool AceptaCambiosCtz { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged(); } }
+        public bool AceptaCambiosCliente { get => _aceptaCambiosCliente; set { _aceptaCambiosCliente = value; OnPropertyChanged(); } }
+        public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
+        public long EditaSucursal { get => _editaSucursal; set { _editaSucursal = value; OnPropertyChanged(); } }
+        public long EditaUsuario { get => _editaUsuario; set { _editaUsuario = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor
@@ -125,6 +126,7 @@ namespace Cotizador.ViewModel
             FechaEntregaCommand = new RelayCommand(DefineFechaEntrega);
             GuardarCtzCommand = new RelayCommand(GuardarCotizacion);
             NuevaCtzCommand = new RelayCommand(NuevaCotizacion);
+            VerObservacionCommand = new RelayCommand(VerObservacion);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
             ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
@@ -184,6 +186,7 @@ namespace Cotizador.ViewModel
                     if (result.Equals("SelProducto") == true)
                     {
                         ProductoSel = vmBuscarProducto.SelProducto;
+                        ProductoSel.FechaEntrega = FechaCtzVigencia;
                         ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
                         if (ps == null)
                         {
@@ -572,7 +575,7 @@ namespace Cotizador.ViewModel
             {
                 ProdSeleccionado = prodsel,
                 FechaLimite = FechaCotizacion,
-                FechaEntrega = FechaCotizacion.AddDays(prodsel.DiasEntrega)
+                FechaEntrega = (prodsel.DiasEntrega > 0) ? FechaCotizacion.AddDays(prodsel.DiasEntrega) : FechaCtzVigencia
             };
             var vwFecEntrega = new FechaEntregaView
             {
@@ -845,6 +848,21 @@ namespace Cotizador.ViewModel
                 }
             }
             return error;
+        }
+
+        private async void VerObservacion(object parameter)
+        {
+            var vmObs = new ObservacionesViewModel
+            {
+                Observaciones = Observaciones,
+                DefinitivaSeleccionado = DefinitivaSeleccionado
+            };
+            var vwObs = new ObservacionesView
+            {
+                DataContext = vmObs
+            };
+            var result = await DialogHost.Show(vwObs, "CotizadorView");
+            Observaciones = vmObs.Observaciones;
         }
         #endregion
     }
