@@ -58,7 +58,8 @@ namespace Cotizador.ViewModel
         private Boolean _activoFinal;
         private CollectionViewSource _cvsCotizaciones;
         private String _correosElectronicos;
-        private int _vigenciaEstatus;
+        private VigenciaEstatus _vigencia;
+        private ObservableCollection<VigenciaEstatus> _listaVigencia;
 
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
@@ -88,7 +89,8 @@ namespace Cotizador.ViewModel
         public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }
         public CollectionViewSource CvsCotizaciones { get => _cvsCotizaciones; set { _cvsCotizaciones = value; OnPropertyChanged(); } }
         public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
-        public int VigenciaEstatus { get => _vigenciaEstatus; set { _vigenciaEstatus = value; OnPropertyChanged(); } }
+        public VigenciaEstatus Vigencia { get => _vigencia; set { _vigencia = value; OnPropertyChanged(); } }
+        public ObservableCollection<VigenciaEstatus> ListaVigencia { get => _listaVigencia; set { _listaVigencia = value; OnPropertyChanged(); } }
 
         #endregion
 
@@ -109,6 +111,11 @@ namespace Cotizador.ViewModel
             FechaFinal = FechaInicial.AddMonths(1).AddDays(-1);
             IndicePagActual = 0;
             ItemsPorPag = 10;
+            ListaVigencia = new ObservableCollection<Model.VigenciaEstatus>();
+            ListaVigencia.Add(new VigenciaEstatus(0, "Cualquiera"));
+            ListaVigencia.Add(new VigenciaEstatus(1, "Vigencia Caducada"));
+            ListaVigencia.Add(new VigenciaEstatus(2, "Vigencia por Caducar"));
+            ListaVigencia.Add(new VigenciaEstatus(3, "Vigencia en Tiempo"));
         }
         #endregion
 
@@ -248,6 +255,7 @@ namespace Cotizador.ViewModel
 
         private void VerificarVigenciaEstatus()
         {
+            List<InfoCotizaciones> lista = new List<InfoCotizaciones>();
             foreach (InfoCotizaciones info in ListaCotizaciones)
             {
                 DateTime fvig = Convert.ToDateTime(info.FechaVigencia);
@@ -259,7 +267,15 @@ namespace Cotizador.ViewModel
                     info.VigenciaEstatus = 2;
                 else
                     info.VigenciaEstatus = 3;
+
+                if (Vigencia != null && Vigencia.IdEstatus != 0)
+                {
+                    if (info.VigenciaEstatus == Vigencia.IdEstatus)
+                        lista.Add(info);
+                }
             }
+            if (lista.Count > 0)
+                ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);
         }
 
         private void VerCotizaciones(object parameter)
@@ -520,3 +536,4 @@ namespace Cotizador.ViewModel
         #endregion
     }
 }
+

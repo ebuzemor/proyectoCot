@@ -109,6 +109,26 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
+            <!--CONTROLES DE SELECCIONAR ESTATUS DE VIGENCIA-->
+            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                <TextBlock Text="Estatus Vigencia: " Width="150" VerticalAlignment="Center"/>
+                <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaVigencia}" SelectedItem="{Binding Vigencia}">
+                    <mdWpf:HintAssist.Hint>
+                        <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
+                            <mdWpf:PackIcon Kind="CalendarMultipleCheck" Margin="2"/>
+                            <TextBlock Text="Estatus Seleccionado"/>
+                        </StackPanel>
+                    </mdWpf:HintAssist.Hint>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <mdWpf:PackIcon Kind="Brightness1" Width="12" Height="12" Margin="2" Foreground="{Binding IdEstatus, Converter={StaticResource StatVigencia}}"/>
+                                <TextBlock Text="{Binding Descripcion}" Margin="5 0 0 0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+            </StackPanel>
             <!--BOTON DE BUSCAR-->
             <Button Grid.Row="2" Grid.Column="3" Style="{StaticResource MaterialDesignRaisedAccentButton}" Command="{Binding BuscarCotizacionesCommand}">
                 <Button.Content>
