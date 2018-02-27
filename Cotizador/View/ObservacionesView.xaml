@@ -34,8 +34,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <!--TITULO DEL VENTANA-->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Observaciones de la Cotización:" 
-                   FontStyle="Oblique" TextDecorations="Underline"/>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="Observaciones de la Cotización:"/>
         <!--TEXTO DE LA OBSERVACION-->
         <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Stretch" mdWpf:HintAssist.Hint="OBSERVACIONES" AcceptsReturn="True"
                  Style="{StaticResource MaterialDesignTextAreaTextBox}"	TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding Observaciones}"

@@ -31,7 +31,7 @@
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
         <!--TITULO DE VENTANA-->
-        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Enviar Cotización:" FontStyle="Italic" TextDecorations="Underline"/>
+        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="Enviar Cotización:"/>
         <!--CUERPO DE LA VENTANA-->        
             <TextBox Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding NumCotizacion}" IsReadOnly="True" TextAlignment="Center">
                 <mdWpf:HintAssist.Hint>

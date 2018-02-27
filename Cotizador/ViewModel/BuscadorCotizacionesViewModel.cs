@@ -32,10 +32,10 @@ namespace Cotizador.ViewModel
         #region Variables
         private ApiKey _appKey;
         private Usuario _usuario;
-        private String _localhost;
-        private String _claveEF_Empresa;
-        private Boolean _verMensaje;
-        private String _txtMensaje;
+        private string _localhost;
+        private string _claveEF_Empresa;
+        private bool _verMensaje;
+        private string _txtMensaje;
         private EstatusCotizacion _actualEstatus;
         private ObservableCollection<EstatusCotizacion> _listaEstatusCtz;
         private ObservableCollection<Sucursal> _listaSucursales;
@@ -43,21 +43,21 @@ namespace Cotizador.ViewModel
         private InfoCotizaciones _infoCotizacion;
         private DateTime _fechaInicial;
         private DateTime _fechaFinal;
-        private String _txtUsuario;
+        private string _txtUsuario;
         private Sucursal _miSucursal;
-        private String _txtCliente;
+        private string _txtCliente;
         private Cliente _clienteCtz;
         private ObservableCollection<ProductoSeleccionado> _listaProductosCtz;
         private int _pagsTotales;
         private int _indicePagActual;
         private int _itemsPorPag;
         private int _pagActual;
-        private Boolean _activoInicio;
-        private Boolean _activoAnterior;
-        private Boolean _activoSiguiente;
-        private Boolean _activoFinal;
+        private bool _activoInicio;
+        private bool _activoAnterior;
+        private bool _activoSiguiente;
+        private bool _activoFinal;
         private CollectionViewSource _cvsCotizaciones;
-        private String _correosElectronicos;
+        private string _correosElectronicos;
         private VigenciaEstatus _vigencia;
         private ObservableCollection<VigenciaEstatus> _listaVigencia;
 
@@ -185,8 +185,8 @@ namespace Cotizador.ViewModel
             switch (claveEstatus)
             {
                 case 160: clvstat = 0; break;
-                //case 161: clvstat = 1; break;
-                case 162: clvstat = 1; break;
+                case 161: clvstat = 1; break;
+                case 162: clvstat = 2; break;
             }
             return clvstat;
         }
@@ -299,8 +299,8 @@ namespace Cotizador.ViewModel
             vmInicio.VmCotizador.NumCotizacion = "COTIZACION: " + InfoCotizacion.CodigoDeComprobante;
             vmInicio.VmCotizador.EditaSucursal = InfoCotizacion.ClaveEntidadFiscalInmueble;
             vmInicio.VmCotizador.EditaUsuario = InfoCotizacion.ClaveEntidadFiscalResponsable;
-            //vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
-            vmInicio.VmCotizador.IndexEstatusCtz = CargarEstatusCotizacion(InfoCotizacion.ClaveEstatus);
+            vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
+            //vmInicio.VmCotizador.IndexEstatusCtz = CargarEstatusCotizacion(InfoCotizacion.ClaveEstatus);
 
             var vwInicio = new InicioView
             {

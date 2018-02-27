@@ -6,9 +6,9 @@
              xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             TextElement.Foreground="Black"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
              TextElement.FontWeight="Regular"
-             TextElement.FontSize="15"
+             TextElement.FontSize="13"
              TextOptions.TextFormattingMode="Ideal"
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource PrimaryHueLightBrush}"
@@ -24,19 +24,19 @@
             <BooleanToVisibilityConverter x:Key="VerBoton"/>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="10">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="45"/>
             <RowDefinition/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
         <!--TITULO DEL MENSAJE-->
-        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="{Binding TituloMensaje}" FontStyle="Oblique" TextDecorations="Underline"/>
+        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignDisplay1TextBlock}" Text="{Binding TituloMensaje}" FontStyle="Normal"/>
         <!--CUERPO DEL MENSAJE-->
         <TextBlock Grid.Row="1" Style="{DynamicResource MaterialDesignTitleTextBlock}" TextWrapping="Wrap" Text="{Binding CuerpoMensaje}"
                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <!--BOTONES DE LA VENTANA-->
-        <StackPanel Orientation="Horizontal" Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 16 0 0" HorizontalAlignment="Right">
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right">
             <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding ActivoSeleccionar}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="ACEPTAR" Content="ACEPTAR"/>
             <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}" Visibility="{Binding MostrarCancelar, Converter={StaticResource VerBoton}}"

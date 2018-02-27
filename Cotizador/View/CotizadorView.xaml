@@ -84,26 +84,20 @@
                             <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="Fecha Vigencia: "/>
                             <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding FechaCtzVigencia, StringFormat=dd-MM-yyyy}"/>
                         </StackPanel>
-                        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Vertical" Margin="1" HorizontalAlignment="Center">
-                            <ListBox SelectedIndex="{Binding IndexEstatusCtz}" Style="{StaticResource MaterialDesignToolToggleListBox}" IsEnabled="{Binding AceptaCambiosCtz}">
-                                <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Borrador" VerticalAlignment="Center"/>
-                                        <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
-                                                Visibility="{Binding BorradorSeleccionado, Converter={StaticResource EstatusSeleccionado}}"/>
-                                    </StackPanel>
-                                </ListBoxItem>
-                                <ListBoxItem Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource SecondaryAccentBrush}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Definitiva" VerticalAlignment="Center"/>
-                                        <mdWpf:PackIcon Kind="CheckboxMarkedCircle" Margin="2"
-                                                Visibility="{Binding DefinitivaSeleccionado, Converter={StaticResource EstatusSeleccionado}}"/>
-                                    </StackPanel>
-                                </ListBoxItem>
-                            </ListBox>
+                        <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10" HorizontalAlignment="Center" 
+                                    Background="{DynamicResource PrimaryHueLightBrush}">
+                            <RadioButton Content="Borrador" Style="{StaticResource MaterialDesignAccentRadioButton}" VerticalAlignment="Center" Margin="2"
+                                         Foreground="{DynamicResource MaterialDesignPaper}" IsChecked="{Binding BorradorSeleccionado}" IsEnabled="{Binding AceptaCambiosCtz}" 
+                                         Command="{Binding EstatusBorradorCommand}"/>
+                            <RadioButton Content="Pendiente" Style="{StaticResource MaterialDesignAccentRadioButton}" VerticalAlignment="Center" Margin="2"
+                                         Foreground="{DynamicResource MaterialDesignPaper}" IsChecked="{Binding PendienteSeleccionado}" IsEnabled="{Binding AceptaCambiosCtz}"
+                                         Command="{Binding EstatusPendienteCommand}"/>
+                            <RadioButton Content="Definitiva" Style="{StaticResource MaterialDesignAccentRadioButton}" VerticalAlignment="Center" Margin="2"
+                                         Foreground="{DynamicResource MaterialDesignPaper}" IsChecked="{Binding DefinitivaSeleccionado}" IsEnabled="{Binding AceptaCambiosCtz}"
+                                         Command="{Binding EstatusDefinitivaCommand}"/>
                         </StackPanel>
-                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                           Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding NumCotizacion}"/>
+                        <TextBlock Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="{Binding NumCotizacion}"/>
                         <StackPanel Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Margin="0 10 0 0" Orientation="Horizontal" HorizontalAlignment="Right">
                             <mdWpf:PackIcon Kind="CalendarClock" Margin="2"/>
                             <TextBlock VerticalAlignment="Center" Style="{StaticResource MaterialDesignSubheadingTextBlock}" Text="Fecha Entrega: "/>
@@ -165,10 +159,10 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}" IsEnabled="{Binding AceptaCambiosCtz}"
+                <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}" 
                           CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False"  SelectionMode="Single"
                           SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
-                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsHitTestVisible="{Binding AceptaCambiosCtz}">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="Codigo" x:Name="Clave" IsReadOnly="True" Width="80">
                             <DataGridTemplateColumn.CellTemplate>

@@ -128,7 +128,7 @@ namespace Cotizador.ViewModel
         {
             var vmMensaje = new MensajeViewModel
             {
-                TituloMensaje = "ADVERTENCIA",
+                TituloMensaje = "Advertencia",
                 CuerpoMensaje = "¿Desea cerrar sesión?",
                 MostrarCancelar = true
             };
@@ -149,7 +149,7 @@ namespace Cotizador.ViewModel
         {
             var vmMensaje = new MensajeViewModel
             {
-                TituloMensaje = "ADVERTENCIA",
+                TituloMensaje = "Advertencia",
                 CuerpoMensaje = "¿Desea salir de la aplicación?",
                 MostrarCancelar = true
             };

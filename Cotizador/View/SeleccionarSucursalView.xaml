@@ -31,7 +31,7 @@
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
         <!--TITULO-->
-        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignTitleTextBlock}" Text="Seleccione sucursal" VerticalAlignment="Center"/>
+        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="Seleccione sucursal" VerticalAlignment="Center"/>
         <!--FILTRAR POR CLAVE SUCURSAL-->
         <TextBox Grid.Row="1" Text="{Binding Path=TxtFiltro, UpdateSourceTrigger=PropertyChanged}" 
                  mdWpf:HintAssist.Hint="Escriba la clave de sucursal a seleccionar" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"/>

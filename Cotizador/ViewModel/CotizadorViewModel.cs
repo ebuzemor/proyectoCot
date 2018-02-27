@@ -25,6 +25,9 @@ namespace Cotizador.ViewModel
         public RelayCommand GuardarCtzCommand { get; set; }
         public RelayCommand NuevaCtzCommand { get; set; }
         public RelayCommand VerObservacionCommand { get; set; }
+        public RelayCommand EstatusBorradorCommand { get; set; }
+        public RelayCommand EstatusPendienteCommand { get; set; }
+        public RelayCommand EstatusDefinitivaCommand { get; set; }
         #endregion
 
         #region Variables
@@ -32,44 +35,45 @@ namespace Cotizador.ViewModel
         private ObservableCollection<ProductoSeleccionado> _listaProductos;
         private ObservableCollection<ProductoSeleccionado> _listaDetalles;
         private ObservableCollection<EstatusCotizacion> _listaEstatusCtz;
-        private String _datosCliente;
-        private String _cteRazonSocial;
+        private string _datosCliente;
+        private string _cteRazonSocial;
         private ApiKey _appKey;
         private Usuario _usuario;
         private ProductoSeleccionado _productoSel;
-        private String _localhost;
-        private Boolean _esImportado;
-        private Double _precioUniTotal;
-        private Double _cantidadTotal;
-        private Double _descuentoTotal;
-        private Double _importeTotal;
-        private Double _impuestoTotal;
-        private Double _sumaSubTotal;
-        private Boolean _verMensaje;
-        private String _txtMensaje;
+        private string _localhost;
+        private double _precioUniTotal;
+        private double _cantidadTotal;
+        private double _descuentoTotal;
+        private double _importeTotal;
+        private double _impuestoTotal;
+        private double _sumaSubTotal;
+        private bool _verMensaje;
+        private string _txtMensaje;
         private DateTime _fechaCotizacion;
         private DateTime _fechaCtzVigencia;
         private DateTime _fechaCtzEntrega;
         private Sucursal _sucursalSel;
-        private String _txtSucursal;
+        private string _txtSucursal;
         private EstatusCotizacion _estatusCotizacion;
-        private String _observaciones;
+        private string _observaciones;
         private CondicionesComerciales _condiciones;
         private Cotizacion _miCotizacion;
         private InfoCotizaciones _infoCotizacion;
         private List<ComprobantesImpuestos> _listaCotizacionImpuestos;
         private List<ComprobantesImpuestos> _listaImpuestosXlinea;
         private List<DetalleComprobantes> _listaDetalleComprobantes;        
-        private String _numCotizacion;
-        private String _correosElectronicos;
+        private string _numCotizacion;
+        private string _correosElectronicos;
         private int _indexEstatusCtz;
         private long _claveEstatusCtz;
         private long _editaSucursal;
         private long _editaUsuario;
-        private Boolean _borradorSeleccionado;        
-        private Boolean _definitivaSeleccionado;
-        private Boolean _aceptaCambios;
-        private Boolean _aceptaCambiosCliente;
+        private bool _borradorSeleccionado;
+        private bool _pendienteSeleccionado;
+        private bool _definitivaSeleccionado;
+        private bool _aceptaCambios;
+        private bool _aceptaCambiosCliente;
+        private bool _permisoAutorizar;
 
         public Cliente ClienteSel { get => _clienteSel; set { _clienteSel = value; OnPropertyChanged(); } }
         public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged(); } }
@@ -85,7 +89,6 @@ namespace Cotizador.ViewModel
         public double ImporteTotal { get => _importeTotal; set { _importeTotal = value; OnPropertyChanged(); } }
         public double ImpuestoTotal { get => _impuestoTotal; set { _impuestoTotal = value; OnPropertyChanged(); } }
         public double SumaSubTotal { get => _sumaSubTotal; set { _sumaSubTotal = value; OnPropertyChanged(); } }
-        public bool EsImportado { get => _esImportado; set { _esImportado = value; OnPropertyChanged(); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
         public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged();  ChecarVigencia(_fechaCotizacion); } }
@@ -94,7 +97,7 @@ namespace Cotizador.ViewModel
         public Sucursal SucursalSel { get => _sucursalSel; set { _sucursalSel = value; OnPropertyChanged(); } }
         public string TxtSucursal { get => _txtSucursal; set { _txtSucursal = value; OnPropertyChanged(); } }
         public ObservableCollection<EstatusCotizacion> ListaEstatusCtz { get => _listaEstatusCtz; set { _listaEstatusCtz = value; OnPropertyChanged(); } }
-        public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged(); } }
+        public EstatusCotizacion EstatusCotizacion { get => _estatusCotizacion; set { _estatusCotizacion = value; OnPropertyChanged(); ActualizarEstatusRB(); } }
         public string Observaciones { get => _observaciones; set { _observaciones = value; OnPropertyChanged(); } }
         public CondicionesComerciales Condiciones { get => _condiciones; set { _condiciones = value; OnPropertyChanged(); } }
         public Cotizacion MiCotizacion { get => _miCotizacion; set { _miCotizacion = value; OnPropertyChanged(); } }
@@ -104,15 +107,17 @@ namespace Cotizador.ViewModel
         public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged(); } }        
         public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged(); } }
         public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged(); } }
-        public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged(); ActualizarEstatus(); } }
+        public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged(); } }
         public long ClaveEstatusCtz { get => _claveEstatusCtz; set { _claveEstatusCtz = value; OnPropertyChanged(); } }
         public bool BorradorSeleccionado { get => _borradorSeleccionado; set { _borradorSeleccionado = value; OnPropertyChanged(); } }
+        public bool PendienteSeleccionado { get => _pendienteSeleccionado; set { _pendienteSeleccionado = value; OnPropertyChanged(); } }
         public bool DefinitivaSeleccionado { get => _definitivaSeleccionado; set { _definitivaSeleccionado = value; OnPropertyChanged(); } }
         public bool AceptaCambiosCtz { get => _aceptaCambios; set { _aceptaCambios = value; OnPropertyChanged(); } }
         public bool AceptaCambiosCliente { get => _aceptaCambiosCliente; set { _aceptaCambiosCliente = value; OnPropertyChanged(); } }
         public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
         public long EditaSucursal { get => _editaSucursal; set { _editaSucursal = value; OnPropertyChanged(); } }
         public long EditaUsuario { get => _editaUsuario; set { _editaUsuario = value; OnPropertyChanged(); } }
+        public bool PermisoAutorizar { get => _permisoAutorizar; set { _permisoAutorizar = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor
@@ -127,6 +132,9 @@ namespace Cotizador.ViewModel
             GuardarCtzCommand = new RelayCommand(GuardarCotizacion);
             NuevaCtzCommand = new RelayCommand(NuevaCotizacion);
             VerObservacionCommand = new RelayCommand(VerObservacion);
+            EstatusBorradorCommand = new RelayCommand(EstatusBorrador);
+            EstatusPendienteCommand = new RelayCommand(EstatusPendiente);
+            EstatusDefinitivaCommand = new RelayCommand(EstatusDefinitiva);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
             ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
@@ -135,6 +143,7 @@ namespace Cotizador.ViewModel
             AceptaCambiosCliente = true;
             EditaSucursal = 0;
             EditaUsuario = 0;
+            PermisoAutorizar = false;
         }        
         #endregion
 
@@ -705,69 +714,152 @@ namespace Cotizador.ViewModel
             }
         }       
 
-        public void ActualizarEstatus()
+        private void ActualizarEstatusRB()
         {
-            try
+            switch (EstatusCotizacion.ClaveTipoDeStatusDeComprobante)
             {
-                switch (IndexEstatusCtz)
-                {
-                    case 0:
-                        BorradorSeleccionado = true;
-                        DefinitivaSeleccionado = false;
-                        ClaveEstatusCtz = 160;
-                        AceptaCambiosCtz = true;
-                        AceptaCambiosCliente = (InfoCotizacion != null) ? false : true;
-                        break;                    
-                    case 1:
-                        if (ListaProductos.Count > 0)
-                        {
-                            BorradorSeleccionado = false;
-                            DefinitivaSeleccionado = true;
-                            ClaveEstatusCtz = 162;
-                            EstatusDefinitiva();
-                            AceptaCambiosCtz = false;
-                            AceptaCambiosCliente = false;
-                        }
-                        else
-                            IndexEstatusCtz = 0;
-                        break;
-                    default:
-                        break;
-                }
-                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == ClaveEstatusCtz);
+                case 160:
+                    BorradorSeleccionado = true;
+                    PendienteSeleccionado = false;
+                    DefinitivaSeleccionado = false;
+                    AceptaCambiosCtz = true;
+                    AceptaCambiosCliente = (InfoCotizacion != null) ? false : true;
+                    ClaveEstatusCtz = 160;
+                    break;
+                case 161:
+                    BorradorSeleccionado = false;
+                    PendienteSeleccionado = true;
+                    DefinitivaSeleccionado = false;
+                    AceptaCambiosCtz = true;
+                    AceptaCambiosCliente = (InfoCotizacion != null) ? false : true;
+                    ClaveEstatusCtz = 161;
+                    break;
+                case 162:
+                    BorradorSeleccionado = false;
+                    PendienteSeleccionado = false;
+                    DefinitivaSeleccionado = true;
+                    AceptaCambiosCtz = false;
+                    AceptaCambiosCliente = false;
+                    ClaveEstatusCtz = 162;
+                    break;
+                default: break;
             }
-            catch (Exception) { }
         }
 
-        private async void EstatusDefinitiva()
+        private void EstatusBorrador(object parameter)
         {
-            try
+            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
+            ActualizarEstatusRB();
+        }
+
+        private async void EstatusPendiente(object parameter)
+        {
+            if (ListaProductos.Count > 0)//&& PermisoAutorizar == false)
+            {
+                if (InfoCotizacion != null && InfoCotizacion.ClaveEstatus == 160) //Sólo mostrará el mensaje si la cotización estaba en borrador, para no enviar demasiados emails.
+                {
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Aviso",
+                        CuerpoMensaje = "El cambio de estatus de la Cotización a Pendiente permitirá ser autorizada para su facturación, ¿Desea cambiar el estatus?",
+                        MostrarCancelar = true
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    if (result.Equals("ACEPTAR") == true)
+                    {
+                        EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
+                        GuardarCotizacion(ClienteSel);
+                        EnviarCotizacion();
+                    }
+                    else
+                        EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
+                }
+                else if (InfoCotizacion == null)
+                {
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Error",
+                        CuerpoMensaje = "La cotización debe haberse guardado con el estatus de borrador antes de poder cambiar el estatus a Pendiente",
+                        MostrarCancelar = false
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                }
+                else //if (InfoCotizacion.ClaveEstatus == 162) //Si la cotización estaba en Definitiva no se requiere mostrar mensaje.
+                {
+                    EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
+                }
+            }
+            else
             {
                 var vmMensaje = new MensajeViewModel
                 {
-                    TituloMensaje = "Advertencia",
-                    CuerpoMensaje = "El cambio de estatus de la Cotización a Definitiva es irreversible, ¿Desea cambiar el estatus?",
-                    MostrarCancelar = true
+                    TituloMensaje = "Error",
+                    CuerpoMensaje = "Para cambiar el estatus a Pendiente de Autorizar debe haber un cliente seleccionado y al menos un producto en la lista.",
+                    MostrarCancelar = false
                 };
                 var vwMensaje = new MensajeView
                 {
                     DataContext = vmMensaje
                 };
                 var result = await DialogHost.Show(vwMensaje, "CotizadorView");
-                if (result.Equals("ACEPTAR"))
+                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);                
+            }
+            ActualizarEstatusRB();
+        }
+
+        private async void EstatusDefinitiva(object parameter)
+        {
+            if (ListaProductos.Count > 0)//&& ClaveEstatusCtz == 161 && PermisoAutorizar == true)
+            {
+                if (InfoCotizacion.ClaveEstatus == 161)
                 {
-                    GuardarCotizacion(ClienteSel);
-                    EnviarCotizacion();
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "El cambio de estatus de la Cotización a Definitiva es irreversible, ¿Desea cambiar el estatus?",
+                        MostrarCancelar = true
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    if (result.Equals("ACEPTAR") == true)
+                    {
+                        EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
+                        GuardarCotizacion(ClienteSel);
+                        EnviarCotizacion();
+                    }
+                    else
+                        EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161); //Si cancela el cambio de estatus, se regresa a Pendiente
                 }
                 else
-                {
-                    IndexEstatusCtz = 0;
-                }
+                    EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
             }
-            catch (Exception)
+            else
             {
-
+                var vmMensaje = new MensajeViewModel
+                {
+                    TituloMensaje = "Error",
+                    CuerpoMensaje = "Para cambiar el estatus a Definitiva, la cotización debe estar en estatus de Pendiente de Autorizar.",
+                    MostrarCancelar = false
+                };
+                var vwMensaje = new MensajeView
+                {
+                    DataContext = vmMensaje
+                };
+                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
             }
+            ActualizarEstatusRB();
         }
 
         private async void EnviarCotizacion()
