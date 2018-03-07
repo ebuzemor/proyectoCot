@@ -35,7 +35,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <!--CONTENEDOR PRINCIPAL-->
-    <mdWpf:DialogHost Identifier="CotizadorView">
+    <mdWpf:DialogHost Identifier="CrearCotizacion">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20"/>

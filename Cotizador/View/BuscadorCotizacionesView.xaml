@@ -39,227 +39,240 @@
         <Grid>
             <!--DEFINICION DE COLUMNAS Y FILAS-->
             <Grid.RowDefinitions>
-                <RowDefinition Height=".5*"/>
-                <RowDefinition Height=".5*"/>
-                <RowDefinition Height=".5*"/>
-                <RowDefinition Height="3*"/>
-                <RowDefinition/>
+                <RowDefinition Height="1.3*"/>
+                <RowDefinition Height="5"/>
+                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <!--CONTROLES DE SELECCIONAR PERIODO-->
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
-                <TextBlock Text="Seleccione Período:" VerticalAlignment="Center" Width="150"/>
-                <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Inicial" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" 
-                        SelectedDate="{Binding FechaInicial}" VerticalAlignment="Center"/>
-                <TextBlock Width="30"/>
-                <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Final" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" 
-                        SelectedDate="{Binding FechaFinal}" VerticalAlignment="Center"/>
-            </StackPanel>
-            <!--CONTROLES DE SELECCIONAR CLIENTE-->
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
-                <TextBlock Text="Seleccione Cliente: " Width="150" VerticalAlignment="Center"/>
-                <TextBox Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding TxtCliente, UpdateSourceTrigger=PropertyChanged}">
-                    <mdWpf:HintAssist.Hint>
-                        <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
-                            <mdWpf:PackIcon Kind="Account" Margin="2"/>
-                            <TextBlock Text="Ingrese Código o Razón Social o RFC del Cliente"/>
-                        </StackPanel>
-                    </mdWpf:HintAssist.Hint>
-                    <TextBox.InputBindings>
-                        <KeyBinding Command="{Binding BuscarCotizacionesCommand}" Key="Return"/>
-                    </TextBox.InputBindings>
-                </TextBox>
-            </StackPanel>
-            <!--CONTROLES DE SELECCIONAR ESTATUS-->
-            <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
-                <TextBlock Text="Seleccione Estatus: " Width="150" VerticalAlignment="Center"/>
-                <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding ActualEstatus}">
-                    <mdWpf:HintAssist.Hint>
-                        <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
-                            <mdWpf:PackIcon Kind="TrafficLight" Margin="2"/>
-                            <TextBlock>Estatus de Cotizacion:</TextBlock>
-                        </StackPanel>
-                    </mdWpf:HintAssist.Hint>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Descripcion}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-            <!--CONTROLES DE SELECCIONAR SUCURSAL-->
-            <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
-                <TextBlock Text="Seleccione Sucursal: " Width="150" VerticalAlignment="Center"/>
-                <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaSucursales}" SelectedItem="{Binding MiSucursal}">
-                    <mdWpf:HintAssist.Hint>
-                        <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
-                            <mdWpf:PackIcon Kind="City" Margin="2"/>
-                            <TextBlock Text="Sucursal Seleccionada"/>
-                        </StackPanel>
-                    </mdWpf:HintAssist.Hint>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding NombreCorto}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-            <!--CONTROLES DE SELECCIONAR ESTATUS DE VIGENCIA-->
-            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
-                <TextBlock Text="Estatus Vigencia: " Width="150" VerticalAlignment="Center"/>
-                <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaVigencia}" SelectedItem="{Binding Vigencia}">
-                    <mdWpf:HintAssist.Hint>
-                        <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
-                            <mdWpf:PackIcon Kind="CalendarMultipleCheck" Margin="2"/>
-                            <TextBlock Text="Estatus Seleccionado"/>
-                        </StackPanel>
-                    </mdWpf:HintAssist.Hint>
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <mdWpf:PackIcon Kind="Brightness1" Width="12" Height="12" Margin="2" Foreground="{Binding IdEstatus, Converter={StaticResource StatVigencia}}"/>
-                                <TextBlock Text="{Binding Descripcion}" Margin="5 0 0 0"/>
+            <!--AREA DE FILTROS-->
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <!--CONTROLES DE SELECCIONAR PERIODO-->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                    <TextBlock Text="Seleccione Período:" VerticalAlignment="Center" Width="150"/>
+                    <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Inicial" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" 
+                                SelectedDate="{Binding FechaInicial}" VerticalAlignment="Center"/>
+                    <TextBlock Width="30"/>
+                    <DatePicker Margin="0 0 0 10" mdWpf:HintAssist.Hint="Fecha Final" Style="{StaticResource MaterialDesignFloatingHintDatePicker}" Language="es-Mx" 
+                                SelectedDate="{Binding FechaFinal}" VerticalAlignment="Center"/>
+                </StackPanel>
+                <!--CONTROLES DE SELECCIONAR CLIENTE-->
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                    <TextBlock Text="Seleccione Cliente: " Width="150" VerticalAlignment="Center"/>
+                    <TextBox Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 0 0 15" Text="{Binding TxtCliente, UpdateSourceTrigger=PropertyChanged}">
+                        <mdWpf:HintAssist.Hint>
+                            <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
+                                <mdWpf:PackIcon Kind="Account" Margin="2"/>
+                                <TextBlock Text="Ingrese Código o Razón Social o RFC del Cliente"/>
                             </StackPanel>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-            </StackPanel>
-            <!--BOTON DE BUSCAR-->
-            <Button Grid.Row="2" Grid.Column="3" Style="{StaticResource MaterialDesignRaisedAccentButton}" Command="{Binding BuscarCotizacionesCommand}">
-                <Button.Content>
-                    <StackPanel Orientation="Horizontal">
-                        <mdWpf:PackIcon Width="24" Height="24" Kind="Magnify"/>
-                        <TextBlock Margin="5 0 0 0" Text="Buscar Cotizaciones" VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Button.Content>
-            </Button>
-            <!--DATOS OBTENIDOS EN LA BUSQUEDA-->
-            <DataGrid x:Name="lstCotizaciones" Margin="10" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" CanUserAddRows="False"
-                  CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionMode="Single"
-                  mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding CvsCotizaciones.View}">
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn IsReadOnly="True" Width="0.3*">
-                        <DataGridTemplateColumn.CellTemplate>
+                        </mdWpf:HintAssist.Hint>
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding BuscarCotizacionesCommand}" Key="Return"/>
+                        </TextBox.InputBindings>
+                    </TextBox>
+                </StackPanel>
+                <!--CONTROLES DE SELECCIONAR ESTATUS-->
+                <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                    <TextBlock Text="Seleccione Estatus: " Width="150" VerticalAlignment="Center"/>
+                    <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaEstatusCtz}" SelectedItem="{Binding ActualEstatus}">
+                        <mdWpf:HintAssist.Hint>
+                            <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
+                                <mdWpf:PackIcon Kind="TrafficLight" Margin="2"/>
+                                <TextBlock>Estatus de Cotizacion:</TextBlock>
+                            </StackPanel>
+                        </mdWpf:HintAssist.Hint>
+                        <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <mdWpf:PackIcon Kind="Brightness1" Width="12" Height="12" Foreground="{Binding VigenciaEstatus, Converter={StaticResource StatVigencia}}"/>
+                                <TextBlock Text="{Binding Descripcion}"/>
                             </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="2*">
-                        <DataGridTemplateColumn.CellTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <!--CONTROLES DE SELECCIONAR SUCURSAL-->
+                <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                    <TextBlock Text="Seleccione Sucursal: " Width="150" VerticalAlignment="Center"/>
+                    <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaSucursales}" SelectedItem="{Binding MiSucursal}">
+                        <mdWpf:HintAssist.Hint>
+                            <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
+                                <mdWpf:PackIcon Kind="City" Margin="2"/>
+                                <TextBlock Text="Sucursal Seleccionada"/>
+                            </StackPanel>
+                        </mdWpf:HintAssist.Hint>
+                        <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding RazonSocial}" ToolTip="{Binding RazonSocial}"/>
+                                <TextBlock Text="{Binding NombreCorto}"/>
                             </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Código Comp." IsReadOnly="True" Width="1.4*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding CodigoDeComprobante}" ToolTip="{Binding CodigoDeComprobante}" TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="F. Emisión" IsReadOnly="True" Width="0.8*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding FechaEmision, StringFormat=d}" ToolTip="{Binding FechaEmision, StringFormat=d}" TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Part." IsReadOnly="True" Width="0.5*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Partidas}" ToolTip="Número de Partida(s)" TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Estatus" IsReadOnly="True" Width="0.7*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Estatus}" ToolTip="{Binding Estatus}" TextAlignment="Center"/>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width="0.8*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Descuento, StringFormat=C2}" TextAlignment="Right">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Descuento, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Total" IsReadOnly="True" Width="0.9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Total, StringFormat=C2}" TextAlignment="Right">
-                                    <TextBlock.ToolTip>
-                                        <TextBlock Text="{Binding Total, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Acciones">
-                        <DataGridTemplateColumn.CellTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <!--CONTROLES DE SELECCIONAR ESTATUS DE VIGENCIA-->
+                <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" VerticalAlignment="Center">
+                    <TextBlock Text="Estatus Vigencia: " Width="150" VerticalAlignment="Center"/>
+                    <ComboBox Style="{StaticResource MaterialDesignFloatingHintComboBox}" Margin="0 0 0 15" ItemsSource="{Binding ListaVigencia}" SelectedItem="{Binding Vigencia}">
+                        <mdWpf:HintAssist.Hint>
+                            <StackPanel Orientation="Horizontal" Margin="2 0 0 0">
+                                <mdWpf:PackIcon Kind="CalendarMultipleCheck" Margin="2"/>
+                                <TextBlock Text="Estatus Seleccionado"/>
+                            </StackPanel>
+                        </mdWpf:HintAssist.Hint>
+                        <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
-                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                    <mdWpf:PackIcon Kind="Brightness1" Width="12" Height="12" Margin="2" Foreground="{Binding IdEstatus, Converter={StaticResource StatVigencia}}"/>
+                                    <TextBlock Text="{Binding Descripcion}" Margin="5 0 0 0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <!--BOTON DE BUSCAR-->
+                <Button Grid.Row="2" Grid.Column="3" Style="{StaticResource MaterialDesignRaisedAccentButton}" Command="{Binding BuscarCotizacionesCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Width="24" Height="24" Kind="Magnify"/>
+                            <TextBlock Margin="5 0 0 0" Text="Buscar Cotizaciones" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </Grid>
+            <!--DIVISOR-->
+            <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
+            <!--DATOS OBTENIDOS EN LA BUSQUEDA-->
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="2*"/>
+                    <RowDefinition Height=".3*"/>
+                </Grid.RowDefinitions>
+                <DataGrid x:Name="lstCotizaciones" Margin="10" Grid.Row="0" CanUserAddRows="False"  CanUserReorderColumns="False" CanUserSortColumns="True" 
+                          AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionMode="Single" mdWpf:DataGridAssist.CellPadding="13 8 8 8" 
+                          mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding CvsCotizaciones.View}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn IsReadOnly="True" Width="0.3*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <mdWpf:PackIcon Kind="Brightness1" Width="12" Height="12" Foreground="{Binding VigenciaEstatus, Converter={StaticResource StatVigencia}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Cliente" IsReadOnly="True" Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding RazonSocial}" ToolTip="{Binding RazonSocial}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Código Comp." IsReadOnly="True" Width="1.4*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding CodigoDeComprobante}" ToolTip="{Binding CodigoDeComprobante}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="F. Emisión" IsReadOnly="True" Width="0.8*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FechaEmision, StringFormat=d}" ToolTip="{Binding FechaEmision, StringFormat=d}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Part." IsReadOnly="True" Width="0.5*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Partidas}" ToolTip="Número de Partida(s)" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Estatus" IsReadOnly="True" Width="0.7*" HeaderStyle="{StaticResource CenterAlignmentColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Estatus}" ToolTip="{Binding Estatus}" TextAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Descuento" IsReadOnly="True" Width="0.8*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Descuento, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding Descuento, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                        </TextBlock.ToolTip>
+                                </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Total" IsReadOnly="True" Width="0.9*" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Total, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock.ToolTip>
+                                            <TextBlock Text="{Binding Total, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                        </TextBlock.ToolTip>
+                                </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Acciones">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                         Margin="0 0 8 0" HorizontalAlignment="Left"
                                         Content="{mdWpf:PackIcon Kind=Pencil}"
                                         ToolTip="Editar Cotización" Height="22" Width="22"
                                         Command="{Binding ElementName=lstCotizaciones, Path=DataContext.VerCotizacionCommand}"
                                         CommandParameter="{Binding ClaveComprobanteDeCotizacion}"/>
-                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                         Margin="0 0 8 0" HorizontalAlignment="Left"
                                         Content="{mdWpf:PackIcon Kind=Email}"
                                         ToolTip="Enviar Cotizacion" Height="22" Width="22"
                                         Command="{Binding ElementName=lstCotizaciones, Path=DataContext.EnviarCotizacionCommand}"
                                         CommandParameter="{Binding ClaveComprobanteDeCotizacion}"/>
-                                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
                                         Margin="0 0 8 0" HorizontalAlignment="Left"
                                         Content="{mdWpf:PackIcon Kind=Download}"
                                         ToolTip="Descargar Cotización" Height="22" Width="22"
                                         Command="{Binding ElementName=lstCotizaciones, Path=DataContext.DescargarCotizacionCommand}"
                                         CommandParameter="{Binding ClaveComprobanteDeCotizacion}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-            <!--MENSAJES DE ERROR-->
-            <mdWpf:Snackbar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="4" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}">
-                <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
-                    <mdWpf:SnackbarMessage.Content>
-                        <TextBlock Text="{Binding TxtMensaje}" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueDarkBrush}" TextWrapping="Wrap"/>
-                    </mdWpf:SnackbarMessage.Content>
-                </mdWpf:SnackbarMessage>
-            </mdWpf:Snackbar>
-            <!--BOTONES DE DESPLAZAMIENTO-->
-            <StackPanel Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Inicio" Command="{Binding InicioCommand}"
-                    Content="{mdWpf:PackIcon Kind=ChevronDoubleLeft, Size=24}" IsEnabled="{Binding ActivoInicio}"/>
-                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
-                    Content="{mdWpf:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
-                <UniformGrid Columns="3">
-                    <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
-                    <TextBlock  Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="de "/>
-                    <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
-                </UniformGrid>
-                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
-                    Content="{mdWpf:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>
-                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Final" Command="{Binding FinalCommand}"
-                    Content="{mdWpf:PackIcon Kind=ChevronDoubleRight, Size=24}" IsEnabled="{Binding ActivoFinal}"/>
-            </StackPanel>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <!--MENSAJES DE ERROR-->
+                <mdWpf:Snackbar Grid.Row="0" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}">
+                    <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                        <mdWpf:SnackbarMessage.Content>
+                            <TextBlock Text="{Binding TxtMensaje}" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueDarkBrush}" TextWrapping="Wrap"/>
+                        </mdWpf:SnackbarMessage.Content>
+                    </mdWpf:SnackbarMessage>
+                </mdWpf:Snackbar>
+                <!--BOTONES DE DESPLAZAMIENTO-->
+                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Inicio" Command="{Binding InicioCommand}"
+                            Content="{mdWpf:PackIcon Kind=ChevronDoubleLeft, Size=24}" IsEnabled="{Binding ActivoInicio}"/>
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Anterior" Command="{Binding AnteriorCommand}"
+                            Content="{mdWpf:PackIcon Kind=ChevronLeft, Size=24}" IsEnabled="{Binding ActivoAnterior}"/>
+                    <UniformGrid Columns="3">
+                        <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagActual}"/>
+                        <TextBlock Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="de "/>
+                        <TextBlock Width="auto" Style="{StaticResource MaterialDesignSubheadingTextBlock}" VerticalAlignment="Center" Text="{Binding PagsTotales}"/>
+                    </UniformGrid>
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Siguiente" Command="{Binding SiguienteCommand}"
+                            Content="{mdWpf:PackIcon Kind=ChevronRight, Size=24}" IsEnabled="{Binding ActivoSiguiente}"/>
+                    <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" ToolTip="Final" Command="{Binding FinalCommand}"
+                            Content="{mdWpf:PackIcon Kind=ChevronDoubleRight, Size=24}" IsEnabled="{Binding ActivoFinal}"/>
+                </StackPanel>
+            </Grid>
         </Grid>
     </mdWpf:DialogHost>
 </UserControl>

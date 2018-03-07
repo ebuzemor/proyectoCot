@@ -12,8 +12,8 @@ namespace Cotizador.View
         {
             InitializeComponent();
 
-            var minDate = DateTime.Now.AddYears(-100);
-            var maxDate = DateTime.Now.AddYears(100);
+            var minDate = DateTime.Now.AddYears(-1);
+            var maxDate = DateTime.Now.AddYears(1);
 
             for(var d = minDate; d < maxDate; d = d.AddDays(1))
             {

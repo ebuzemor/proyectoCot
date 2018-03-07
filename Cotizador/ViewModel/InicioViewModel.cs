@@ -43,43 +43,7 @@ namespace Cotizador.ViewModel
             Usuario = usuario;
             Localhost = localhost;
             IdVentana = 0;
-            //CargarMenuInicial();
-            // COTIZADOR
-            VmCotizador = new CotizadorViewModel
-            {
-                Usuario = Usuario,
-                AppKey = AppKey,
-                Localhost = Localhost
-            };
-            //para no hacer un constructor con paso de parametros.
-            VmCotizador.MostrarSucursal();
-            VmCotizador.CargarEstatusCotizacion();
-            VmCotizador.MostrarCondicionesComerciales();
-            VwCotizador = new CotizadorView
-            {
-                DataContext = VmCotizador
-            };
-            //  BUSCADOR DE COTIZACIONES
-            VmBuscadorCot = new BuscadorCotizacionesViewModel
-            {
-                Usuario = Usuario,
-                AppKey = AppKey,
-                Localhost = Localhost
-            };
-            VmBuscadorCot.CargarEstatusCotizacion();
-            VmBuscadorCot.CargarSucursales();
-            VwBuscadorCot = new BuscadorCotizacionesView
-            {
-                DataContext = VmBuscadorCot
-            };
-            //  OPCIONES DEL MENU
-            MenuOpcion = new[]
-            {
-                new MenuOpciones("Cotizador", VwCotizador),
-                new MenuOpciones("Buscar Cotizaciones", VwBuscadorCot)
-            };
-            CerrarSesionCommand = new RelayCommand(CerrarSesion);
-            SalirAppCommand = new RelayCommand(SalirApp);
+            CargarMenuInicial();
         }
         #endregion
 

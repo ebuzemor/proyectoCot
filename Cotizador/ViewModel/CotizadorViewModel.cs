@@ -162,7 +162,7 @@ namespace Cotizador.ViewModel
                 {
                     DataContext = vmBuscarCliente
                 };
-                var result = await DialogHost.Show(vwBuscarCliente, "CotizadorView", ClosingEventHandler);
+                var result = await DialogHost.Show(vwBuscarCliente, "CrearCotizacion");
                 if (result.Equals("NvoCliente") == true)
                 {
                     ClienteSel = vmBuscarCliente.NvoCliente;
@@ -191,7 +191,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmBuscarProducto
                     };
-                    var result = await DialogHost.Show(vwBuscarProducto, "CotizadorView", ClosingEventHandler);
+                    var result = await DialogHost.Show(vwBuscarProducto, "CrearCotizacion");
                     if (result.Equals("SelProducto") == true)
                     {
                         ProductoSel = vmBuscarProducto.SelProducto;
@@ -222,7 +222,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                 }
             }catch(Exception ex)
             {
@@ -246,7 +246,7 @@ namespace Cotizador.ViewModel
             {
                 DataContext = vmEditarItem
             };
-            var result = await DialogHost.Show(vwEditarItem, "CotizadorView", ClosingEventHandler);
+            var result = await DialogHost.Show(vwEditarItem, "CrearCotizacion");
             if (result.Equals("OK") == true)
             {
                 vmEditarItem.ActualizarProducto();
@@ -254,13 +254,7 @@ namespace Cotizador.ViewModel
                 ActualizarListaDetalles(producto, 1);
                 CalcularTotales();
             }
-        }
-
-        private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
-        {
-            var x = eventArgs.Parameter;
-            Console.WriteLine("You can intercept the closing event, and cancel here.");
-        }
+        }        
 
         private void QuitarProducto(object parameter)
         {
@@ -424,7 +418,7 @@ namespace Cotizador.ViewModel
                         {
                             DataContext = vmMensaje
                         };
-                        var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                        var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                         LimpiarCotizacion();
                     }
                 }
@@ -543,7 +537,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                     LimpiarCotizacion();
                 }
             }
@@ -568,7 +562,7 @@ namespace Cotizador.ViewModel
                 {
                     DataContext = vmMensaje
                 };
-                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                 if (result.Equals("ACEPTAR") == true)
                 {
                     LimpiarCotizacion();
@@ -578,26 +572,34 @@ namespace Cotizador.ViewModel
 
         private async void DefineFechaEntrega(object parameter)
         {
-            Int64 clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
+            var clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
             ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
+            DateTime defineFecha = (prodsel.DiasEntrega > 0) ? FechaCotizacion.AddDays(prodsel.DiasEntrega) : FechaCtzVigencia;
             var vmFecEntrega = new FechaEntregaViewModel
             {
                 ProdSeleccionado = prodsel,
-                FechaLimite = FechaCotizacion,
-                FechaEntrega = (prodsel.DiasEntrega > 0) ? FechaCotizacion.AddDays(prodsel.DiasEntrega) : FechaCtzVigencia
+                FechaLimite = FechaCotizacion.Date,
+                FechaEntrega = defineFecha.Date
             };
             var vwFecEntrega = new FechaEntregaView
             {
                 DataContext = vmFecEntrega
             };
-            var result = await DialogHost.Show(vwFecEntrega, "CotizadorView");
-            if(result.Equals("OK") == true)
+            try
             {
-                prodsel.FechaEntrega = vmFecEntrega.FechaEntrega;
-                TimeSpan ts = vmFecEntrega.FechaEntrega - FechaCotizacion.Date;
-                prodsel.DiasEntrega = ts.Days;
-                ActualizarListaDetalles(prodsel, 1);
-                ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+                var result = await DialogHost.Show(vwFecEntrega, "CrearCotizacion");
+                if (result.Equals("OK") == true)
+                {
+                    prodsel.FechaEntrega = vmFecEntrega.FechaEntrega;
+                    TimeSpan ts = vmFecEntrega.FechaEntrega - FechaCotizacion.Date;
+                    prodsel.DiasEntrega = ts.Days;
+                    ActualizarListaDetalles(prodsel, 1);
+                    ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Write(ex.Message);
             }
         }
 
@@ -768,7 +770,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                     if (result.Equals("ACEPTAR") == true)
                     {
                         EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
@@ -790,7 +792,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                 }
                 else //if (InfoCotizacion.ClaveEstatus == 162) //Si la cotización estaba en Definitiva no se requiere mostrar mensaje.
                 {
@@ -809,7 +811,7 @@ namespace Cotizador.ViewModel
                 {
                     DataContext = vmMensaje
                 };
-                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                 EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);                
             }
             ActualizarEstatusRB();
@@ -831,7 +833,7 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "CotizadorView");
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                     if (result.Equals("ACEPTAR") == true)
                     {
                         EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
@@ -842,22 +844,34 @@ namespace Cotizador.ViewModel
                         EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161); //Si cancela el cambio de estatus, se regresa a Pendiente
                 }
                 else
-                    EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
+                {
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Error",
+                        CuerpoMensaje = "Para cambiar el estatus a Definitiva, la cotización debe estar en estatus de Pendiente de Autorizar.",
+                        MostrarCancelar = false
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
+                }
             }
             else
             {
                 var vmMensaje = new MensajeViewModel
                 {
                     TituloMensaje = "Error",
-                    CuerpoMensaje = "Para cambiar el estatus a Definitiva, la cotización debe estar en estatus de Pendiente de Autorizar.",
+                    CuerpoMensaje = "No es posible cambiar el estatus de la cotización si no tiene productos agregados.",
                     MostrarCancelar = false
                 };
                 var vwMensaje = new MensajeView
                 {
                     DataContext = vmMensaje
                 };
-                var result = await DialogHost.Show(vwMensaje, "CotizadorView");
-                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
+                var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
             }
             ActualizarEstatusRB();
         }
@@ -885,7 +899,7 @@ namespace Cotizador.ViewModel
                 {
                     DataContext = vmEnviarCtz
                 };
-                var result = await DialogHost.Show(vwEnviarCtz, "Cotizador");
+                var result = await DialogHost.Show(vwEnviarCtz, "CrearCotizacion");
                 if (result.Equals("ENVIAR"))
                 {
                     CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
@@ -953,7 +967,7 @@ namespace Cotizador.ViewModel
             {
                 DataContext = vmObs
             };
-            var result = await DialogHost.Show(vwObs, "CotizadorView");
+            var result = await DialogHost.Show(vwObs, "CrearCotizacion");
             Observaciones = vmObs.Observaciones;
         }
         #endregion

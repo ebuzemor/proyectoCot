@@ -111,11 +111,13 @@ namespace Cotizador.ViewModel
             FechaFinal = FechaInicial.AddMonths(1).AddDays(-1);
             IndicePagActual = 0;
             ItemsPorPag = 10;
-            ListaVigencia = new ObservableCollection<Model.VigenciaEstatus>();
-            ListaVigencia.Add(new VigenciaEstatus(0, "Cualquiera"));
-            ListaVigencia.Add(new VigenciaEstatus(1, "Vigencia Caducada"));
-            ListaVigencia.Add(new VigenciaEstatus(2, "Vigencia por Caducar"));
-            ListaVigencia.Add(new VigenciaEstatus(3, "Vigencia en Tiempo"));
+            ListaVigencia = new ObservableCollection<VigenciaEstatus>
+            {
+                new VigenciaEstatus(0, "Cualquiera"),
+                new VigenciaEstatus(1, "Vigencia Caducada"),
+                new VigenciaEstatus(2, "Vigencia por Caducar"),
+                new VigenciaEstatus(3, "Vigencia en Tiempo")
+            };
         }
         #endregion
 
@@ -274,7 +276,9 @@ namespace Cotizador.ViewModel
                         lista.Add(info);
                 }
             }
-            if (lista.Count > 0)
+            if (Vigencia == null || Vigencia.IdEstatus == 0)
+            { }
+            else if (lista.Count >= 0)
                 ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista);
         }
 

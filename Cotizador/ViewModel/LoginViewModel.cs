@@ -23,35 +23,37 @@ namespace Cotizador.ViewModel
         #endregion
 
         #region Variables
-        private Boolean _esValido;
-        private String _txtLogin;
-        private String _txtPassword;
-        private String _titulo;
         private ApiKey _appKey;
         private Usuario _usuario;
         private UsuariosJson _usuariosJson;
         private SucursalesJson _sucursalesJson;
         private ObservableCollection<Sucursal> _listaSucursales;
         private Sucursal _miSucursal;
-        private String _localhost;
-        private String _claveEF_Empresa;
-        private Boolean _verMensaje;
-        private String _txtMensaje;
+        private ObservableCollection<Permisos> _listaPermisos;
+        private bool _esValido;
+        private string _txtLogin;
+        private string _txtPassword;
+        private string _titulo;        
+        private string _localhost;
+        private string _claveEF_Empresa;
+        private bool _verMensaje;
+        private string _txtMensaje;
 
-        public Boolean EsValido { get => _esValido; set { _esValido = value; OnPropertyChanged(); } }
-        public String TxtLogin { get => _txtLogin; set { _txtLogin = value; OnPropertyChanged(); } }
-        public String TxtPassword { get => _txtPassword; set { _txtPassword = value; OnPropertyChanged(); } }
-        public String Titulo { get => _titulo; set { _titulo = value; OnPropertyChanged(); } }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
-        public UsuariosJson UsuariosJson { get => _usuariosJson; set { _usuariosJson = value; OnPropertyChanged(); } }        
+        public UsuariosJson UsuariosJson { get => _usuariosJson; set { _usuariosJson = value; OnPropertyChanged(); } }
         public SucursalesJson SucursalesJson { get => _sucursalesJson; set { _sucursalesJson = value; OnPropertyChanged(); } }
         public ObservableCollection<Sucursal> ListaSucursales { get => _listaSucursales; set { _listaSucursales = value; OnPropertyChanged(); } }
         public Sucursal MiSucursal { get => _miSucursal; set { _miSucursal = value; OnPropertyChanged(); } }
+        public ObservableCollection<Permisos> ListaPermisos { get => _listaPermisos; set { _listaPermisos = value; OnPropertyChanged(); } }
+        public bool EsValido { get => _esValido; set { _esValido = value; OnPropertyChanged(); } }
+        public string TxtLogin { get => _txtLogin; set { _txtLogin = value; OnPropertyChanged(); } }
+        public string TxtPassword { get => _txtPassword; set { _txtPassword = value; OnPropertyChanged(); } }
+        public string Titulo { get => _titulo; set { _titulo = value; OnPropertyChanged(); } }        
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
         public string ClaveEF_Empresa { get => _claveEF_Empresa; set { _claveEF_Empresa = value; OnPropertyChanged(); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
-        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }        
         #endregion
 
         #region Constructor
@@ -134,12 +136,16 @@ namespace Cotizador.ViewModel
                 }
                 if (Usuario != null)
                 {
-                    InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
-                    InicioView vwInicio = new InicioView
+                    CargarPermisosUsuario();
+                    if (ListaPermisos.Count > 0)
                     {
-                        DataContext = vmInicio
-                    };
-                    Navigator.NavigationService.Navigate(vwInicio);
+                        InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
+                        InicioView vwInicio = new InicioView
+                        {
+                            DataContext = vmInicio
+                        };
+                        Navigator.NavigationService.Navigate(vwInicio);
+                    }
                 }
             }
         }
@@ -181,7 +187,7 @@ namespace Cotizador.ViewModel
                 TxtMensaje = "ERROR DE EJECUCIÓN: Ocurrió una excepción al validar las credenciales del Usuario, reinicie la aplicación.";
                 VerMensaje = true;
             }
-        }
+        }        
 
         private void ObtenerToken(String NombreUsuario, String Password)
         {
@@ -218,7 +224,7 @@ namespace Cotizador.ViewModel
                 reqSuc.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
                 IRestResponse<SucursalesJson> respSuc = rest.Execute<SucursalesJson>(reqSuc);
-                if (respSuc.IsSuccessful && respSuc.StatusCode == HttpStatusCode.OK)
+                if (respSuc.IsSuccessful == true && respSuc.StatusCode == HttpStatusCode.OK)
                 {
                     SucursalesJson = JsonConvert.DeserializeObject<SucursalesJson>(respSuc.Content);
                     ListaSucursales = new ObservableCollection<Sucursal>(SucursalesJson.Sucursales);
@@ -233,6 +239,27 @@ namespace Cotizador.ViewModel
                 }
             }
             catch (Exception) { }
+        }
+
+        private void CargarPermisosUsuario()
+        {
+            try
+            {
+                var rest = new RestClient(Localhost);
+                var reqPer = new RestRequest("permisosUsuario/" + ClaveEF_Empresa + "/" + Usuario.ClaveEntidadFiscalEmpleado, Method.GET);
+                reqPer.AddHeader("Accept", "application/json");
+                reqPer.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                IRestResponse<PermisosJson> respPer = rest.Execute<PermisosJson>(reqPer);
+                if (respPer.IsSuccessful == true && respPer.StatusCode == HttpStatusCode.OK)
+                {
+                    var PermisosJson = JsonConvert.DeserializeObject<PermisosJson>(respPer.Content);
+                    ListaPermisos = new ObservableCollection<Permisos>(PermisosJson.Permisos);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;
