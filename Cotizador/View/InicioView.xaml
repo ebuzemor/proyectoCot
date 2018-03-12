@@ -20,12 +20,16 @@
                     <ToggleButton Style="{StaticResource MaterialDesignHamburgerToggleButton}"
                                   DockPanel.Dock="Top" HorizontalAlignment="Right" Margin="16"
                                   IsChecked="{Binding ElementName=BtnMenuToggle, Path=IsChecked, Mode=TwoWay}"/>
-                    <ListBox x:Name="ListaOpciones" Margin="0 16 0 16" SelectedIndex="{Binding IdVentana}"
+                    <!--<ListBox x:Name="ListaOpciones" Margin="0 16 0 16" SelectedIndex="{Binding IdVentana}"-->
+                    <ListBox x:Name="ListaOpciones" Margin="0 16 0 16" SelectedIndex="0"
                              ItemsSource="{Binding MenuOpcion}"
                              PreviewMouseLeftButtonUp="ListaOpciones_PreviewMouseLeftButtonUp">
                         <ListBox.ItemTemplate>
                             <DataTemplate DataType="common:MenuOpciones">
-                                <TextBlock Text="{Binding Nombre}" Margin="32 0 32 0"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="{Binding Icono}" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding Nombre}" Margin="16 0 16 0"/>
+                                </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -41,8 +45,22 @@
                         <!--BOTONES DE LA DERECHA-->
                         <materialDesign:PopupBox DockPanel.Dock="Right" PlacementMode="BottomAndAlignRightEdges" StaysOpen="False">
                             <StackPanel>
-                                <Button Content="Cerrar Sesión" Command="{Binding CerrarSesionCommand}"/>
-                                <Button Content="Salir" Command="{Binding SalirAppCommand}"/>
+                                <Button Command="{Binding CerrarSesionCommand}">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="Logout" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Cerrar Sesión" Margin="8 0 8 0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button Command="{Binding SalirAppCommand}">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon Kind="ExitToApp" VerticalAlignment="Center"/>
+                                            <TextBlock Text="Salir" Margin="8 0 8 0"/>
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
                             </StackPanel>
                         </materialDesign:PopupBox>
                         <Image Source="/Images/logo_aprosi.png" Stretch="Fill" Width="100" Height="50"/>

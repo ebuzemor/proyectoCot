@@ -119,7 +119,7 @@
                                 <mdWpf:PackIcon Width="24" Height="24" Kind="AccountPlus" />
                             </Button>
                             <mdWpf:Card Margin="8 0 0 0" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
-                                Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5">
+                                        Grid.Column="1" Grid.ColumnSpan="4" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5">
                                 <Grid ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="30"/>
@@ -368,8 +368,22 @@
                     <ColumnDefinition Width="1.5*"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="1" Content="Nueva Cotización" Command="{Binding NuevaCtzCommand}"/>
-                <Button Grid.Column="3" Content="Guardar Cotizacion" Command="{Binding GuardarCtzCommand}" IsEnabled="{Binding AceptaCambiosCtz}"/>
+                <Button Grid.Column="1" Command="{Binding NuevaCtzCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Width="24" Height="24" Kind="FileOutline"/>
+                            <TextBlock Margin="5 0 0 0" Text="Nueva Cotización" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Grid.Column="3" Command="{Binding GuardarCtzCommand}" IsEnabled="{Binding AceptaCambiosCtz}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Width="24" Height="24" Kind="ContentSaveAll"/>
+                            <TextBlock Margin="5 0 0 0" Text="Guardar Cotización" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
             </Grid>
             <!--AREA DE MENSAJES-->
             <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="6" Background="{DynamicResource PrimaryHueLightBrush}">

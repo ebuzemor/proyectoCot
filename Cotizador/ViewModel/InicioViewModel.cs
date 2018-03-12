@@ -3,6 +3,7 @@ using Cotizador.Model;
 using Cotizador.View;
 using MaterialDesignThemes.Wpf;
 using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace Cotizador.ViewModel
@@ -16,7 +17,7 @@ namespace Cotizador.ViewModel
         #endregion
 
         #region Variables
-        private int _idVentana;
+        //private int _idVentana;
         private ApiKey _appKey;
         private Usuario _usuario;
         private String _localhost;
@@ -24,6 +25,7 @@ namespace Cotizador.ViewModel
         private CotizadorViewModel _vmCotizador;
         private BuscadorCotizacionesView _vwBuscadorCot;
         private BuscadorCotizacionesViewModel _vmBuscadorCot;
+        private ObservableCollection<AccionesDefinidas> _listaAcciones;
 
         public MenuOpciones[] MenuOpcion { get; set; }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
@@ -33,17 +35,21 @@ namespace Cotizador.ViewModel
         public CotizadorViewModel VmCotizador { get => _vmCotizador; set { _vmCotizador = value; OnPropertyChanged(); } }
         public BuscadorCotizacionesView VwBuscadorCot { get => _vwBuscadorCot; set { _vwBuscadorCot = value; OnPropertyChanged(); } }
         public BuscadorCotizacionesViewModel VmBuscadorCot { get => _vmBuscadorCot; set { _vmBuscadorCot = value; OnPropertyChanged(); } }
-        public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
+        public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }
+        //public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor
-        public InicioViewModel(ApiKey apiKey, Usuario usuario, string localhost)
+        public InicioViewModel(ApiKey apiKey, Usuario usuario, string localhost, ObservableCollection<AccionesDefinidas> listaAcciones)
         {
             AppKey = apiKey;
             Usuario = usuario;
             Localhost = localhost;
-            IdVentana = 0;
+            ListaAcciones = listaAcciones;
+            //IdVentana = 0;
             CargarMenuInicial();
+            CerrarSesionCommand = new RelayCommand(CerrarSesion);
+            SalirAppCommand = new RelayCommand(SalirApp);
         }
         #endregion
 
@@ -55,7 +61,8 @@ namespace Cotizador.ViewModel
             {
                 Usuario = Usuario,
                 AppKey = AppKey,
-                Localhost = Localhost
+                Localhost = Localhost,
+                ListaAcciones = ListaAcciones
             };
             //para no hacer un constructor con paso de parametros.
             VmCotizador.MostrarSucursal();
@@ -70,7 +77,8 @@ namespace Cotizador.ViewModel
             {
                 Usuario = Usuario,
                 AppKey = AppKey,
-                Localhost = Localhost
+                Localhost = Localhost,
+                ListaAcciones = ListaAcciones
             };
             VmBuscadorCot.CargarEstatusCotizacion();
             VmBuscadorCot.CargarSucursales();
@@ -81,11 +89,9 @@ namespace Cotizador.ViewModel
             //  OPCIONES DEL MENU
             MenuOpcion = new[]
             {
-                new MenuOpciones("Cotizador", VwCotizador),
-                new MenuOpciones("Buscar Cotizaciones", VwBuscadorCot)
+                new MenuOpciones("Cart", "Cotizador", VwCotizador),
+                new MenuOpciones("Magnify", "Buscar Cotizaciones", VwBuscadorCot)
             };
-            CerrarSesionCommand = new RelayCommand(CerrarSesion);
-            SalirAppCommand = new RelayCommand(SalirApp);
         }
 
         private async void CerrarSesion(object parameter)
@@ -101,7 +107,7 @@ namespace Cotizador.ViewModel
                 DataContext = vmMensaje
             };
             var result = await DialogHost.Show(vwMensaje, "Cotizador");
-            if (result.Equals("ACEPTAR") == true)
+            if (result.Equals("OK") == true)
             {
                 Usuario = null;
                 LoginView login = new LoginView();
@@ -122,7 +128,7 @@ namespace Cotizador.ViewModel
                 DataContext = vmMensaje
             };
             var result = await DialogHost.Show(vwMensaje, "Cotizador");
-            if (result.Equals("ACEPTAR") == true)
+            if (result.Equals("OK") == true)
             {
                 Application.Current.MainWindow.Close();
             }

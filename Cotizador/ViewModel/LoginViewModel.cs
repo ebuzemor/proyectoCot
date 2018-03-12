@@ -12,6 +12,8 @@ using System.Configuration;
 using System.Net;
 using System.Windows.Controls;
 using System.Xml;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Cotizador.ViewModel
 {
@@ -29,7 +31,8 @@ namespace Cotizador.ViewModel
         private SucursalesJson _sucursalesJson;
         private ObservableCollection<Sucursal> _listaSucursales;
         private Sucursal _miSucursal;
-        private ObservableCollection<Permisos> _listaPermisos;
+        private List<Permisos> _listaPermisos;
+        private ObservableCollection<AccionesDefinidas> _listaAcciones;
         private bool _esValido;
         private string _txtLogin;
         private string _txtPassword;
@@ -45,7 +48,8 @@ namespace Cotizador.ViewModel
         public SucursalesJson SucursalesJson { get => _sucursalesJson; set { _sucursalesJson = value; OnPropertyChanged(); } }
         public ObservableCollection<Sucursal> ListaSucursales { get => _listaSucursales; set { _listaSucursales = value; OnPropertyChanged(); } }
         public Sucursal MiSucursal { get => _miSucursal; set { _miSucursal = value; OnPropertyChanged(); } }
-        public ObservableCollection<Permisos> ListaPermisos { get => _listaPermisos; set { _listaPermisos = value; OnPropertyChanged(); } }
+        public List<Permisos> ListaPermisos { get => _listaPermisos; set => _listaPermisos = value; }
+        public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }
         public bool EsValido { get => _esValido; set { _esValido = value; OnPropertyChanged(); } }
         public string TxtLogin { get => _txtLogin; set { _txtLogin = value; OnPropertyChanged(); } }
         public string TxtPassword { get => _txtPassword; set { _txtPassword = value; OnPropertyChanged(); } }
@@ -54,6 +58,7 @@ namespace Cotizador.ViewModel
         public string ClaveEF_Empresa { get => _claveEF_Empresa; set { _claveEF_Empresa = value; OnPropertyChanged(); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }        
+
         #endregion
 
         #region Constructor
@@ -136,16 +141,13 @@ namespace Cotizador.ViewModel
                 }
                 if (Usuario != null)
                 {
-                    CargarPermisosUsuario();
-                    if (ListaPermisos.Count > 0)
+                    //ValidarPermisosUsuario();
+                    InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost, ListaAcciones);
+                    InicioView vwInicio = new InicioView
                     {
-                        InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
-                        InicioView vwInicio = new InicioView
-                        {
-                            DataContext = vmInicio
-                        };
-                        Navigator.NavigationService.Navigate(vwInicio);
-                    }
+                        DataContext = vmInicio
+                    };
+                    Navigator.NavigationService.Navigate(vwInicio);
                 }
             }
         }
@@ -253,13 +255,49 @@ namespace Cotizador.ViewModel
                 if (respPer.IsSuccessful == true && respPer.StatusCode == HttpStatusCode.OK)
                 {
                     var PermisosJson = JsonConvert.DeserializeObject<PermisosJson>(respPer.Content);
-                    ListaPermisos = new ObservableCollection<Permisos>(PermisosJson.Permisos);
+                    ListaPermisos = PermisosJson.Permisos;
                 }
             }
             catch (Exception)
             {
-                throw;
+                TxtMensaje = "EXCEPCION AL CARGAR PERMISOS DE USUARIO";
+                VerMensaje = true;
             }
+        }
+
+        private void CargarPermisosAplicacion()
+        {
+            try
+            {
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("cargarPermisos/100000005", Method.GET);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                IRestResponse<AccionesDefinidasJson> resp = rest.Execute<AccionesDefinidasJson>(req);
+                if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
+                {
+                    var accionesJson = JsonConvert.DeserializeObject<AccionesDefinidasJson>(resp.Content);
+                    ListaAcciones = new ObservableCollection<AccionesDefinidas>(accionesJson.AccionesDefinidas);
+                }
+            }
+            catch (Exception)
+            {
+                TxtMensaje = "EXCEPCION AL CARGAR PERMISOS DE APLICACION";
+                VerMensaje = true;
+            }
+        }
+
+        private void ValidarPermisosUsuario()
+        {
+            CargarPermisosAplicacion();
+            CargarPermisosUsuario();
+            foreach(Permisos p in ListaPermisos)
+            {
+                var accion = ListaAcciones.SingleOrDefault(x => x.ClaveSeccion == p.ClaveSeccion);
+                if (accion != null)
+                    accion.Activo = true;
+            }
+
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;

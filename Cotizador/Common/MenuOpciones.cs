@@ -11,6 +11,7 @@ namespace Cotizador.Common
 
         private String _nombre;
         private Object _contenido;
+        private string _icono;
         private ScrollBarVisibility _horizontalScrollBarVisibilidad;
         private ScrollBarVisibility _verticalScrollBarVisibilidad;
         private Thickness _margenRequerimiento = new Thickness(16);
@@ -25,6 +26,12 @@ namespace Cotizador.Common
         {
             get => _contenido;
             set => this.MutateVerbose(ref _contenido, value, RaisePropertyChanged());
+        }
+
+        public string Icono
+        {
+            get => _icono;
+            set => this.MutateVerbose(ref _icono, value, RaisePropertyChanged());
         }
 
         public ScrollBarVisibility HorizontalScrollBarVisibilidad
@@ -49,8 +56,9 @@ namespace Cotizador.Common
 
         #region Constructor
 
-        public MenuOpciones(String nombre, Object contenido)
+        public MenuOpciones(string icono, String nombre, Object contenido)
         {
+            _icono = icono;
             _nombre = nombre;
             _contenido = contenido;
         }

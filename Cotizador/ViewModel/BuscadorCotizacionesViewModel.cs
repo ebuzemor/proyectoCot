@@ -60,6 +60,7 @@ namespace Cotizador.ViewModel
         private string _correosElectronicos;
         private VigenciaEstatus _vigencia;
         private ObservableCollection<VigenciaEstatus> _listaVigencia;
+        private ObservableCollection<AccionesDefinidas> _listaAcciones;
 
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
@@ -91,6 +92,7 @@ namespace Cotizador.ViewModel
         public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
         public VigenciaEstatus Vigencia { get => _vigencia; set { _vigencia = value; OnPropertyChanged(); } }
         public ObservableCollection<VigenciaEstatus> ListaVigencia { get => _listaVigencia; set { _listaVigencia = value; OnPropertyChanged(); } }
+        public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }
 
         #endregion
 
@@ -113,10 +115,10 @@ namespace Cotizador.ViewModel
             ItemsPorPag = 10;
             ListaVigencia = new ObservableCollection<VigenciaEstatus>
             {
-                new VigenciaEstatus(0, "Cualquiera"),
-                new VigenciaEstatus(1, "Vigencia Caducada"),
-                new VigenciaEstatus(2, "Vigencia por Caducar"),
-                new VigenciaEstatus(3, "Vigencia en Tiempo")
+                new VigenciaEstatus(0, "Cualquiera", null),
+                new VigenciaEstatus(1, "Vigencia Caducada", "La fecha de vigencia de la Cotización ha caducado con respecto a la fecha actual.\rSe recomienda hacer una nueva cotización."),
+                new VigenciaEstatus(2, "Vigencia por Caducar", "A la fecha de vigencia de la Cotización le faltan al menos 7 días para caducar."),
+                new VigenciaEstatus(3, "Vigencia en Tiempo", "La fecha de vigencia de la Cotización es mayor a la fecha actual por más de 7 días.")
             };
         }
         #endregion
@@ -195,64 +197,73 @@ namespace Cotizador.ViewModel
 
         private void BuscarCotizaciones(object parameter)
         {
-            if (MiSucursal != null)
-            {
-                try
+            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("BUSCAR_COTIZACIONES") == true);
+            //if (permiso.Activo == true)
+            //{
+                if (MiSucursal != null)
                 {
-                    if (FechaFinal >= FechaInicial)
-                    {                        
-                        var estatus = ActualEstatus.ClaveTipoDeStatusDeComprobante;
-                        var rest = new RestClient(Localhost);
-                        var req = new RestRequest("mostrarCotizaciones", Method.POST);
-                        req.AddHeader("Accept", "application/json");
-                        req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-                        req.AddParameter("claveEF_Inmueble", MiSucursal.ClaveEntidadFiscalInmueble);
-                        req.AddParameter("claveEF_Responsable", Usuario.ClaveEntidadFiscalEmpleado);
-                        req.AddParameter("fechaInicial", FechaInicial.ToString("yyyy-MM-dd"));
-                        req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
-                        req.AddParameter("txtCliente", TxtCliente ?? string.Empty); //reduccion del operador condicional ternario
-                        req.AddParameter("claveTipoEstatus", value: (estatus == 0) ? string.Empty : Convert.ToString(estatus));
-
-                        IRestResponse resp = rest.Execute(req);
-                        if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
+                    try
+                    {
+                        if (FechaFinal >= FechaInicial)
                         {
-                            List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
-                            ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista.OrderBy(x => x.CodigoDeComprobante));
-                            VerificarVigenciaEstatus();
+                            var estatus = ActualEstatus.ClaveTipoDeStatusDeComprobante;
+                            var rest = new RestClient(Localhost);
+                            var req = new RestRequest("mostrarCotizaciones", Method.POST);
+                            req.AddHeader("Accept", "application/json");
+                            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                            req.AddParameter("claveEF_Inmueble", MiSucursal.ClaveEntidadFiscalInmueble);
+                            req.AddParameter("claveEF_Responsable", Usuario.ClaveEntidadFiscalEmpleado);
+                            req.AddParameter("fechaInicial", FechaInicial.ToString("yyyy-MM-dd"));
+                            req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
+                            req.AddParameter("txtCliente", TxtCliente ?? string.Empty); //reduccion del operador condicional ternario
+                            req.AddParameter("claveTipoEstatus", value: (estatus == 0) ? string.Empty : Convert.ToString(estatus));
 
-                            ///Paginacion de los resultados
-                            CvsCotizaciones = new CollectionViewSource
+                            IRestResponse resp = rest.Execute(req);
+                            if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                             {
-                                Source = ListaCotizaciones
-                            };
-                            CvsCotizaciones.Filter += new FilterEventHandler(FiltroPaginas);
-                            IndicePagActual = 0;
-                            CalcularPagsTotales();
-                            ActivarBotones();
-                        }
-                        if (ListaCotizaciones.Count == 0)
-                        {
-                            TxtMensaje = "La búsqueda no obtuvo resultados, verifique los filtros por favor.";
-                            VerMensaje = true;
+                                List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
+                                ListaCotizaciones = new ObservableCollection<InfoCotizaciones>(lista.OrderBy(x => x.CodigoDeComprobante));
+                                VerificarVigenciaEstatus();
+
+                                ///Paginacion de los resultados
+                                CvsCotizaciones = new CollectionViewSource
+                                {
+                                    Source = ListaCotizaciones
+                                };
+                                CvsCotizaciones.Filter += new FilterEventHandler(FiltroPaginas);
+                                IndicePagActual = 0;
+                                CalcularPagsTotales();
+                                ActivarBotones();
+                            }
+                            if (ListaCotizaciones.Count == 0)
+                            {
+                                TxtMensaje = "La búsqueda no obtuvo resultados, verifique los filtros por favor.";
+                                VerMensaje = true;
+                            }
+                            else
+                            {
+                                IndicePagActual = 0;
+                                ActualizarPagina();
+                            }
                         }
                         else
                         {
-                            IndicePagActual = 0;
-                            ActualizarPagina();
+                            TxtMensaje = "La fecha inicial debe ser menor o igual a la fecha final.";
+                            VerMensaje = true;
                         }
                     }
-                    else
+                    catch (Exception)
                     {
-                        TxtMensaje = "La fecha inicial debe ser menor o igual a la fecha final.";
+                        TxtMensaje = "Ocurrió un error al realizar la consulta, contacte al Administrador.";
                         VerMensaje = true;
                     }
                 }
-                catch (Exception)
-                {
-                    TxtMensaje = "Ocurrió un error al realizar la consulta, contacte al Administrador.";
-                    VerMensaje = true;
-                }
-            }
+            //}
+            //else
+            //{
+            //    TxtMensaje = "No tiene permitido buscar cotizaciones.";
+            //    VerMensaje = true;
+            //}
         }
 
         private void VerificarVigenciaEstatus()
@@ -284,33 +295,42 @@ namespace Cotizador.ViewModel
 
         private void VerCotizaciones(object parameter)
         {
-            string numCot = parameter as string;
-            InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
-            var vmInicio = new InicioViewModel(AppKey, Usuario, Localhost);
-            vmInicio.CargarMenuInicial();
-            vmInicio.IdVentana = 0;
-            vmInicio.VmCotizador.InfoCotizacion = InfoCotizacion;
-            CargarCotizacion();
-            vmInicio.VmCotizador.ClienteSel = ClienteCtz;            
-            vmInicio.VmCotizador.Observaciones = InfoCotizacion.Observaciones;
-            vmInicio.VmCotizador.CteRazonSocial = ClienteCtz.RazonSocial + " | RFC:" + ClienteCtz.Rfc + " | Codigo:" + ClienteCtz.CodigoDeCliente;
-            vmInicio.VmCotizador.DatosCliente = "Contacto(s):" + ClienteCtz.Contacto + " | Teléfono(s): " + ClienteCtz.NumeroTelefono + " | Direccion: " + ClienteCtz.Direccion;
-            vmInicio.VmCotizador.FechaCotizacion = Convert.ToDateTime(InfoCotizacion.FechaEmision);
-            vmInicio.VmCotizador.ListaProductos = ListaProductosCtz;
-            vmInicio.VmCotizador.ChecarFechaEntrega(Convert.ToDateTime(InfoCotizacion.FechaEmision), ListaProductosCtz);
-            vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
-            vmInicio.VmCotizador.CalcularTotales();
-            vmInicio.VmCotizador.NumCotizacion = "COTIZACION: " + InfoCotizacion.CodigoDeComprobante;
-            vmInicio.VmCotizador.EditaSucursal = InfoCotizacion.ClaveEntidadFiscalInmueble;
-            vmInicio.VmCotizador.EditaUsuario = InfoCotizacion.ClaveEntidadFiscalResponsable;
-            vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
-            //vmInicio.VmCotizador.IndexEstatusCtz = CargarEstatusCotizacion(InfoCotizacion.ClaveEstatus);
+            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("CARGAR_COTIZACIONES") == true);
+            //if (permiso.Activo == true)
+            //{
+                string numCot = parameter as string;
+                InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
+                var vmInicio = new InicioViewModel(AppKey, Usuario, Localhost, ListaAcciones);
+                //vmInicio.IdVentana = 0;
+                vmInicio.CargarMenuInicial();
+                vmInicio.VmCotizador.InfoCotizacion = InfoCotizacion;
+                CargarCotizacion();
+                vmInicio.VmCotizador.ClienteSel = ClienteCtz;
+                vmInicio.VmCotizador.Observaciones = InfoCotizacion.Observaciones;
+                vmInicio.VmCotizador.CteRazonSocial = ClienteCtz.RazonSocial + " | RFC:" + ClienteCtz.Rfc + " | Codigo:" + ClienteCtz.CodigoDeCliente;
+                vmInicio.VmCotizador.DatosCliente = "Contacto(s):" + ClienteCtz.Contacto + " | Teléfono(s): " + ClienteCtz.NumeroTelefono + " | Direccion: " + ClienteCtz.Direccion;
+                vmInicio.VmCotizador.FechaCotizacion = Convert.ToDateTime(InfoCotizacion.FechaEmision);
+                vmInicio.VmCotizador.ListaProductos = ListaProductosCtz;
+                vmInicio.VmCotizador.ChecarFechaEntrega(Convert.ToDateTime(InfoCotizacion.FechaEmision), ListaProductosCtz);
+                vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
+                vmInicio.VmCotizador.CalcularTotales();
+                vmInicio.VmCotizador.NumCotizacion = "COTIZACION: " + InfoCotizacion.CodigoDeComprobante;
+                vmInicio.VmCotizador.EditaSucursal = InfoCotizacion.ClaveEntidadFiscalInmueble;
+                vmInicio.VmCotizador.EditaUsuario = InfoCotizacion.ClaveEntidadFiscalResponsable;
+                vmInicio.VmCotizador.EstatusCotizacion = vmInicio.VmCotizador.ListaEstatusCtz.Single(z => z.Descripcion.Equals(InfoCotizacion.Estatus));
+                //vmInicio.VmCotizador.IndexEstatusCtz = CargarEstatusCotizacion(InfoCotizacion.ClaveEstatus);
 
-            var vwInicio = new InicioView
-            {
-                DataContext = vmInicio
-            };
-            Navigator.NavigationService.Navigate(vwInicio);
+                var vwInicio = new InicioView
+                {
+                    DataContext = vmInicio
+                };
+                Navigator.NavigationService.Navigate(vwInicio);
+            //}
+            //else
+            //{
+            //    TxtMensaje = "No tiene permitido editar cotizaciones";
+            //    VerMensaje = true;
+            //}
         }        
 
         public void CargarCotizacion()
@@ -379,54 +399,63 @@ namespace Cotizador.ViewModel
         }
 
         private async void EnviarCotizacion(object parameter)
-        {
+        {            
             string numCot = parameter as string;
-            InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
-            CorreosElectronicos = InfoCotizacion.CorreoElectronico;
-            var vmEnviarCtz = new EnviarCotizacionViewModel
-            {
-                NumCotizacion = InfoCotizacion.CodigoDeComprobante,
-                CorreosElectronicos = CorreosElectronicos
-            };
-            var vwEnviarCtz = new EnviarCotizacionView
-            {
-                DataContext = vmEnviarCtz
-            };
-            var result = await DialogHost.Show(vwEnviarCtz, "BuscadorCotizacionesView");
-            if (result.Equals("ENVIAR"))
-            {                
-                CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
-                bool existeError = ValidarCorreo();
-                if(existeError == true)
+            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("EMAIL_COTIZACION") == true);
+            //if (permiso.Activo == true)
+            //{
+                InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
+                CorreosElectronicos = InfoCotizacion.CorreoElectronico;
+                var vmEnviarCtz = new EnviarCotizacionViewModel
                 {
-                    TxtMensaje = "La cotización no puede ser enviada hasta que las direcciones de email estén escritas de manera correcta y no existan espacios en blanco.";
-                    VerMensaje = true;
-                }
-                else
+                    NumCotizacion = InfoCotizacion.CodigoDeComprobante,
+                    CorreosElectronicos = CorreosElectronicos
+                };
+                var vwEnviarCtz = new EnviarCotizacionView
                 {
-                    string prmCotizacion = InfoCotizacion.CodigoDeComprobante;
-                    string prmEmails = String.Join(",", Regex.Split(CorreosElectronicos, @"\r\n"));
-                    var rest = new RestClient(Localhost);
-                    var req = new RestRequest("enviarMail", Method.POST);
-                    req.AddHeader("Accept", "application/json");
-                    req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-                    req.AddParameter("claveComprobante", prmCotizacion);
-                    req.AddParameter("emails", prmEmails);
-                    req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
-
-                    IRestResponse response = rest.Execute(req);
-                    if(response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                    DataContext = vmEnviarCtz
+                };
+                var result = await DialogHost.Show(vwEnviarCtz, "BuscadorCotizacionesView");
+                if (result.Equals("ENVIAR"))
+                {
+                    CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
+                    bool existeError = ValidarCorreo();
+                    if (existeError == true)
                     {
-                        TxtMensaje = "La cotización fue enviada correctamente";
+                        TxtMensaje = "La cotización no puede ser enviada hasta que las direcciones de email estén escritas de manera correcta y no existan espacios en blanco.";
                         VerMensaje = true;
                     }
                     else
                     {
-                        TxtMensaje = "Hubo un error al enviar la cotizacion: " + response.Content;
-                        VerMensaje = true;
+                        string prmCotizacion = InfoCotizacion.CodigoDeComprobante;
+                        string prmEmails = String.Join(",", Regex.Split(CorreosElectronicos, @"\r\n"));
+                        var rest = new RestClient(Localhost);
+                        var req = new RestRequest("enviarMail", Method.POST);
+                        req.AddHeader("Accept", "application/json");
+                        req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                        req.AddParameter("claveComprobante", prmCotizacion);
+                        req.AddParameter("emails", prmEmails);
+                        req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
+
+                        IRestResponse response = rest.Execute(req);
+                        if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                        {
+                            TxtMensaje = "La cotización fue enviada correctamente";
+                            VerMensaje = true;
+                        }
+                        else
+                        {
+                            TxtMensaje = "Hubo un error al enviar la cotizacion: " + response.Content;
+                            VerMensaje = true;
+                        }
                     }
                 }
-            }
+            //}
+            //else
+            //{
+            //    TxtMensaje = "No tiene permiso para enviar cotizaciones por email";
+            //    VerMensaje = true;
+            //}
         }
 
         private void DescargarCotizacion(object parameter)
@@ -434,14 +463,23 @@ namespace Cotizador.ViewModel
             try
             {
                 string numCot = parameter as string;
-                InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
-                var rest = new RestClient(Localhost);
-                var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + InfoCotizacion.CodigoDeComprobante, Method.GET);
-                req.AddHeader("Content-Type", "application/pdf");
-                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-                byte[] archivo = rest.DownloadData(req);
-                File.WriteAllBytes(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf", archivo);
-                System.Diagnostics.Process.Start(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf");
+                //var permiso = ListaAcciones.Single(x => x.Constante.Equals("PDF_COTIZACION") == true);
+                //if (permiso.Activo == true)
+                //{
+                    InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
+                    var rest = new RestClient(Localhost);
+                    var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + InfoCotizacion.CodigoDeComprobante, Method.GET);
+                    req.AddHeader("Content-Type", "application/pdf");
+                    req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                    byte[] archivo = rest.DownloadData(req);
+                    File.WriteAllBytes(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf", archivo);
+                    System.Diagnostics.Process.Start(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf");
+                //}
+                //else
+                //{
+                //    TxtMensaje = "No tiene permiso para descargar cotizaciones en PDF";
+                //    VerMensaje = true;
+                //}
             }
             catch (Exception e)
             {

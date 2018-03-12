@@ -33,7 +33,7 @@
     <SuiteName>APROSI</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>0.9.6.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -151,6 +151,7 @@
     <Compile Include="Common\Validations\hiddenRowConverter.cs" />
     <Compile Include="Common\Validations\PorcentajeValidationRule.cs" />
     <Compile Include="Common\VigenciaEstatusConverter.cs" />
+    <Compile Include="Model\AccionesDefinidas.cs" />
     <Compile Include="Model\ApiKey.cs" />
     <Compile Include="Model\Cliente.cs" />
     <Compile Include="Model\ComprobanteGenerado.cs" />
