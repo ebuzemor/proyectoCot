@@ -637,8 +637,8 @@ namespace Cotizador.ViewModel
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                    LimpiarCotizacion();
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");                    
+                    LimpiarCotizacion();                    
                 }
             }
             else
@@ -856,7 +856,7 @@ namespace Cotizador.ViewModel
                             EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
                             GuardarCotizacion(ClienteSel);
                             EnviarCotizacion();
-                        }
+                    }
                         else
                             EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
                     }
@@ -994,8 +994,8 @@ namespace Cotizador.ViewModel
                 {
                     DataContext = vmEnviarCtz
                 };
-                var result = await DialogHost.Show(vwEnviarCtz, "CrearCotizacion");
-                if (result.Equals("ENVIAR"))
+                var envio = await DialogHost.Show(vwEnviarCtz, "EmailCotizacion");
+                if (envio.Equals("ENVIAR"))
                 {
                     CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
                     bool existeError = ValidarCorreo();

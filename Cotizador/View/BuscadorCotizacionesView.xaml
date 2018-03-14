@@ -153,7 +153,7 @@
                     <RowDefinition Height=".3*"/>
                 </Grid.RowDefinitions>
                 <DataGrid x:Name="lstCotizaciones" Margin="10" Grid.Row="0" CanUserAddRows="False"  CanUserReorderColumns="False" CanUserSortColumns="True" 
-                          AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionMode="Single" mdWpf:DataGridAssist.CellPadding="13 8 8 8" 
+                          CanUserDeleteRows="False" AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionMode="Single" mdWpf:DataGridAssist.CellPadding="13 8 8 8" 
                           mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding CvsCotizaciones.View}">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn IsReadOnly="True" Width="0.3*">
