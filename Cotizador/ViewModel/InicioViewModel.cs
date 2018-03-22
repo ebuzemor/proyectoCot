@@ -26,6 +26,8 @@ namespace Cotizador.ViewModel
         private BuscadorCotizacionesView _vwBuscadorCot;
         private BuscadorCotizacionesViewModel _vmBuscadorCot;
         private ObservableCollection<AccionesDefinidas> _listaAcciones;
+        private GestionPermisosView _vwGestionP;
+        private GestionPermisosViewModel _vmGestionP;
 
         public MenuOpciones[] MenuOpcion { get; set; }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
@@ -36,6 +38,9 @@ namespace Cotizador.ViewModel
         public BuscadorCotizacionesView VwBuscadorCot { get => _vwBuscadorCot; set { _vwBuscadorCot = value; OnPropertyChanged(); } }
         public BuscadorCotizacionesViewModel VmBuscadorCot { get => _vmBuscadorCot; set { _vmBuscadorCot = value; OnPropertyChanged(); } }
         public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }
+        public GestionPermisosView VwGestionP { get => _vwGestionP; set { _vwGestionP = value; OnPropertyChanged(); } }
+        public GestionPermisosViewModel VmGestionP { get => _vmGestionP; set { _vmGestionP = value; OnPropertyChanged(); } }
+
         //public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
         #endregion
 
@@ -72,7 +77,7 @@ namespace Cotizador.ViewModel
             {
                 DataContext = VmCotizador
             };
-            //  BUSCADOR DE COTIZACIONES
+            // BUSCADOR DE COTIZACIONES
             VmBuscadorCot = new BuscadorCotizacionesViewModel
             {
                 Usuario = Usuario,
@@ -86,11 +91,23 @@ namespace Cotizador.ViewModel
             {
                 DataContext = VmBuscadorCot
             };
-            //  OPCIONES DEL MENU
+            // GESTION DE PERMISOS
+            VmGestionP = new GestionPermisosViewModel
+            {
+                Usuario = Usuario,
+                AppKey = AppKey,
+                Localhost = Localhost
+            };
+            VwGestionP = new GestionPermisosView
+            {
+                DataContext = VmGestionP
+            };
+            // OPCIONES DEL MENU
             MenuOpcion = new[]
             {
                 new MenuOpciones("Cart", "Cotizador", VwCotizador),
-                new MenuOpciones("Magnify", "Buscar Cotizaciones", VwBuscadorCot)
+                new MenuOpciones("Magnify", "Buscar Cotizaciones", VwBuscadorCot),
+                new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP)
             };
         }
 

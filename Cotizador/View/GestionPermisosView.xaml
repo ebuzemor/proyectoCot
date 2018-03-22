@@ -20,6 +20,7 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.ToggleButton.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -27,8 +28,9 @@
         <!--GRID PRINCIPAL-->
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="0.8*"/>
+                <RowDefinition Height="2.5*"/>
+                <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
             <!--AREA DE BUSCAR USUARIO-->
             <Grid Grid.Row="0">
@@ -36,11 +38,11 @@
                     <ColumnDefinition Width="0.5*"/>
                     <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Buscar Usuario" Command="{Binding BuscarUsuarioCommand}">
+                <Button Grid.Column="0" Style="{StaticResource MaterialDesignFloatingActionAccentButton}" ToolTip="Buscar Usuario" Command="{Binding BuscarUsuarioCommand}" HorizontalAlignment="Right">
                     <mdWpf:PackIcon Width="24" Height="24" Kind="AccountSearch"/>
                 </Button>
                 <mdWpf:Card Grid.Column="1" Background="{DynamicResource PrimaryHueLightBrush}" Foreground="{DynamicResource PrimaryHueLightForegroundBrush}"
-                            Margin="8 0 10 0" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5" VerticalAlignment="Center">
+                            Margin="8 0 40 0" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5" VerticalAlignment="Center">
                     <Grid ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
@@ -48,9 +50,9 @@
                         </Grid.RowDefinitions>
                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
                             <mdWpf:PackIcon Kind="AccountCircle"/>
-                            <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Bold" Text="Datos del Usuario:"/>
+                            <TextBlock Margin="5 0 0 0" FontStyle="Oblique" Style="{StaticResource MaterialDesignSubheadingTextBlock}" FontWeight="Bold" Text="Datos del Usuario"/>
                         </StackPanel>
-                        <TextBlock Grid.Row="1" Text="{Binding DatosCliente}"/>
+                        <TextBlock Grid.Row="1" Text="{Binding InfoUsuario}" Style="{StaticResource MaterialDesignTitleTextBlock}" TextAlignment="Center" TextWrapping="Wrap"/>
                     </Grid>
                 </mdWpf:Card>
             </Grid>
@@ -61,12 +63,51 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Lista de Permisos" Style="{StaticResource MaterialDesignTitleTextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                <DataGrid x:Name="lstPermisos" Grid.Row="1" ItemsSource="{Binding ListaPermisos}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
-                          AutoGenerateColumns="False" SelectionUnit="FullRow" SelectionMode="Single" mdWpf:DataGridAssist.CellPadding="13 8 8 8"
-                          mdWpf:DataGridAssist.ColumnHeaderPadding="8" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    
-                </DataGrid>
+                <ListView x:Name="lstPermisos" Grid.Row="1" ItemsSource="{Binding ListaAcciones}" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Descripción del Permiso" Width="{Binding ElementName=Prueba1, Path=ActualWidth}" DisplayMemberBinding="{Binding Descripcion}"/>
+                            <GridViewColumn Header="Activados" Width="{Binding ElementName=Prueba2, Path=ActualWidth}">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton VerticalAlignment="Center" IsChecked="{Binding Activo}" Style="{StaticResource MaterialDesignSwitchAccentToggleButton}"
+                                                      ToolTip="Haga clic para Activar/Desactivar Permiso"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+                <!--Este grid permite que las columnas del listview sean responsivas-->
+                <Grid Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" x:Name="Prueba1"/>
+                    <Grid Grid.Column="1" x:Name="Prueba2"/>
+                </Grid>
             </Grid>
+            <!--AREA DE BOTONES-->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="10 0 10 0" Command="{Binding GuardarPermisosCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="ContentSave"/>
+                            <TextBlock Margin="10 0 0 0" Text="Guardar Permisos"/>
+                        </StackPanel>                                    
+                    </Button.Content>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignRaisedButton}" Margin="10 0 10 0" Command="{Binding ResetFormularioCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="AccountConvert"/>
+                            <TextBlock Margin="10 0 0 0" Text="Reiniciar Formulario"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
         </Grid>
     </mdWpf:DialogHost>
 </UserControl>

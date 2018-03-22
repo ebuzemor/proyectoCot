@@ -1,18 +1,21 @@
 ﻿using Cotizador.Common;
 using Cotizador.Model;
+using Cotizador.View;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
 using System.Windows.Data;
 
 namespace Cotizador.ViewModel
 {
-    public class BuscarClientesViewModel : Notificador
+    public class BuscarUsuariosViewModel : Notificador
     {
         #region Commands
-        public RelayCommand BuscarClienteCommand { get; set; }
+        public RelayCommand BuscarUsuariosCommand { get; set; }
         public RelayCommand InicioCommand { get; set; }
         public RelayCommand AnteriorCommand { get; set; }
         public RelayCommand SiguienteCommand { get; set; }
@@ -21,34 +24,33 @@ namespace Cotizador.ViewModel
         #endregion
 
         #region Variables
-        private ObservableCollection<Cliente> _listaClientes;
-        private Cliente _NvoCliente;
-        private String _TxtCliente;
         private ApiKey _appKey;
         private Usuario _usuario;
-        private ClientesJson _clientesJson;
-        private CollectionViewSource _cvsClientes;
-        private String _localhost;
+        private DatosUsuariosJson _datosUsuariosJson;
+        private CollectionViewSource _cvsDatosUsuarios;
+        private string _localhost;
+        private ObservableCollection<DatosUsuarios> _listaDatosUsuarios;
+        private string _txtUsuario;
         private int _itemsPorPag;
         private int _pagsTotales;
         private int _indicePagActual;
         private int _pagActual;
-        private Boolean _activoInicio;
-        private Boolean _activoAnterior;
-        private Boolean _activoSiguiente;
-        private Boolean _activoFinal;
-        private Boolean _verMensaje;
-        private String _txtMensaje;
+        private bool _activoInicio;
+        private bool _activoAnterior;
+        private bool _activoSiguiente;
+        private bool _activoFinal;
+        private bool _verMensaje;
+        private string _txtMensaje;
+        private DatosUsuarios _datUsuario;
 
-        public ObservableCollection<Cliente> ListaClientes { get => _listaClientes; set { _listaClientes = value; OnPropertyChanged(); } }
-        public Cliente NvoCliente { get => _NvoCliente; set { _NvoCliente = value; OnPropertyChanged(); } }
-        public string TxtCliente { get => _TxtCliente; set { _TxtCliente = value; OnPropertyChanged(); } }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
-        public ClientesJson ClientesJson { get => _clientesJson; set { _clientesJson = value; OnPropertyChanged(); } }
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }    
-        public CollectionViewSource CvsClientes { get => _cvsClientes; set { _cvsClientes = value; OnPropertyChanged(); } }
-        public int ItemsPorPag { get => _itemsPorPag; set => _itemsPorPag = value; }
+        public DatosUsuariosJson DatosUsuariosJson { get => _datosUsuariosJson; set { _datosUsuariosJson = value; OnPropertyChanged(); } }
+        public CollectionViewSource CvsDatosUsuarios { get => _cvsDatosUsuarios; set { _cvsDatosUsuarios = value; OnPropertyChanged(); } }
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
+        public ObservableCollection<DatosUsuarios> ListaDatosUsuarios { get => _listaDatosUsuarios; set { _listaDatosUsuarios = value; OnPropertyChanged(); } }
+        public string TxtUsuario { get => _txtUsuario; set { _txtUsuario = value; OnPropertyChanged(); } }
+        public int ItemsPorPag { get => _itemsPorPag; set { _itemsPorPag = value; OnPropertyChanged(); } }
         public int PagsTotales { get => _pagsTotales; set { _pagsTotales = value; OnPropertyChanged(); } }
         public int IndicePagActual { get => _indicePagActual; set { _indicePagActual = value; OnPropertyChanged(); } }
         public int PagActual { get => _pagActual + 1; set { _pagActual = value; OnPropertyChanged(); } }
@@ -58,53 +60,53 @@ namespace Cotizador.ViewModel
         public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
+        public DatosUsuarios DatUsuario { get => _datUsuario; set { _datUsuario = value; OnPropertyChanged(); } }
         #endregion
 
-
         #region Constructor
-        public BuscarClientesViewModel()
+        public BuscarUsuariosViewModel()
         {
-            BuscarClienteCommand = new RelayCommand(BuscarCliente);
+            BuscarUsuariosCommand = new RelayCommand(BuscarUsuarios);
             InicioCommand = new RelayCommand(Inicio);
             AnteriorCommand = new RelayCommand(Anterior);
             SiguienteCommand = new RelayCommand(Siguiente);
             FinalCommand = new RelayCommand(Final);
             CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
             ItemsPorPag = 10;
-        }        
+        }
         #endregion
 
-        #region Metodos
-        private void BuscarCliente(object parameter)
+        #region Métodos
+        private void BuscarUsuarios(object parameter)
         {
-            if (string.IsNullOrEmpty(TxtCliente) != true)
+            if(string.IsNullOrEmpty(TxtUsuario) != true)
             {
                 var rest = new RestClient(Localhost);
-                var req = new RestRequest("buscarClientes/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + TxtCliente, Method.GET);
+                var req = new RestRequest("obtenerListaUsuarios/" + TxtUsuario, Method.GET);
                 req.AddHeader("Accept", "application/json");
                 req.AddHeader("Authorization", "Bearer " + AppKey.Token);
 
-                IRestResponse<ClientesJson> resp = rest.Execute<ClientesJson>(req);
+                IRestResponse<DatosUsuariosJson> resp = rest.Execute<DatosUsuariosJson>(req);
                 if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                 {
-                    ClientesJson = JsonConvert.DeserializeObject<ClientesJson>(resp.Content);
-                    ListaClientes = new ObservableCollection<Cliente>(ClientesJson.Clientes);
+                    DatosUsuariosJson = JsonConvert.DeserializeObject<DatosUsuariosJson>(resp.Content);
+                    ListaDatosUsuarios = new ObservableCollection<DatosUsuarios>(DatosUsuariosJson.ListaDatosUsuarios);
                     ///Paginación de los resultados
-                    CvsClientes = new CollectionViewSource
+                    CvsDatosUsuarios = new CollectionViewSource
                     {
-                        Source = ListaClientes
+                        Source = ListaDatosUsuarios
                     };
-                    CvsClientes.Filter += new FilterEventHandler(FiltroPaginas);                                        
+                    CvsDatosUsuarios.Filter += new FilterEventHandler(FiltroPaginas);
                 }
-                if (ListaClientes != null && ListaClientes.Count == 0)
+                if (ListaDatosUsuarios != null && ListaDatosUsuarios.Count == 0)
                 {
                     TxtMensaje = "La búsqueda no obtuvo resultados, intente de nuevo.";
                     VerMensaje = true;
-                }                
+                }
             }
             else
             {
-                TxtMensaje = "Debe escribir algo para realizar la búsqueda de Clientes.";
+                TxtMensaje = "Debe escribir algo para realizar la búsqueda de Usuarios.";
                 VerMensaje = true;
             }
             IndicePagActual = 0;
@@ -115,7 +117,7 @@ namespace Cotizador.ViewModel
 
         private void ActivarBotones()
         {
-            if (ListaClientes != null && ListaClientes.Count > 0)
+            if (ListaDatosUsuarios != null && ListaDatosUsuarios.Count > 0)
             {
                 ActivoInicio = (IndicePagActual != 0) ? true : false;
                 ActivoAnterior = (IndicePagActual != 0) ? true : false;
@@ -126,18 +128,18 @@ namespace Cotizador.ViewModel
 
         private void CalcularPagsTotales()
         {
-            if (ListaClientes != null)
+            if (ListaDatosUsuarios != null)
             {
-                if (ListaClientes.Count % ItemsPorPag == 0)
-                    PagsTotales = ListaClientes.Count / ItemsPorPag;
+                if (ListaDatosUsuarios.Count % ItemsPorPag == 0)
+                    PagsTotales = ListaDatosUsuarios.Count / ItemsPorPag;
                 else
-                    PagsTotales = (ListaClientes.Count / ItemsPorPag) + 1;
+                    PagsTotales = (ListaDatosUsuarios.Count / ItemsPorPag) + 1;
             }
         }
 
         private void FiltroPaginas(object sender, FilterEventArgs e)
         {
-            int index = ListaClientes.IndexOf((Cliente)e.Item);
+            int index = ListaDatosUsuarios.IndexOf((DatosUsuarios)e.Item);
             if (index >= ItemsPorPag * IndicePagActual && index < ItemsPorPag * (IndicePagActual + 1))
             {
                 e.Accepted = true;
@@ -148,7 +150,17 @@ namespace Cotizador.ViewModel
             }
         }
 
-        private void Inicio(object obj)
+        private void ActualizarPagina()
+        {
+            if (CvsDatosUsuarios != null)
+            {
+                PagActual = IndicePagActual;
+                CvsDatosUsuarios.View.Refresh();
+                ActivarBotones();
+            }
+        }
+
+        private void Inicio(object parameter)
         {
             IndicePagActual = 0;
             ActualizarPagina();
@@ -172,17 +184,7 @@ namespace Cotizador.ViewModel
             ActualizarPagina();
         }
 
-        private void ActualizarPagina()
-        {
-            if (CvsClientes != null)
-            {
-                PagActual = IndicePagActual;
-                CvsClientes.View.Refresh();
-                ActivarBotones();
-            }
-        }
-
-        private void CerrarMensaje(object paramter) => VerMensaje = false;
+        private void CerrarMensaje(object parameter) => VerMensaje = false;
         #endregion
     }
 }

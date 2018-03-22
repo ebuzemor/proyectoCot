@@ -157,8 +157,10 @@
     <Compile Include="Model\ComprobanteGenerado.cs" />
     <Compile Include="Model\CondicionesComerciales.cs" />
     <Compile Include="Model\Cotizacion.cs" />
+    <Compile Include="Model\DatosUsuarios.cs" />
     <Compile Include="Model\EstatusCotizacion.cs" />
     <Compile Include="Model\Permisos.cs" />
+    <Compile Include="Model\UsuarioPermisos.cs" />
     <Compile Include="Model\VigenciaEstatus.cs" />
     <Compile Include="Model\Existencias.cs" />
     <Compile Include="Model\InfoCotizaciones.cs" />
@@ -171,11 +173,13 @@
     <Compile Include="ViewModel\BuscadorCotizacionesViewModel.cs" />
     <Compile Include="ViewModel\BuscarClientesViewModel.cs" />
     <Compile Include="ViewModel\BuscarProductosViewModel.cs" />
+    <Compile Include="ViewModel\BuscarUsuariosViewModel.cs" />
     <Compile Include="ViewModel\CotizadorViewModel.cs" />
     <Compile Include="ViewModel\EditarItemViewModel.cs" />
     <Compile Include="ViewModel\EnviarCotizacionViewModel.cs" />
     <Compile Include="ViewModel\ExistenciasViewModel.cs" />
     <Compile Include="ViewModel\FechaEntregaViewModel.cs" />
+    <Compile Include="ViewModel\GestionPermisosViewModel.cs" />
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
@@ -192,6 +196,9 @@
     </Compile>
     <Compile Include="View\BuscarProductosView.xaml.cs">
       <DependentUpon>BuscarProductosView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\BuscarUsuariosView.xaml.cs">
+      <DependentUpon>BuscarUsuariosView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CotizadorView.xaml.cs">
       <DependentUpon>CotizadorView.xaml</DependentUpon>
@@ -248,6 +255,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\BuscarProductosView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\BuscarUsuariosView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,7 +1,7 @@
-﻿<UserControl x:Class="Cotizador.View.BuscarClientesView"
+﻿<UserControl x:Class="Cotizador.View.BuscarUsuariosView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
@@ -37,26 +37,25 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <!--TITULO-->
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Agregar Cliente:</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource MaterialDesignHeadlineTextBlock}">Buscar Usuario:</TextBlock>
         <!--AREA DE BUSQUEDA-->
-        <TextBox mdWpf:HintAssist.Hint="Ingrese Código o Razón Social o RFC del Cliente" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
-                 Margin="0 6 0 0" Grid.Row="1" Grid.Column="0" Text="{Binding TxtCliente, UpdateSourceTrigger=PropertyChanged}">
+        <TextBox mdWpf:HintAssist.Hint="Ingrese el nombre del Usuario" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"                 
+                 Margin="0 6 0 0" Grid.Row="1" Grid.Column="0" Text="{Binding TxtUsuario, UpdateSourceTrigger=PropertyChanged}">
             <TextBox.InputBindings>
-                <KeyBinding Command="{Binding BuscarClienteCommand}" Key="Return"/>
+                <KeyBinding Command="{Binding BuscarUsuariosCommand}" Key="Return"/>
             </TextBox.InputBindings>
         </TextBox>
-        <Button Grid.Row="1" Grid.Column="1" Content="Buscar Cliente" Margin="0 6 0 0"
-                Style="{StaticResource MaterialDesignRaisedAccentButton}"
-                Command="{Binding BuscarClienteCommand}"/>
+        <Button Grid.Row="1" Grid.Column="1" Content="Buscar Usuario" Margin="0 6 0 0" Style="{StaticResource MaterialDesignRaisedAccentButton}"
+                Command="{Binding BuscarUsuariosCommand}"/>
         <!--LISTA DE CLIENTES OBTENIDOS EN LA BUSQUEDA-->
-        <ListView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Lista" ItemsSource="{Binding CvsClientes.View}"
+        <ListView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="Lista" ItemsSource="{Binding CvsDatosUsuarios.View}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  SelectedItem="{Binding NvoCliente}" SelectionMode="Single" IsTextSearchEnabled="True" TextSearch.TextPath="{Binding RazonSocial}">
+                  SelectedItem="{Binding DatUsuario}" SelectionMode="Single" IsTextSearchEnabled="True" TextSearch.TextPath="{Binding RazonSocial}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="CLAVE" Width="150" DisplayMemberBinding="{Binding CodigoDeCliente}"/>
-                    <GridViewColumn Header="RFC" Width="150" DisplayMemberBinding="{Binding Rfc}"/>
+                    <GridViewColumn Header="CLAVE-USUARIO" Width="150" DisplayMemberBinding="{Binding ClaveEntidadFiscalUsuario}"/>
+                    <GridViewColumn Header="NICKNAME" Width="150" DisplayMemberBinding="{Binding Nickname}"/>
                     <GridViewColumn Header="RAZON SOCIAL" Width="250" DisplayMemberBinding="{Binding RazonSocial}"/>
                 </GridView>
             </ListView.View>
@@ -91,7 +90,7 @@
                     Margin="0 16 0 0" HorizontalAlignment="Right">
             <Button Style="{DynamicResource MaterialDesignRaisedButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>
-                    NvoCliente
+                    DatUsuario
                 </Button.CommandParameter>
                 SELECCIONAR
             </Button>
