@@ -28,6 +28,8 @@ namespace Cotizador.ViewModel
         private ObservableCollection<AccionesDefinidas> _listaAcciones;
         private GestionPermisosView _vwGestionP;
         private GestionPermisosViewModel _vmGestionP;
+        private FichaTecnicaView _vwFichaT;
+        private FichaTecnicaViewModel _vmFichaT;
 
         public MenuOpciones[] MenuOpcion { get; set; }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
@@ -40,6 +42,8 @@ namespace Cotizador.ViewModel
         public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }
         public GestionPermisosView VwGestionP { get => _vwGestionP; set { _vwGestionP = value; OnPropertyChanged(); } }
         public GestionPermisosViewModel VmGestionP { get => _vmGestionP; set { _vmGestionP = value; OnPropertyChanged(); } }
+        public FichaTecnicaView VwFichaT { get => _vwFichaT; set { _vwFichaT = value; OnPropertyChanged(); } }
+        public FichaTecnicaViewModel VmFichaT { get => _vmFichaT; set { _vmFichaT = value; OnPropertyChanged(); } }
 
         //public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
         #endregion
@@ -102,12 +106,24 @@ namespace Cotizador.ViewModel
             {
                 DataContext = VmGestionP
             };
+            // FICHA TÉCNICA
+            VmFichaT = new FichaTecnicaViewModel
+            {
+                Usuario = Usuario,
+                AppKey = AppKey,
+                Localhost = Localhost
+            };
+            VwFichaT = new FichaTecnicaView
+            {
+                DataContext = VmFichaT
+            };
             // OPCIONES DEL MENU
             MenuOpcion = new[]
             {
                 new MenuOpciones("Cart", "Cotizador", VwCotizador),
                 new MenuOpciones("Magnify", "Buscar Cotizaciones", VwBuscadorCot),
-                new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP)
+                new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP),
+                new MenuOpciones("FilePdfBox", "Fichas Técnicas", VwFichaT)
             };
         }
 

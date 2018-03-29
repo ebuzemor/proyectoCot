@@ -86,8 +86,7 @@
             </mdWpf:SnackbarMessage>
         </mdWpf:Snackbar>
         <!--BOTONES DE LA VENTANA-->
-        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2"
-                    Margin="0 16 0 0" HorizontalAlignment="Right">
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 16 0 0" HorizontalAlignment="Right">
             <Button Style="{DynamicResource MaterialDesignRaisedButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">
                 <Button.CommandParameter>
                     DatUsuario

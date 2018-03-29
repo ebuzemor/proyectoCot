@@ -159,6 +159,7 @@
     <Compile Include="Model\Cotizacion.cs" />
     <Compile Include="Model\DatosUsuarios.cs" />
     <Compile Include="Model\EstatusCotizacion.cs" />
+    <Compile Include="Model\FichaTecnica.cs" />
     <Compile Include="Model\Permisos.cs" />
     <Compile Include="Model\UsuarioPermisos.cs" />
     <Compile Include="Model\VigenciaEstatus.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Model\Usuario.cs" />
     <Compile Include="ViewModel\BuscadorCotizacionesViewModel.cs" />
     <Compile Include="ViewModel\BuscarClientesViewModel.cs" />
+    <Compile Include="ViewModel\BuscarFichaTecnicaViewModel.cs" />
     <Compile Include="ViewModel\BuscarProductosViewModel.cs" />
     <Compile Include="ViewModel\BuscarUsuariosViewModel.cs" />
     <Compile Include="ViewModel\CotizadorViewModel.cs" />
@@ -179,6 +181,7 @@
     <Compile Include="ViewModel\EnviarCotizacionViewModel.cs" />
     <Compile Include="ViewModel\ExistenciasViewModel.cs" />
     <Compile Include="ViewModel\FechaEntregaViewModel.cs" />
+    <Compile Include="ViewModel\FichaTecnicaViewModel.cs" />
     <Compile Include="ViewModel\GestionPermisosViewModel.cs" />
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
@@ -193,6 +196,9 @@
     </Compile>
     <Compile Include="View\BuscarClientesView.xaml.cs">
       <DependentUpon>BuscarClientesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\BuscarFichaTecnicaView.xaml.cs">
+      <DependentUpon>BuscarFichaTecnicaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\BuscarProductosView.xaml.cs">
       <DependentUpon>BuscarProductosView.xaml</DependentUpon>
@@ -214,6 +220,9 @@
     </Compile>
     <Compile Include="View\FechaEntregaView.xaml.cs">
       <DependentUpon>FechaEntregaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FichaTecnicaView.xaml.cs">
+      <DependentUpon>FichaTecnicaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\GestionPermisosView.xaml.cs">
       <DependentUpon>GestionPermisosView.xaml</DependentUpon>
@@ -254,6 +263,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\BuscarFichaTecnicaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\BuscarProductosView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -279,6 +292,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\FechaEntregaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FichaTecnicaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
