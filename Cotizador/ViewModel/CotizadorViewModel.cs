@@ -44,6 +44,7 @@ namespace Cotizador.ViewModel
         private double _precioUniTotal;
         private double _cantidadTotal;
         private double _descuentoTotal;
+        private double _desctoUniTotal;
         private double _importeTotal;
         private double _impuestoTotal;
         private double _sumaSubTotal;
@@ -86,6 +87,7 @@ namespace Cotizador.ViewModel
         public double PrecioUniTotal { get => _precioUniTotal; set { _precioUniTotal = value; OnPropertyChanged(); } }
         public double CantidadTotal { get => _cantidadTotal; set { _cantidadTotal = value;  OnPropertyChanged(); } }
         public double DescuentoTotal { get => _descuentoTotal; set { _descuentoTotal = value; OnPropertyChanged(); } }
+        public double DesctoUniTotal { get => _desctoUniTotal; set { _desctoUniTotal = value; OnPropertyChanged(); } }
         public double ImporteTotal { get => _importeTotal; set { _importeTotal = value; OnPropertyChanged(); } }
         public double ImpuestoTotal { get => _impuestoTotal; set { _impuestoTotal = value; OnPropertyChanged(); } }
         public double SumaSubTotal { get => _sumaSubTotal; set { _sumaSubTotal = value; OnPropertyChanged(); } }
@@ -117,7 +119,7 @@ namespace Cotizador.ViewModel
         public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
         public long EditaSucursal { get => _editaSucursal; set { _editaSucursal = value; OnPropertyChanged(); } }
         public long EditaUsuario { get => _editaUsuario; set { _editaUsuario = value; OnPropertyChanged(); } }
-        public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }
+        public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }        
         #endregion
 
         #region Constructor
@@ -362,6 +364,7 @@ namespace Cotizador.ViewModel
             PrecioUniTotal = 0.0;
             CantidadTotal = 0.0;
             DescuentoTotal = 0.0;
+            DesctoUniTotal = 0.0;
             ImporteTotal = 0.0;
             ImpuestoTotal = 0.0;
             SumaSubTotal = 0.0;
@@ -370,6 +373,7 @@ namespace Cotizador.ViewModel
                 PrecioUniTotal += p.Producto.PrecioUnitario;
                 CantidadTotal += p.Cantidad;
                 DescuentoTotal += p.ImporteDesc;
+                DesctoUniTotal += p.DesctoUnitario;
                 ImporteTotal += p.Importe;
                 ImpuestoTotal += p.Impuesto;
                 SumaSubTotal += p.SubTotal;
@@ -377,6 +381,7 @@ namespace Cotizador.ViewModel
             PrecioUniTotal = Math.Round(PrecioUniTotal, 2);
             CantidadTotal = Math.Round(CantidadTotal, 2);
             DescuentoTotal = Math.Round(DescuentoTotal, 2);
+            DesctoUniTotal = Math.Round(DesctoUniTotal, 2);
             ImporteTotal = Math.Round(ImporteTotal, 2);
             ImpuestoTotal = Math.Round(ImpuestoTotal, 2);
             SumaSubTotal = Math.Round(SumaSubTotal, 2);

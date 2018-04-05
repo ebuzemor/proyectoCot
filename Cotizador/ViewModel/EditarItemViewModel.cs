@@ -60,7 +60,7 @@ namespace Cotizador.ViewModel
             try
             {
                 if (cantidad > 0)
-                {                    
+                {
                     TxtImporte = Convert.ToDouble(cantidad) * ProdSeleccionado.Producto.PrecioUnitario;
                     CalcularDescuento(TxtDescuento);
                 }
@@ -116,6 +116,7 @@ namespace Cotizador.ViewModel
             double impuestos = importeNeto * (ProdSeleccionado.Producto.SumaImpuestos / 100.0);
             ProdSeleccionado.Impuesto = Math.Round(impuestos, 2);
             ProdSeleccionado.SubTotal = Math.Round(importeNeto + impuestos, 2);
+            ProdSeleccionado.DesctoUnitario = Math.Round(ProdSeleccionado.Producto.PrecioUnitario * TxtDescuento, 2);
         }
         #endregion
     }

@@ -370,6 +370,7 @@ namespace Cotizador.ViewModel
                             Descuento = pdesc,
                             Importe = fila.Importe,
                             ImporteDesc = fila.ImporteDescuento,
+                            DesctoUnitario = Math.Round(fila.PrecioUnitario * pdesc, 2),
                             Impuesto = fila.Impuestos,
                             SubTotal = fila.Subtotal,
                             Estatus = 3,

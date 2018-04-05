@@ -204,19 +204,19 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Descuento" x:Name="Descuento" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
+                            <DataGridTemplateColumn Header="Descuento Unit." x:Name="Descuento" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
                                                     IsReadOnly="True" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding ImporteDesc, StringFormat=C2}" TextAlignment="Right">
+                                        <TextBlock Text="{Binding DesctoUnitario, StringFormat=C2}" TextAlignment="Right">
                                             <TextBlock.ToolTip>
-                                                <TextBlock Text="{Binding ImporteDesc, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding DesctoUnitario, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"/>
                                             </TextBlock.ToolTip>
                                     </TextBlock>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Impuestos" x:Name="Impuesto" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
+                            <!--<DataGridTemplateColumn Header="Impuestos" x:Name="Impuesto" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
                                                     IsReadOnly="True" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
@@ -227,7 +227,7 @@
                                     </TextBlock>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
+                            </DataGridTemplateColumn>-->
                             <DataGridTemplateColumn Header="Total" x:Name="Total" HeaderStyle="{StaticResource RightAlignmentColumnHeaderStyle}" 
                                                     IsReadOnly="True" Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -301,13 +301,13 @@
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                         </Grid>
                         <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
-                            <TextBlock Text="Descuento" TextAlignment="Right" FontWeight="Bold"
+                            <TextBlock Text="Descuento Unit." TextAlignment="Right" FontWeight="Bold"
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                         </Grid>
-                        <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
+                        <!--<Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
                             <TextBlock Text="Impuestos" TextAlignment="Right" FontWeight="Bold"
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                        </Grid>
+                        </Grid>-->
                         <Grid Width="{Binding ElementName=Total, Path=ActualWidth}">
                             <TextBlock Text="Total" TextAlignment="Right" FontWeight="Bold"
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
@@ -327,13 +327,13 @@
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                         </Grid>
                         <Grid Width="{Binding ElementName=Descuento, Path=ActualWidth}">
-                            <TextBlock Text="{Binding DescuentoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
+                            <TextBlock Text="{Binding DesctoUniTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
                         </Grid>
-                        <Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
+                        <!--<Grid Width="{Binding ElementName=Impuesto, Path=ActualWidth}">
                             <TextBlock Text="{Binding ImpuestoTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
-                        </Grid>
+                        </Grid>-->
                         <Grid Width="{Binding ElementName=Total, Path=ActualWidth}">
                             <TextBlock Text="{Binding SumaSubTotal, StringFormat=C2}" TextAlignment="Right" FontWeight="Bold"
                                        Style="{StaticResource MaterialDesignCaptionTextBlock}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>

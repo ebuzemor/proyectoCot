@@ -322,6 +322,7 @@ namespace Cotizador.ViewModel
                 double impuestos = importeNeto * (SelProducto.Producto.SumaImpuestos / 100.0);
                 SelProducto.Impuesto = Math.Round(impuestos, 2);
                 SelProducto.SubTotal = Math.Round(importeNeto + impuestos, 2);
+                SelProducto.DesctoUnitario = Math.Round(SelProducto.Producto.PrecioUnitario * TxtDescuento, 2);
             }
         }
 

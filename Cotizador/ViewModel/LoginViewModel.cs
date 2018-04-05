@@ -36,11 +36,15 @@ namespace Cotizador.ViewModel
         private bool _esValido;
         private string _txtLogin;
         private string _txtPassword;
-        private string _titulo;        
+        private string _titulo;
         private string _localhost;
         private string _claveEF_Empresa;
+        private string _token;
         private bool _verMensaje;
         private string _txtMensaje;
+        private string _nombreUsuario;
+        private string _password;
+        private string _nombreToken;
 
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
@@ -53,11 +57,15 @@ namespace Cotizador.ViewModel
         public bool EsValido { get => _esValido; set { _esValido = value; OnPropertyChanged(); } }
         public string TxtLogin { get => _txtLogin; set { _txtLogin = value; OnPropertyChanged(); } }
         public string TxtPassword { get => _txtPassword; set { _txtPassword = value; OnPropertyChanged(); } }
-        public string Titulo { get => _titulo; set { _titulo = value; OnPropertyChanged(); } }        
+        public string Titulo { get => _titulo; set { _titulo = value; OnPropertyChanged(); } }
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
         public string ClaveEF_Empresa { get => _claveEF_Empresa; set { _claveEF_Empresa = value; OnPropertyChanged(); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
-        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }        
+        public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
+        public string Token { get => _token; set { _token = value; OnPropertyChanged(); } }
+        public string NombreUsuario { get => _nombreUsuario; set { _nombreUsuario = value; OnPropertyChanged(); } }
+        public string Password { get => _password; set { _password = value; OnPropertyChanged(); } }
+        public string NombreToken { get => _nombreToken; set { _nombreToken = value; OnPropertyChanged(); } }
 
         #endregion
 
@@ -69,20 +77,15 @@ namespace Cotizador.ViewModel
                 Titulo = "Iniciar Sesión";
                 ValidarUsuarioCommand = new RelayCommand(ValidarUsuario);
                 CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
-                var appconfig = ConfigurationManager.GetSection("cfgApiRestCotizador") as NameValueCollection;
-                Localhost = appconfig["localhost"].ToString();
-                ClaveEF_Empresa = appconfig["claveEF_empresa"].ToString();
-                string nombreUsuario = appconfig["api_user"].ToString();
-                string password = appconfig["api_password"].ToString();
-                string apikey = appconfig["api_key"].ToString();
-                //verifica que exista un token, en caso contrario genera uno nuevo
-                if (string.IsNullOrEmpty(apikey) != true)
+                TipoConexion("desarrollo");
+                ///verifica que exista un token, en caso contrario genera uno nuevo
+                if (string.IsNullOrEmpty(Token) != true)
                 {
-                    AppKey = new ApiKey(apikey);
+                    AppKey = new ApiKey(Token);
                 }
                 else
                 {
-                    ObtenerToken(nombreUsuario, password);
+                    ObtenerToken(NombreUsuario, Password);
                     XmlDocument xmlDoc = new XmlDocument();
                     xmlDoc.Load(AppDomain.CurrentDomain.SetupInformation.ConfigurationFile);
                     foreach (XmlElement element in xmlDoc.DocumentElement)
@@ -91,7 +94,7 @@ namespace Cotizador.ViewModel
                         {
                             foreach (XmlNode node in element.ChildNodes)
                             {
-                                if (node.Attributes[0].Value.Equals("api_key"))
+                                if (node.Attributes[0].Value.Equals(NombreToken))
                                 {
                                     node.Attributes[1].Value = AppKey.Token; break;
                                 }
@@ -301,6 +304,32 @@ namespace Cotizador.ViewModel
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;
+
+        private void TipoConexion(string tipoCxn)
+        {
+            var appconfig = ConfigurationManager.GetSection("cfgApiRestCotizador") as NameValueCollection;
+            ClaveEF_Empresa = appconfig["claveEF_empresa"].ToString();
+            NombreUsuario = appconfig["api_user"].ToString();
+            Password = appconfig["api_password"].ToString();
+            switch (tipoCxn)
+            {
+                case "demo":
+                    Localhost = appconfig["demo"].ToString();
+                    Token = appconfig["api_key_demo"].ToString();
+                    NombreToken = "api_key_demo";
+                    break;
+                case "desarrollo":
+                    Localhost = appconfig["localhost"].ToString();
+                    Token = appconfig["api_key"].ToString();
+                    NombreToken = "api_key";
+                    break;
+                case "produccion":
+                    Localhost = appconfig["produccion"].ToString();
+                    Token = appconfig["api_key_prod"].ToString();
+                    NombreToken = "api_key_prod";
+                    break;
+            }
+        }
         #endregion
     }
 }
