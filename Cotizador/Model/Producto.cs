@@ -95,7 +95,7 @@ namespace Cotizador.Model
         [JsonProperty("comisionDePagoConTarjeta")]
         public double ComisionDePagoConTarjeta { get; set; }
 
-        [JsonProperty("costobase")]
+        [JsonProperty("costobase", NullValueHandling = NullValueHandling.Ignore)]
         public double Costobase { get; set; }
 
         [JsonProperty("descripcion")]

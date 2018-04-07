@@ -31,11 +31,11 @@ namespace Cotizador.ViewModel
         private ProductosJson _productosJson;
         private string _txtProducto;
         private ApiKey _appKey;
-        private Usuario _usuario;        
+        private Usuario _usuario;
         private CollectionViewSource _cvsProductos;
-        private string _localhost;        
+        private string _localhost;
         private int _pagsTotales;
-        private int _indicePagActual;        
+        private int _indicePagActual;
         private int _itemsPorPag;
         private int _pagActual;
         private bool _activoInicio;
@@ -159,7 +159,7 @@ namespace Cotizador.ViewModel
                         {
                             Source = ListaProductos
                         };
-                        CvsProductos.Filter += new FilterEventHandler(FiltroPaginas);                        
+                        CvsProductos.Filter += new FilterEventHandler(FiltroPaginas);
                     }
                     if (ListaProductos != null && ListaProductos.Count == 0)
                     {

@@ -413,130 +413,6 @@ namespace Cotizador.ViewModel
             //var permiso = ListaAcciones.Single(x => x.Constante.Equals("GUARDAR_COTIZACION") == true);
             //if (permiso.Activo == true)
             //{
-                if (InfoCotizacion != null)
-                {
-                    EditarCotizacion();
-                }
-                else
-                {
-                    if (ClienteSel != null && ListaProductos.Count > 0)
-                    {
-                        var host = Dns.GetHostEntry(Dns.GetHostName());
-                        string direccionIP = host.AddressList.FirstOrDefault(h => h.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-                        ListaDetalleComprobantes = new List<DetalleComprobantes>();
-                        ComprobantesImpuestos ImpuestoLinea = new ComprobantesImpuestos();
-                        ListaCotizacionImpuestos = new List<ComprobantesImpuestos>();
-                        ListaImpuestosXlinea = new List<ComprobantesImpuestos>();
-                        int c = 1;
-
-                        foreach (ProductoSeleccionado item in ListaProductos)
-                        {
-                            string[] cadTasas = item.Producto.Tasas.Split(',');
-                            string[] cadClave = item.Producto.ClavesImpuestos.Split(',');
-
-                            for (int i = 0; i < cadTasas.Length; i++)
-                            {
-                                ImpuestoLinea = new ComprobantesImpuestos
-                                {
-                                    ClaveImpuesto = Convert.ToInt64(cadClave[i]),
-                                    Importe = Math.Round((item.Cantidad * item.Producto.PrecioUnitario - item.ImporteDesc) * (Convert.ToDouble(cadTasas[i]) / 100), 2)
-                                };
-                                ListaImpuestosXlinea.Add(ImpuestoLinea);
-                                ListaCotizacionImpuestos.Add(ImpuestoLinea);
-                            }
-
-                            DetalleComprobantes detCom = new DetalleComprobantes
-                            {
-                                Cantidad = item.Cantidad,
-                                ClaveUnidadDeMedida = item.Producto.ClaveUnidadDeMedida,
-                                ClaveProducto = item.Producto.ClaveProducto,
-                                Importe = item.Cantidad * item.Producto.PrecioUnitario, //item.Importe,
-                                ImporteDescuento = item.ImporteDesc,
-                                Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
-                                NumeroPartidas = c,
-                                PrecioUnitario = item.Producto.PrecioUnitario,
-                                DiasDeEntrega = item.DiasEntrega
-                            };
-                            c += 1;
-                            ListaDetalleComprobantes.Add(detCom);
-                            ListaImpuestosXlinea.Clear();
-                        }
-                        // utilizando Linq, se hace una sumatoria por tipo de impuesto y se guarda en una variable
-                        var listaSumaImpuestos = ListaCotizacionImpuestos.GroupBy(x => x.ClaveImpuesto)
-                                              .Select(y => new
-                                              {
-                                                  ClaveImpuesto = y.Key,
-                                                  Importe = Math.Round(y.Sum(z => z.Importe), 2)
-                                              });
-                        MiCotizacion = new Cotizacion
-                        {
-                            Empresa = Usuario.Empresa,
-                            Equipo = direccionIP,
-                            Usuario = Usuario.NombreUsuario,
-                            ClaveInmueble = Usuario.Sucursal,
-                            ClaveTipoDeComprobante = EstatusCotizacion.ClaveTipoDeComprobante,
-                            FechaEmision = FechaCotizacion.ToString("yyyy-MM-dd HH:mm:ss"),
-                            Partidas = ListaProductos.Count,
-                            ClaveMoneda = 1,
-                            ClaveEntidadFiscalInmueble = Usuario.ClaveEntidadFiscalInmueble,
-                            ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,
-                            ClaveEntidadFiscalResponsable = Usuario.ClaveEntidadFiscalEmpleado,
-                            ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
-                            ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
-                            ClaveListaDePrecios = 1,
-                            FechaVigencia = FechaCtzVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
-                            SubTotal = ImporteTotal,
-                            Descuento = DescuentoTotal,
-                            Impuestos = ImpuestoTotal,
-                            Total = SumaSubTotal,
-                            Observaciones = Observaciones,
-                            DetallesDeComprobante = JsonConvert.SerializeObject(ListaDetalleComprobantes)
-                        };
-                        String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
-
-                        //se procede a guardar la cotizacion
-                        var rest = new RestClient(Localhost);
-                        var req = new RestRequest("guardarCotizacion", Method.POST);
-                        req.AddHeader("Accept", "application/json");
-                        req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-                        req.AddParameter("text/json", AprosiCtz, ParameterType.RequestBody);
-                        req.RequestFormat = DataFormat.Json;
-
-                        IRestResponse response = rest.Execute(req);
-                        if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
-                        {
-                            List<ComprobanteGenerado> compgen = JsonConvert.DeserializeObject<List<ComprobanteGenerado>>(response.Content);
-                            NumCotizacion = compgen.First().FolioCodigoComprobante;
-                            var vmMensaje = new MensajeViewModel
-                            {
-                                TituloMensaje = "Aviso",
-                                MostrarCancelar = false,
-                                CuerpoMensaje = "La cotizacion " + NumCotizacion + " fue generada de manera exitosa."
-                            };
-                            var vwMensaje = new MensajeView
-                            {
-                                DataContext = vmMensaje
-                            };
-                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                            LimpiarCotizacion();
-                        }
-                    }
-                    else
-                    {
-                        TxtMensaje = "Para guardar una cotización debe tener un Cliente seleccionado y al menos un producto en la lista.";
-                        VerMensaje = true;
-                    }
-                }
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido guardar cotizaciones";
-            //    VerMensaje = true;
-            //}
-        }
-
-        private async void EditarCotizacion()
-        {
             if (ClienteSel != null && ListaProductos.Count > 0)
             {
                 var host = Dns.GetHostEntry(Dns.GetHostName());
@@ -554,16 +430,13 @@ namespace Cotizador.ViewModel
 
                     for (int i = 0; i < cadTasas.Length; i++)
                     {
-                        if (item.Estatus != 0)
+                        ImpuestoLinea = new ComprobantesImpuestos
                         {
-                            ImpuestoLinea = new ComprobantesImpuestos
-                            {
-                                ClaveImpuesto = Convert.ToInt64(cadClave[i]),
-                                Importe = Math.Round((item.Cantidad * item.Producto.PrecioUnitario - item.ImporteDesc) * (Convert.ToDouble(cadTasas[i]) / 100), 2)
-                            };
-                            ListaImpuestosXlinea.Add(ImpuestoLinea);
-                            ListaCotizacionImpuestos.Add(ImpuestoLinea);
-                        }
+                            ClaveImpuesto = Convert.ToInt64(cadClave[i]),
+                            Importe = Math.Round((item.Cantidad * item.Producto.PrecioUnitario - item.ImporteDesc) * (Convert.ToDouble(cadTasas[i]) / 100), 2)
+                        };
+                        ListaImpuestosXlinea.Add(ImpuestoLinea);
+                        ListaCotizacionImpuestos.Add(ImpuestoLinea);
                     }
 
                     DetalleComprobantes detCom = new DetalleComprobantes
@@ -576,9 +449,9 @@ namespace Cotizador.ViewModel
                         Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
                         NumeroPartidas = c,
                         PrecioUnitario = item.Producto.PrecioUnitario,
+                        DiasDeEntrega = item.DiasEntrega,
                         Estatus = item.Estatus,
-                        ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante,
-                        DiasDeEntrega = item.DiasEntrega
+                        ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante
                     };
                     c += 1;
                     ListaDetalleComprobantes.Add(detCom);
@@ -591,6 +464,14 @@ namespace Cotizador.ViewModel
                                           ClaveImpuesto = y.Key,
                                           Importe = Math.Round(y.Sum(z => z.Importe), 2)
                                       });
+                string clvcomprobante = null;
+                string codcomprobante = null;
+                ///Si es edición de cotización se reutilizan el código y la clave de comprobante
+                if (InfoCotizacion != null)
+                {
+                    clvcomprobante = InfoCotizacion.ClaveComprobanteDeCotizacion;
+                    codcomprobante = InfoCotizacion.CodigoDeComprobante;
+                }
                 MiCotizacion = new Cotizacion
                 {
                     Empresa = Usuario.Empresa,
@@ -604,8 +485,8 @@ namespace Cotizador.ViewModel
                     ClaveEntidadFiscalInmueble = (EditaSucursal > 0) ? EditaSucursal : Usuario.ClaveEntidadFiscalInmueble,
                     ClaveEntidadFiscalResponsable = (EditaUsuario > 0) ? EditaUsuario : Usuario.ClaveEntidadFiscalEmpleado,
                     ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,
-                    ClaveComprobante = InfoCotizacion.ClaveComprobanteDeCotizacion,
-                    CodigoDeComprobante = InfoCotizacion.CodigoDeComprobante,
+                    ClaveComprobante = clvcomprobante,
+                    CodigoDeComprobante = codcomprobante,
                     ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
                     ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
                     ClaveListaDePrecios = 1,
@@ -619,31 +500,50 @@ namespace Cotizador.ViewModel
                 };
                 String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
 
-                // se procede a editar la cotizacion
+                // se procede a ejecutar los webservices de guardado o edición de cotización
                 var rest = new RestClient(Localhost);
-                var req = new RestRequest("editarCotizacion", Method.POST);
+                var req = new RestRequest();
+                string cuerpomsj = null;
+                if (InfoCotizacion == null)
+                {
+                    req = new RestRequest("guardarCotizacion", Method.POST);
+                    cuerpomsj = "La cotizacion {0} fue generada de manera exitosa.";
+                }
+                else
+                {
+                    req = new RestRequest("editarCotizacion", Method.POST);
+                    cuerpomsj = "Se guardaron los cambios correctamente en la cotizacion: {0}";
+                }
                 req.AddHeader("Accept", "application/json");
                 req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                 req.AddParameter("text/json", AprosiCtz, ParameterType.RequestBody);
-
                 req.RequestFormat = DataFormat.Json;
 
                 IRestResponse response = rest.Execute(req);
                 if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
                 {
-                    var respuesta = JsonConvert.DeserializeObject(response.Content);
+                    if (InfoCotizacion == null)
+                    {
+                        List<ComprobanteGenerado> compgen = JsonConvert.DeserializeObject<List<ComprobanteGenerado>>(response.Content);
+                        NumCotizacion = compgen.First().FolioCodigoComprobante;
+                    }
+                    else
+                    {
+                        var respuesta = JsonConvert.DeserializeObject(response.Content);
+                        NumCotizacion = InfoCotizacion.CodigoDeComprobante;
+                    }
                     var vmMensaje = new MensajeViewModel
                     {
                         TituloMensaje = "Aviso",
                         MostrarCancelar = false,
-                        CuerpoMensaje = "Se guardaron los cambios correctamente en la cotizacion: " + InfoCotizacion.CodigoDeComprobante
+                        CuerpoMensaje = string.Format(cuerpomsj, NumCotizacion)
                     };
                     var vwMensaje = new MensajeView
                     {
                         DataContext = vmMensaje
                     };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");                    
-                    LimpiarCotizacion();                    
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    LimpiarCotizacion();
                 }
             }
             else
@@ -651,7 +551,13 @@ namespace Cotizador.ViewModel
                 TxtMensaje = "Para guardar una cotización debe tener un Cliente seleccionado y al menos un producto en la lista.";
                 VerMensaje = true;
             }
-        }
+            //}
+            //else
+            //{
+            //    TxtMensaje = "No tiene permitido guardar cotizaciones";
+            //    VerMensaje = true;
+            //}
+        }        
 
         private async void NuevaCotizacion(object parameter)
         {
@@ -860,7 +766,7 @@ namespace Cotizador.ViewModel
                         {
                             EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
                             GuardarCotizacion(ClienteSel);
-                            EnviarCotizacion();
+                            //EnviarCotizacion();
                     }
                         else
                             EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
@@ -932,7 +838,7 @@ namespace Cotizador.ViewModel
                         {
                             EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
                             GuardarCotizacion(ClienteSel);
-                            EnviarCotizacion();
+                            //EnviarCotizacion();
                         }
                         else
                             EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161); //Si cancela el cambio de estatus, se regresa a Pendiente
