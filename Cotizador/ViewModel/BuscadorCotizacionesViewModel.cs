@@ -56,6 +56,7 @@ namespace Cotizador.ViewModel
         private bool _activoAnterior;
         private bool _activoSiguiente;
         private bool _activoFinal;
+        private int _enviarFichaTecnica;
         private CollectionViewSource _cvsCotizaciones;
         private string _correosElectronicos;
         private VigenciaEstatus _vigencia;
@@ -88,6 +89,7 @@ namespace Cotizador.ViewModel
         public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged(); } }
         public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged(); } }
         public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }
+        public int EnviarFichaTecnica { get => _enviarFichaTecnica; set { _enviarFichaTecnica = value; OnPropertyChanged(); } }
         public CollectionViewSource CvsCotizaciones { get => _cvsCotizaciones; set { _cvsCotizaciones = value; OnPropertyChanged(); } }
         public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
         public VigenciaEstatus Vigencia { get => _vigencia; set { _vigencia = value; OnPropertyChanged(); } }
@@ -197,9 +199,9 @@ namespace Cotizador.ViewModel
 
         private void BuscarCotizaciones(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("BUSCAR_COTIZACIONES") == true);
-            //if (permiso.Activo == true)
-            //{
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("BUSCAR_COTIZACIONES") == true);
+            if (permiso.Activo == true)
+            {
                 if (MiSucursal != null)
                 {
                     try
@@ -212,7 +214,7 @@ namespace Cotizador.ViewModel
                             req.AddHeader("Accept", "application/json");
                             req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                             req.AddParameter("claveEF_Inmueble", MiSucursal.ClaveEntidadFiscalInmueble);
-                            req.AddParameter("claveEF_Responsable", Usuario.ClaveEntidadFiscalEmpleado);
+                            req.AddParameter("claveEF_Responsable", ""); //Usuario.ClaveEntidadFiscalEmpleado);
                             req.AddParameter("fechaInicial", FechaInicial.ToString("yyyy-MM-dd"));
                             req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
                             req.AddParameter("txtCliente", TxtCliente ?? string.Empty); //reduccion del operador condicional ternario
@@ -258,12 +260,12 @@ namespace Cotizador.ViewModel
                         VerMensaje = true;
                     }
                 }
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido buscar cotizaciones.";
-            //    VerMensaje = true;
-            //}
+            }
+            else
+            {
+                TxtMensaje = "No tiene permitido buscar cotizaciones.";
+                VerMensaje = true;
+            }
         }
 
         private void VerificarVigenciaEstatus()
@@ -295,9 +297,9 @@ namespace Cotizador.ViewModel
 
         private void VerCotizaciones(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("CARGAR_COTIZACIONES") == true);
-            //if (permiso.Activo == true)
-            //{
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("CARGAR_COTIZACIONES") == true);
+            if (permiso.Activo == true)
+            {
                 string numCot = parameter as string;
                 InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
                 var vmInicio = new InicioViewModel(AppKey, Usuario, Localhost, ListaAcciones);
@@ -325,13 +327,13 @@ namespace Cotizador.ViewModel
                     DataContext = vmInicio
                 };
                 Navigator.NavigationService.Navigate(vwInicio);
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido editar cotizaciones";
-            //    VerMensaje = true;
-            //}
-        }        
+            }
+            else
+            {
+                TxtMensaje = "No tiene permitido editar cotizaciones";
+                VerMensaje = true;
+            }
+        }
 
         public void CargarCotizacion()
         {
@@ -402,9 +404,25 @@ namespace Cotizador.ViewModel
         private async void EnviarCotizacion(object parameter)
         {            
             string numCot = parameter as string;
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("EMAIL_COTIZACION") == true);
-            //if (permiso.Activo == true)
-            //{
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("EMAIL_COTIZACION") == true);
+            if (permiso.Activo == true)
+            {
+                EnviarFichaTecnica = 0;
+                var msjVm = new MensajeViewModel
+                {
+                    TituloMensaje = "Aviso",
+                    CuerpoMensaje = "¿Desea incluir en la cotización la ficha técnica de los productos?",
+                    MostrarCancelar = true
+                };
+                var msjVw = new MensajeView
+                {
+                    DataContext = msjVm
+                };
+                var resMsj = await DialogHost.Show(msjVw, "BuscadorCotizacionesView");
+                if (resMsj.Equals("OK") == true)
+                {
+                    EnviarFichaTecnica = 1;
+                }
                 InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
                 CorreosElectronicos = InfoCotizacion.CorreoElectronico;
                 var vmEnviarCtz = new EnviarCotizacionViewModel
@@ -437,6 +455,7 @@ namespace Cotizador.ViewModel
                         req.AddParameter("claveComprobante", prmCotizacion);
                         req.AddParameter("emails", prmEmails);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
+                        req.AddParameter("fichaTecnica", EnviarFichaTecnica);
 
                         IRestResponse response = rest.Execute(req);
                         if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
@@ -450,37 +469,55 @@ namespace Cotizador.ViewModel
                             VerMensaje = true;
                         }
                     }
+                    EnviarFichaTecnica = 0;
                 }
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permiso para enviar cotizaciones por email";
-            //    VerMensaje = true;
-            //}
+            }
+            else
+            {
+                TxtMensaje = "No tiene permiso para enviar cotizaciones por email";
+                VerMensaje = true;
+            }
         }
 
-        private void DescargarCotizacion(object parameter)
+        private async void DescargarCotizacion(object parameter)
         {
             try
             {
                 string numCot = parameter as string;
-                //var permiso = ListaAcciones.Single(x => x.Constante.Equals("PDF_COTIZACION") == true);
-                //if (permiso.Activo == true)
-                //{
+                var permiso = ListaAcciones.Single(x => x.Constante.Equals("PDF_COTIZACION") == true);
+                if (permiso.Activo == true)
+                {
+                    EnviarFichaTecnica = 0;
+                    var msjVm = new MensajeViewModel
+                    {
+                        TituloMensaje = "Aviso",
+                        CuerpoMensaje = "¿Desea incluir en la cotización la ficha técnica de los productos?",
+                        MostrarCancelar = true
+                    };
+                    var msjVw = new MensajeView
+                    {
+                        DataContext = msjVm
+                    };
+                    var resMsj = await DialogHost.Show(msjVw, "BuscadorCotizacionesView");
+                    if (resMsj.Equals("OK") == true)
+                    {
+                        EnviarFichaTecnica = 1;
+                    }
                     InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
                     var rest = new RestClient(Localhost);
-                    var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + InfoCotizacion.CodigoDeComprobante, Method.GET);
+                    var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + InfoCotizacion.CodigoDeComprobante + "/" + EnviarFichaTecnica, Method.GET);
                     req.AddHeader("Content-Type", "application/pdf");
                     req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                     byte[] archivo = rest.DownloadData(req);
                     File.WriteAllBytes(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf", archivo);
                     System.Diagnostics.Process.Start(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf");
-                //}
-                //else
-                //{
-                //    TxtMensaje = "No tiene permiso para descargar cotizaciones en PDF";
-                //    VerMensaje = true;
-                //}
+                    EnviarFichaTecnica = 0;
+                }
+                else
+                {
+                    TxtMensaje = "No tiene permiso para descargar cotizaciones en PDF";
+                    VerMensaje = true;
+                }
             }
             catch (Exception e)
             {

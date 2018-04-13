@@ -46,9 +46,11 @@ namespace Cotizador.ViewModel
         private double _descuentoTotal;
         private double _desctoUniTotal;
         private double _importeTotal;
+        private double _importeNetoTotal;
         private double _impuestoTotal;
         private double _sumaSubTotal;
         private bool _verMensaje;
+        private int _enviarFichaTecnica;
         private string _txtMensaje;
         private DateTime _fechaCotizacion;
         private DateTime _fechaCtzVigencia;
@@ -80,7 +82,7 @@ namespace Cotizador.ViewModel
         public string DatosCliente { get => _datosCliente;  set { _datosCliente = value; OnPropertyChanged(); } }
         public string CteRazonSocial { get => _cteRazonSocial; set { _cteRazonSocial = value; OnPropertyChanged(); } }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }        
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
         public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
         public ProductoSeleccionado ProductoSel { get => _productoSel; set { _productoSel = value; OnPropertyChanged(); } }
         public ObservableCollection<ProductoSeleccionado> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged(); } }
@@ -89,9 +91,11 @@ namespace Cotizador.ViewModel
         public double DescuentoTotal { get => _descuentoTotal; set { _descuentoTotal = value; OnPropertyChanged(); } }
         public double DesctoUniTotal { get => _desctoUniTotal; set { _desctoUniTotal = value; OnPropertyChanged(); } }
         public double ImporteTotal { get => _importeTotal; set { _importeTotal = value; OnPropertyChanged(); } }
+        public double ImporteNetoTotal { get => _importeNetoTotal; set { _importeNetoTotal = value; OnPropertyChanged(); } }
         public double ImpuestoTotal { get => _impuestoTotal; set { _impuestoTotal = value; OnPropertyChanged(); } }
         public double SumaSubTotal { get => _sumaSubTotal; set { _sumaSubTotal = value; OnPropertyChanged(); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
+        public int EnviarFichaTecnica { get => _enviarFichaTecnica; set { _enviarFichaTecnica = value; OnPropertyChanged(); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
         public DateTime FechaCotizacion { get => _fechaCotizacion; set { _fechaCotizacion = value; OnPropertyChanged();  ChecarVigencia(_fechaCotizacion); } }
         public DateTime FechaCtzVigencia { get => _fechaCtzVigencia; set { _fechaCtzVigencia = value; OnPropertyChanged(); } }
@@ -106,7 +110,7 @@ namespace Cotizador.ViewModel
         public List<ComprobantesImpuestos> ListaCotizacionImpuestos { get => _listaCotizacionImpuestos; set => _listaCotizacionImpuestos = value; }
         public List<ComprobantesImpuestos> ListaImpuestosXlinea { get => _listaImpuestosXlinea; set => _listaImpuestosXlinea = value; }
         public List<DetalleComprobantes> ListaDetalleComprobantes { get => _listaDetalleComprobantes; set => _listaDetalleComprobantes = value; }
-        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged(); } }        
+        public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged(); } }
         public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged(); } }
         public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged(); } }
         public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged(); } }
@@ -153,9 +157,9 @@ namespace Cotizador.ViewModel
         {
             try
             {
-                //var permiso = ListaAcciones.Single(x => x.Constante.Equals("AGREGAR_CLIENTE") == true);
-                //if (permiso.Activo == true)
-                //{
+                var permiso = ListaAcciones.Single(x => x.Constante.Equals("AGREGAR_CLIENTE") == true);
+                if (permiso.Activo == true)
+                {
                     var vmBuscarCliente = new BuscarClientesViewModel
                     {
                         AppKey = AppKey,
@@ -173,12 +177,12 @@ namespace Cotizador.ViewModel
                         CteRazonSocial = ClienteSel.RazonSocial + " | RFC:" + ClienteSel.Rfc + " | Codigo:" + ClienteSel.CodigoDeCliente;
                         DatosCliente = "Contacto(s):" + ClienteSel.Contacto + " | Teléfono(s): " + ClienteSel.NumeroTelefono + " | Direccion: " + ClienteSel.Direccion;
                     }
-                //}
-                //else
-                //{
-                //    TxtMensaje = "Usted no tiene permiso para agregar Clientes, verifique con el Administrador.";
-                //    VerMensaje = true;
-                //}
+                }
+                else
+                {
+                    TxtMensaje = "Usted no tiene permiso para agregar Clientes, verifique con el Administrador.";
+                    VerMensaje = true;
+                }
             } catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -189,39 +193,56 @@ namespace Cotizador.ViewModel
         {
             try
             {
-                //var permiso = ListaAcciones.Single(x => x.Constante.Equals("AGREGAR_PRODUCTO") == true);
-                //if (permiso.Activo == true)
-                //{
-                    if (ClienteSel != null)
+                var permiso = ListaAcciones.Single(x => x.Constante.Equals("AGREGAR_PRODUCTO") == true);
+                if (permiso.Activo == true)
+                {
+                    bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                    if (validarAutor == true)
                     {
-                        var vmBuscarProducto = new BuscarProductosViewModel
+                        if (ClienteSel != null)
                         {
-                            AppKey = AppKey,
-                            Usuario = Usuario,
-                            Localhost = Localhost
-                        };
-                        var vwBuscarProducto = new BuscarProductosView
-                        {
-                            DataContext = vmBuscarProducto
-                        };
-                        var result = await DialogHost.Show(vwBuscarProducto, "CrearCotizacion");
-                        if (result.Equals("SelProducto") == true)
-                        {
-                            ProductoSel = vmBuscarProducto.SelProducto;
-                            ProductoSel.FechaEntrega = FechaCtzVigencia;
-                            ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
-                            if (ps == null)
+                            var vmBuscarProducto = new BuscarProductosViewModel
                             {
-                                ListaProductos.Add(ProductoSel);
-                                ActualizarListaDetalles(ProductoSel, 2);
-                                CalcularTotales();
-                            }
-                            else
+                                AppKey = AppKey,
+                                Usuario = Usuario,
+                                Localhost = Localhost
+                            };
+                            var vwBuscarProducto = new BuscarProductosView
                             {
-                                TxtMensaje = "El producto seleccionado ya fue agregado, proceda a editar la cantidad y descuento en la partida correspondiente";
-                                VerMensaje = true;
+                                DataContext = vmBuscarProducto
+                            };
+                            var result = await DialogHost.Show(vwBuscarProducto, "CrearCotizacion");
+                            if (result.Equals("SelProducto") == true)
+                            {
+                                ProductoSel = vmBuscarProducto.SelProducto;
+                                ProductoSel.FechaEntrega = FechaCtzVigencia;
+                                ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
+                                if (ps == null)
+                                {
+                                    ListaProductos.Add(ProductoSel);
+                                    ActualizarListaDetalles(ProductoSel, 2);
+                                    CalcularTotales();
+                                }
+                                else
+                                {
+                                    TxtMensaje = "El producto seleccionado ya fue agregado, proceda a editar la cantidad y descuento en la partida correspondiente";
+                                    VerMensaje = true;
+                                }
+                                ChecarFechaEntrega(FechaCotizacion, ListaProductos);
                             }
-                            ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+                        }
+                        else
+                        {
+                            var vmMensaje = new MensajeViewModel
+                            {
+                                TituloMensaje = "Advertencia",
+                                CuerpoMensaje = "Debe seleccionar a un Cliente para poder realizar una Cotización"
+                            };
+                            var vwMensaje = new MensajeView
+                            {
+                                DataContext = vmMensaje
+                            };
+                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                         }
                     }
                     else
@@ -229,7 +250,7 @@ namespace Cotizador.ViewModel
                         var vmMensaje = new MensajeViewModel
                         {
                             TituloMensaje = "Advertencia",
-                            CuerpoMensaje = "Debe seleccionar a un Cliente para poder realizar una Cotización"
+                            CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
                         };
                         var vwMensaje = new MensajeView
                         {
@@ -237,13 +258,14 @@ namespace Cotizador.ViewModel
                         };
                         var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                     }
-                //}
-                //else
-                //{
-                //    TxtMensaje = "Usted no tiene permiso para agregar productos.";
-                //    VerMensaje = true;
-                //}
-            }catch(Exception ex)
+                }
+                else
+                {
+                    TxtMensaje = "Usted no tiene permiso para agregar productos.";
+                    VerMensaje = true;
+                }
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
@@ -251,112 +273,163 @@ namespace Cotizador.ViewModel
 
         private async void EditarProducto(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("EDITAR_PRODUCTO") == true);
-            //if (permiso.Activo == true)
-            //{
-                Int64 clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
-                ProductoSeleccionado producto = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
-                var vmEditarItem = new EditarItemViewModel
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("EDITAR_PRODUCTO") == true);
+            if (permiso.Activo == true)
+            {
+                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                if (validarAutor == true)
                 {
-                    ProdSeleccionado = producto,
-                    TxtCantidad = producto.Cantidad,
-                    TxtDescuento = producto.Descuento,
-                    TxtImporte = producto.Importe,
-                    TxtImporteDesc = producto.ImporteDesc
-                };
-                var vwEditarItem = new EditarItemView
-                {
-                    DataContext = vmEditarItem
-                };
-                var result = await DialogHost.Show(vwEditarItem, "CrearCotizacion");
-                if (result.Equals("OK") == true)
-                {
-                    vmEditarItem.ActualizarProducto();
-                    producto = vmEditarItem.ProdSeleccionado;
-                    ActualizarListaDetalles(producto, 1);
-                    CalcularTotales();
+                    Int64 clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
+                    ProductoSeleccionado producto = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
+                    var vmEditarItem = new EditarItemViewModel
+                    {
+                        ProdSeleccionado = producto,
+                        TxtCantidad = producto.Cantidad,
+                        TxtDescuento = producto.Descuento,
+                        TxtImporte = producto.Importe,
+                        TxtImporteDesc = producto.ImporteDesc
+                    };
+                    var vwEditarItem = new EditarItemView
+                    {
+                        DataContext = vmEditarItem
+                    };
+                    var result = await DialogHost.Show(vwEditarItem, "CrearCotizacion");
+                    if (result.Equals("OK") == true)
+                    {
+                        vmEditarItem.ActualizarProducto();
+                        producto = vmEditarItem.ProdSeleccionado;
+                        ActualizarListaDetalles(producto, 1);
+                        CalcularTotales();
+                    }
                 }
-            //}
-            //else
-            //{
-            //    TxtMensaje = "Usted no tiene permitido editar cantidad y descuento de productos.";
-            //    VerMensaje = true;
-            //}
+                else
+                {
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                }
+            }
+            else
+            {
+                TxtMensaje = "Usted no tiene permitido editar cantidad y descuento de productos.";
+                VerMensaje = true;
+            }
         }
 
         private async void DefineFechaEntrega(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("DEFINE_ENTREGA") == true);
-            //if (permiso.Activo == true)
-            //{
-                var clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
-                ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
-                DateTime defineFecha = (prodsel.DiasEntrega > 0) ? FechaCotizacion.AddDays(prodsel.DiasEntrega) : FechaCtzVigencia;
-                var vmFecEntrega = new FechaEntregaViewModel
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("DEFINE_ENTREGA") == true);
+            if (permiso.Activo == true)
+            {
+                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                if (validarAutor == true)
                 {
-                    ProdSeleccionado = prodsel,
-                    FechaLimite = FechaCotizacion.Date,
-                    FechaEntrega = defineFecha.Date
-                };
-                var vwFecEntrega = new FechaEntregaView
-                {
-                    DataContext = vmFecEntrega
-                };
-                try
-                {
-                    var result = await DialogHost.Show(vwFecEntrega, "CrearCotizacion");
-                    if (result.Equals("OK") == true)
+                    var clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
+                    ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
+                    DateTime defineFecha = (prodsel.DiasEntrega > 0) ? FechaCotizacion.AddDays(prodsel.DiasEntrega) : FechaCtzVigencia;
+                    var vmFecEntrega = new FechaEntregaViewModel
                     {
-                        prodsel.FechaEntrega = vmFecEntrega.FechaEntrega;
-                        TimeSpan ts = vmFecEntrega.FechaEntrega - FechaCotizacion.Date;
-                        prodsel.DiasEntrega = ts.Days;
-                        ActualizarListaDetalles(prodsel, 1);
-                        ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+                        ProdSeleccionado = prodsel,
+                        FechaLimite = FechaCotizacion.Date,
+                        FechaEntrega = defineFecha.Date
+                    };
+                    var vwFecEntrega = new FechaEntregaView
+                    {
+                        DataContext = vmFecEntrega
+                    };
+                    try
+                    {
+                        var result = await DialogHost.Show(vwFecEntrega, "CrearCotizacion");
+                        if (result.Equals("OK") == true)
+                        {
+                            prodsel.FechaEntrega = vmFecEntrega.FechaEntrega;
+                            TimeSpan ts = vmFecEntrega.FechaEntrega - FechaCotizacion.Date;
+                            prodsel.DiasEntrega = ts.Days;
+                            ActualizarListaDetalles(prodsel, 1);
+                            ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.Write(ex.Message);
                     }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Console.Write(ex.Message);
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                 }
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido establecer la fecha de entrega de productos.";
-            //    VerMensaje = true;
-            //}
+            }
+            else
+            {
+                TxtMensaje = "No tiene permitido establecer la fecha de entrega de productos.";
+                VerMensaje = true;
+            }
         }
 
         private async void QuitarProducto(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("EDITAR_PRODUCTO") == true);
-            //if (permiso.Activo == true)
-            //{
-                Int64 clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
-                ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
-                var vmMsj = new MensajeViewModel
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("EDITAR_PRODUCTO") == true);
+            if (permiso.Activo == true)
+            {
+                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                if (validarAutor == true)
                 {
-                    TituloMensaje = "Advertencia",
-                    CuerpoMensaje = "Confirme la eliminación de la lista del producto: " + prodsel.Producto.Descripcion,
-                    MostrarCancelar = true
-                };
-                var vwMsj = new MensajeView
-                {
-                    DataContext = vmMsj
-                };
-                var result = await DialogHost.Show(vwMsj, "CrearCotizacion");
-                if (result.Equals("OK") == true)
-                {
-                    ListaProductos.Remove(prodsel);
-                    ActualizarListaDetalles(prodsel, 0);
-                    CalcularTotales();
-                    ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+                    Int64 clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
+                    ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
+                    var vmMsj = new MensajeViewModel
+                    {
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "Confirme la eliminación de la lista del producto: " + prodsel.Producto.Descripcion,
+                        MostrarCancelar = true
+                    };
+                    var vwMsj = new MensajeView
+                    {
+                        DataContext = vmMsj
+                    };
+                    var result = await DialogHost.Show(vwMsj, "CrearCotizacion");
+                    if (result.Equals("OK") == true)
+                    {
+                        ListaProductos.Remove(prodsel);
+                        ActualizarListaDetalles(prodsel, 0);
+                        CalcularTotales();
+                        ChecarFechaEntrega(FechaCotizacion, ListaProductos);
+                    }
                 }
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido eliminar productos de la lista.";
-            //    VerMensaje = true;
-            //}
+                else
+                {
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                }
+            }
+            else
+            {
+                TxtMensaje = "No tiene permitido eliminar productos de la lista.";
+                VerMensaje = true;
+            }
         }
 
         public void CalcularTotales()
@@ -366,6 +439,7 @@ namespace Cotizador.ViewModel
             DescuentoTotal = 0.0;
             DesctoUniTotal = 0.0;
             ImporteTotal = 0.0;
+            ImporteNetoTotal = 0.0;
             ImpuestoTotal = 0.0;
             SumaSubTotal = 0.0;
             foreach (ProductoSeleccionado p in ListaProductos)
@@ -383,6 +457,7 @@ namespace Cotizador.ViewModel
             DescuentoTotal = Math.Round(DescuentoTotal, 2);
             DesctoUniTotal = Math.Round(DesctoUniTotal, 2);
             ImporteTotal = Math.Round(ImporteTotal, 2);
+            ImporteNetoTotal = Math.Round(ImporteTotal - DescuentoTotal, 2);
             ImpuestoTotal = Math.Round(ImpuestoTotal, 2);
             SumaSubTotal = Math.Round(SumaSubTotal, 2);
         }
@@ -410,153 +485,190 @@ namespace Cotizador.ViewModel
 
         private async void GuardarCotizacion(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("GUARDAR_COTIZACION") == true);
-            //if (permiso.Activo == true)
-            //{
-            if (ClienteSel != null && ListaProductos.Count > 0)
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("GUARDAR_COTIZACION") == true);
+            if (permiso.Activo == true)
             {
-                var host = Dns.GetHostEntry(Dns.GetHostName());
-                string direccionIP = host.AddressList.FirstOrDefault(h => h.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
-                ListaDetalleComprobantes = new List<DetalleComprobantes>();
-                ComprobantesImpuestos ImpuestoLinea = new ComprobantesImpuestos();
-                ListaCotizacionImpuestos = new List<ComprobantesImpuestos>();
-                ListaImpuestosXlinea = new List<ComprobantesImpuestos>();
-                int c = 1;
-
-                foreach (ProductoSeleccionado item in ListaDetalles)
+                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                if (validarAutor == true)
                 {
-                    string[] cadTasas = item.Producto.Tasas.Split(',');
-                    string[] cadClave = item.Producto.ClavesImpuestos.Split(',');
-
-                    for (int i = 0; i < cadTasas.Length; i++)
+                    if (ClienteSel != null && ListaProductos.Count > 0)
                     {
-                        ImpuestoLinea = new ComprobantesImpuestos
+                        var host = Dns.GetHostEntry(Dns.GetHostName());
+                        string direccionIP = host.AddressList.FirstOrDefault(h => h.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork).ToString();
+                        ListaDetalleComprobantes = new List<DetalleComprobantes>();
+                        ComprobantesImpuestos ImpuestoLinea = new ComprobantesImpuestos();
+                        ListaCotizacionImpuestos = new List<ComprobantesImpuestos>();
+                        ListaImpuestosXlinea = new List<ComprobantesImpuestos>();
+                        int c = 1;
+
+                        foreach (ProductoSeleccionado item in ListaDetalles)
                         {
-                            ClaveImpuesto = Convert.ToInt64(cadClave[i]),
-                            Importe = Math.Round((item.Cantidad * item.Producto.PrecioUnitario - item.ImporteDesc) * (Convert.ToDouble(cadTasas[i]) / 100), 2)
+                            string[] cadTasas = item.Producto.Tasas.Split(',');
+                            string[] cadClave = item.Producto.ClavesImpuestos.Split(',');
+
+                            for (int i = 0; i < cadTasas.Length; i++)
+                            {
+                                ImpuestoLinea = new ComprobantesImpuestos
+                                {
+                                    ClaveImpuesto = Convert.ToInt64(cadClave[i]),
+                                    Importe = Math.Round((item.Cantidad * item.Producto.PrecioUnitario - item.ImporteDesc) * (Convert.ToDouble(cadTasas[i]) / 100), 2)
+                                };
+                                ListaImpuestosXlinea.Add(ImpuestoLinea);
+                                ListaCotizacionImpuestos.Add(ImpuestoLinea);
+                            }
+
+                            DetalleComprobantes detCom = new DetalleComprobantes
+                            {
+                                Cantidad = item.Cantidad,
+                                ClaveUnidadDeMedida = item.Producto.ClaveUnidadDeMedida,
+                                ClaveProducto = item.Producto.ClaveProducto,
+                                Importe = item.Cantidad * item.Producto.PrecioUnitario, //item.Importe,
+                                ImporteDescuento = item.ImporteDesc,
+                                Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
+                                NumeroPartidas = c,
+                                PrecioUnitario = item.Producto.PrecioUnitario,
+                                DiasDeEntrega = item.DiasEntrega,
+                                Estatus = item.Estatus,
+                                ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante
+                            };
+                            c += 1;
+                            ListaDetalleComprobantes.Add(detCom);
+                            ListaImpuestosXlinea.Clear();
+                        }
+                        // utilizando Linq, se hace una sumatoria por tipo de impuesto y se guarda en una variable
+                        var listaSumaImpuestos = ListaCotizacionImpuestos.GroupBy(x => x.ClaveImpuesto)
+                                              .Select(y => new
+                                              {
+                                                  ClaveImpuesto = y.Key,
+                                                  Importe = Math.Round(y.Sum(z => z.Importe), 2)
+                                              });
+                        string clvcomprobante = null;
+                        string codcomprobante = null;
+                        ///Si es edición de cotización se reutilizan el código y la clave de comprobante
+                        if (InfoCotizacion != null)
+                        {
+                            clvcomprobante = InfoCotizacion.ClaveComprobanteDeCotizacion;
+                            codcomprobante = InfoCotizacion.CodigoDeComprobante;
+                        }
+                        MiCotizacion = new Cotizacion
+                        {
+                            Empresa = Usuario.Empresa,
+                            Equipo = direccionIP,
+                            Usuario = Usuario.NombreUsuario,
+                            ClaveInmueble = Usuario.Sucursal,
+                            ClaveTipoDeComprobante = EstatusCotizacion.ClaveTipoDeComprobante,
+                            FechaEmision = FechaCotizacion.ToString("yyyy-MM-dd HH:mm:ss"),
+                            Partidas = ListaProductos.Count,
+                            ClaveMoneda = 1,
+                            ClaveEntidadFiscalInmueble = (EditaSucursal > 0) ? EditaSucursal : Usuario.ClaveEntidadFiscalInmueble,
+                            ClaveEntidadFiscalResponsable = (EditaUsuario > 0) ? EditaUsuario : Usuario.ClaveEntidadFiscalEmpleado,
+                            ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,
+                            ClaveComprobante = clvcomprobante,
+                            CodigoDeComprobante = codcomprobante,
+                            ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
+                            ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
+                            ClaveListaDePrecios = 1,
+                            FechaVigencia = FechaCtzVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
+                            SubTotal = ImporteTotal,
+                            Descuento = DescuentoTotal,
+                            Impuestos = ImpuestoTotal,
+                            Total = SumaSubTotal,
+                            Observaciones = Observaciones,
+                            DetallesDeComprobante = JsonConvert.SerializeObject(ListaDetalleComprobantes)
                         };
-                        ListaImpuestosXlinea.Add(ImpuestoLinea);
-                        ListaCotizacionImpuestos.Add(ImpuestoLinea);
-                    }
+                        String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
 
-                    DetalleComprobantes detCom = new DetalleComprobantes
-                    {
-                        Cantidad = item.Cantidad,
-                        ClaveUnidadDeMedida = item.Producto.ClaveUnidadDeMedida,
-                        ClaveProducto = item.Producto.ClaveProducto,
-                        Importe = item.Cantidad * item.Producto.PrecioUnitario, //item.Importe,
-                        ImporteDescuento = item.ImporteDesc,
-                        Impuestos = JsonConvert.SerializeObject(ListaImpuestosXlinea),
-                        NumeroPartidas = c,
-                        PrecioUnitario = item.Producto.PrecioUnitario,
-                        DiasDeEntrega = item.DiasEntrega,
-                        Estatus = item.Estatus,
-                        ClaveDetalleDeComprobante = item.ClaveDetalleDeComprobante
-                    };
-                    c += 1;
-                    ListaDetalleComprobantes.Add(detCom);
-                    ListaImpuestosXlinea.Clear();
-                }
-                // utilizando Linq, se hace una sumatoria por tipo de impuesto y se guarda en una variable
-                var listaSumaImpuestos = ListaCotizacionImpuestos.GroupBy(x => x.ClaveImpuesto)
-                                      .Select(y => new
-                                      {
-                                          ClaveImpuesto = y.Key,
-                                          Importe = Math.Round(y.Sum(z => z.Importe), 2)
-                                      });
-                string clvcomprobante = null;
-                string codcomprobante = null;
-                ///Si es edición de cotización se reutilizan el código y la clave de comprobante
-                if (InfoCotizacion != null)
-                {
-                    clvcomprobante = InfoCotizacion.ClaveComprobanteDeCotizacion;
-                    codcomprobante = InfoCotizacion.CodigoDeComprobante;
-                }
-                MiCotizacion = new Cotizacion
-                {
-                    Empresa = Usuario.Empresa,
-                    Equipo = direccionIP,
-                    Usuario = Usuario.NombreUsuario,
-                    ClaveInmueble = Usuario.Sucursal,
-                    ClaveTipoDeComprobante = EstatusCotizacion.ClaveTipoDeComprobante,
-                    FechaEmision = FechaCotizacion.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Partidas = ListaProductos.Count,
-                    ClaveMoneda = 1,
-                    ClaveEntidadFiscalInmueble = (EditaSucursal > 0) ? EditaSucursal : Usuario.ClaveEntidadFiscalInmueble,
-                    ClaveEntidadFiscalResponsable = (EditaUsuario > 0) ? EditaUsuario : Usuario.ClaveEntidadFiscalEmpleado,
-                    ClaveTipoEstatusRecepcion = EstatusCotizacion.ClaveTipoDeStatusDeComprobante,
-                    ClaveComprobante = clvcomprobante,
-                    CodigoDeComprobante = codcomprobante,
-                    ListaComprobantesImpuestos = JsonConvert.SerializeObject(listaSumaImpuestos),
-                    ClaveEntidadFiscalCliente = ClienteSel.ClaveEntidadFiscalCliente,
-                    ClaveListaDePrecios = 1,
-                    FechaVigencia = FechaCtzVigencia.ToString("yyyy-MM-dd HH:mm:ss"),
-                    SubTotal = ImporteTotal,
-                    Descuento = DescuentoTotal,
-                    Impuestos = ImpuestoTotal,
-                    Total = SumaSubTotal,
-                    Observaciones = Observaciones,
-                    DetallesDeComprobante = JsonConvert.SerializeObject(ListaDetalleComprobantes)
-                };
-                String AprosiCtz = JsonConvert.SerializeObject(MiCotizacion);
+                        // se procede a ejecutar los webservices de guardado o edición de cotización
+                        var rest = new RestClient(Localhost);
+                        var req = new RestRequest();
+                        string cuerpomsj = null;
+                        if (InfoCotizacion == null)
+                        {
+                            req = new RestRequest("guardarCotizacion", Method.POST);
+                            cuerpomsj = "La cotizacion {0} fue generada de manera exitosa.";
+                        }
+                        else
+                        {
+                            req = new RestRequest("editarCotizacion", Method.POST);
+                            cuerpomsj = "Se guardaron los cambios correctamente en la cotizacion: {0}";
+                        }
+                        req.AddHeader("Accept", "application/json");
+                        req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                        req.AddParameter("text/json", AprosiCtz, ParameterType.RequestBody);
+                        req.RequestFormat = DataFormat.Json;
 
-                // se procede a ejecutar los webservices de guardado o edición de cotización
-                var rest = new RestClient(Localhost);
-                var req = new RestRequest();
-                string cuerpomsj = null;
-                if (InfoCotizacion == null)
-                {
-                    req = new RestRequest("guardarCotizacion", Method.POST);
-                    cuerpomsj = "La cotizacion {0} fue generada de manera exitosa.";
-                }
-                else
-                {
-                    req = new RestRequest("editarCotizacion", Method.POST);
-                    cuerpomsj = "Se guardaron los cambios correctamente en la cotizacion: {0}";
-                }
-                req.AddHeader("Accept", "application/json");
-                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-                req.AddParameter("text/json", AprosiCtz, ParameterType.RequestBody);
-                req.RequestFormat = DataFormat.Json;
-
-                IRestResponse response = rest.Execute(req);
-                if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
-                {
-                    if (InfoCotizacion == null)
-                    {
-                        List<ComprobanteGenerado> compgen = JsonConvert.DeserializeObject<List<ComprobanteGenerado>>(response.Content);
-                        NumCotizacion = compgen.First().FolioCodigoComprobante;
+                        IRestResponse response = rest.Execute(req);
+                        if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
+                        {
+                            if (InfoCotizacion == null)
+                            {
+                                List<ComprobanteGenerado> compgen = JsonConvert.DeserializeObject<List<ComprobanteGenerado>>(response.Content);
+                                NumCotizacion = compgen.First().FolioCodigoComprobante;
+                            }
+                            else
+                            {
+                                var respuesta = JsonConvert.DeserializeObject(response.Content);
+                                NumCotizacion = InfoCotizacion.CodigoDeComprobante;
+                            }
+                            var vmMensaje = new MensajeViewModel
+                            {
+                                TituloMensaje = "Aviso",
+                                MostrarCancelar = false,
+                                CuerpoMensaje = string.Format(cuerpomsj, NumCotizacion)
+                            };
+                            var vwMensaje = new MensajeView
+                            {
+                                DataContext = vmMensaje
+                            };
+                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                            if (MiCotizacion.ClaveTipoEstatusRecepcion == 160)
+                            {
+                                EnviarFichaTecnica = 0;
+                                var msjVm = new MensajeViewModel
+                                {
+                                    TituloMensaje = "Aviso",
+                                    CuerpoMensaje = "¿Desea incluir en la cotización la ficha técnica de los productos?",
+                                    MostrarCancelar = true
+                                };
+                                var msjVw = new MensajeView
+                                {
+                                    DataContext = msjVm
+                                };
+                                var resEnv = await DialogHost.Show(msjVw, "CrearCotizacion");
+                                if (resEnv.Equals("OK") == true)
+                                {
+                                    EnviarFichaTecnica = 1;
+                                }
+                                EnviarCotizacion();
+                            }
+                            LimpiarCotizacion();
+                        }
                     }
                     else
                     {
-                        var respuesta = JsonConvert.DeserializeObject(response.Content);
-                        NumCotizacion = InfoCotizacion.CodigoDeComprobante;
+                        TxtMensaje = "Para guardar una cotización debe tener un Cliente seleccionado y al menos un producto en la lista.";
+                        VerMensaje = true;
                     }
+                }
+                else
+                {
                     var vmMensaje = new MensajeViewModel
                     {
-                        TituloMensaje = "Aviso",
-                        MostrarCancelar = false,
-                        CuerpoMensaje = string.Format(cuerpomsj, NumCotizacion)
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
                     };
                     var vwMensaje = new MensajeView
                     {
                         DataContext = vmMensaje
                     };
                     var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                    LimpiarCotizacion();
                 }
             }
             else
             {
-                TxtMensaje = "Para guardar una cotización debe tener un Cliente seleccionado y al menos un producto en la lista.";
+                TxtMensaje = "No tiene permitido guardar cotizaciones";
                 VerMensaje = true;
             }
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido guardar cotizaciones";
-            //    VerMensaje = true;
-            //}
         }        
 
         private async void NuevaCotizacion(object parameter)
@@ -598,7 +710,7 @@ namespace Cotizador.ViewModel
             Observaciones = null;
             NumCotizacion = null;
             AceptaCambiosCtz = true;
-            AceptaCambiosCliente = true;            
+            AceptaCambiosCliente = true;
             InfoCotizacion = null;
             IndexEstatusCtz = 0;
             EditaSucursal = 0;
@@ -726,129 +838,95 @@ namespace Cotizador.ViewModel
             }
         }
 
-        private void EstatusBorrador(object parameter)
+        private async void EstatusBorrador(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("PENDIENTE_BORRADOR") == true);
-            //if (permiso.Activo == true)
-            //{
-                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
-                ActualizarEstatusRB();
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido cambiar el estatus de la cotización a borrador";
-            //    VerMensaje = true;
-            //}
-        }
-
-        private async void EstatusPendiente(object parameter)
-        {
-            //var permiso1 = ListaAcciones.Single(x => x.Constante.Equals("BORRADOR_PENDIENTE") == true);
-            //var permiso2 = ListaAcciones.Single(x => x.Constante.Equals("DEFINITIVA_PENDIENTE") == true);
-            //if (permiso1.Activo == true || permiso2.Activo == true)
-            //{
-                if (ListaProductos.Count > 0)//&& PermisoAutorizar == false)
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("PENDIENTE_BORRADOR") == true);
+            if (permiso.Activo == true)
+            {
+                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                if (validarAutor == true)
                 {
-                    if (InfoCotizacion != null && InfoCotizacion.ClaveEstatus == 160) //Sólo mostrará el mensaje si la cotización estaba en borrador, para no enviar demasiados emails.
-                    {
-                        var vmMensaje = new MensajeViewModel
-                        {
-                            TituloMensaje = "Aviso",
-                            CuerpoMensaje = "El cambio de estatus de la Cotización a Pendiente permitirá ser autorizada para su facturación, ¿Desea cambiar el estatus?",
-                            MostrarCancelar = true
-                        };
-                        var vwMensaje = new MensajeView
-                        {
-                            DataContext = vmMensaje
-                        };
-                        var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                        if (result.Equals("OK") == true)
-                        {
-                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
-                            GuardarCotizacion(ClienteSel);
-                            //EnviarCotizacion();
-                    }
-                        else
-                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
-                    }
-                    else if (InfoCotizacion == null)
-                    {
-                        var vmMensaje = new MensajeViewModel
-                        {
-                            TituloMensaje = "Error",
-                            CuerpoMensaje = "La cotización debe haberse guardado con el estatus de borrador antes de poder cambiar el estatus a Pendiente",
-                            MostrarCancelar = false
-                        };
-                        var vwMensaje = new MensajeView
-                        {
-                            DataContext = vmMensaje
-                        };
-                        var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                    }
-                    else //if (InfoCotizacion.ClaveEstatus == 162) //Si la cotización estaba en Definitiva no se requiere mostrar mensaje.
-                    {
-                        EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
-                    }
+                    EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
                 }
                 else
                 {
                     var vmMensaje = new MensajeViewModel
                     {
-                        TituloMensaje = "Error",
-                        CuerpoMensaje = "Para cambiar el estatus a Pendiente de Autorizar debe haber un cliente seleccionado y al menos un producto en la lista.",
-                        MostrarCancelar = false
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
                     };
                     var vwMensaje = new MensajeView
                     {
                         DataContext = vmMensaje
                     };
                     var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                    EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
                 }
-                ActualizarEstatusRB();
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido cambiar el estatus de la cotización a pendiente de autorizar";
-            //    VerMensaje = true;
-            //}
+            }
+            else
+            {
+                TxtMensaje = "No tiene permitido cambiar el estatus de la cotización a borrador";
+                VerMensaje = true;
+            }
+            ActualizarEstatusRB();
         }
 
-        private async void EstatusDefinitiva(object parameter)
+        private async void EstatusPendiente(object parameter)
         {
-            //var permiso = ListaAcciones.Single(x => x.Constante.Equals("PENDIENTE_DEFINITIVA") == true);
-            //if (permiso.Activo == true)
-            //{
-                if (ListaProductos.Count > 0)
+            var permiso1 = ListaAcciones.Single(x => x.Constante.Equals("BORRADOR_PENDIENTE") == true);
+            var permiso2 = ListaAcciones.Single(x => x.Constante.Equals("DEFINITIVA_PENDIENTE") == true);
+            if (permiso1.Activo == true || permiso2.Activo == true)
+            {
+                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                if (validarAutor == true)
                 {
-                    if (InfoCotizacion.ClaveEstatus == 161)
+                    if (ListaProductos.Count > 0)
                     {
-                        var vmMensaje = new MensajeViewModel
+                        if (InfoCotizacion != null && InfoCotizacion.ClaveEstatus == 160) //Sólo mostrará el mensaje si la cotización estaba en borrador, para no enviar demasiados emails.
                         {
-                            TituloMensaje = "Advertencia",
-                            CuerpoMensaje = "El cambio de estatus de la Cotización a Definitiva es irreversible, ¿Desea cambiar el estatus?",
-                            MostrarCancelar = true
-                        };
-                        var vwMensaje = new MensajeView
-                        {
-                            DataContext = vmMensaje
-                        };
-                        var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                        if (result.Equals("OK") == true)
-                        {
-                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
-                            GuardarCotizacion(ClienteSel);
-                            //EnviarCotizacion();
+                            var vmMensaje = new MensajeViewModel
+                            {
+                                TituloMensaje = "Aviso",
+                                CuerpoMensaje = "El cambio de estatus de la Cotización a Pendiente permitirá ser autorizada para su facturación, ¿Desea cambiar el estatus?",
+                                MostrarCancelar = true
+                            };
+                            var vwMensaje = new MensajeView
+                            {
+                                DataContext = vmMensaje
+                            };
+                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                            if (result.Equals("OK") == true)
+                            {
+                                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
+                                GuardarCotizacion(ClienteSel);
+                            }
+                            else
+                                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
                         }
-                        else
-                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161); //Si cancela el cambio de estatus, se regresa a Pendiente
+                        else if (InfoCotizacion == null)
+                        {
+                            var vmMensaje = new MensajeViewModel
+                            {
+                                TituloMensaje = "Error",
+                                CuerpoMensaje = "La cotización debe haberse guardado con el estatus de borrador antes de poder cambiar el estatus a Pendiente",
+                                MostrarCancelar = false
+                            };
+                            var vwMensaje = new MensajeView
+                            {
+                                DataContext = vmMensaje
+                            };
+                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                        }
+                        else //if (InfoCotizacion.ClaveEstatus == 162) //Si la cotización estaba en Definitiva no se requiere mostrar mensaje.
+                        {
+                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161);
+                        }
                     }
                     else
                     {
                         var vmMensaje = new MensajeViewModel
                         {
                             TituloMensaje = "Error",
-                            CuerpoMensaje = "Para cambiar el estatus a Definitiva, la cotización debe estar en estatus de Pendiente de Autorizar.",
+                            CuerpoMensaje = "Para cambiar el estatus a Pendiente de Autorizar debe haber un cliente seleccionado y al menos un producto en la lista.",
                             MostrarCancelar = false
                         };
                         var vwMensaje = new MensajeView
@@ -863,22 +941,105 @@ namespace Cotizador.ViewModel
                 {
                     var vmMensaje = new MensajeViewModel
                     {
-                        TituloMensaje = "Error",
-                        CuerpoMensaje = "No es posible cambiar el estatus de la cotización si no tiene productos agregados.",
-                        MostrarCancelar = false
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
                     };
                     var vwMensaje = new MensajeView
                     {
                         DataContext = vmMensaje
                     };
                     var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                }                
-            //}
-            //else
-            //{
-            //    TxtMensaje = "No tiene permitido cambiar el estatus de la cotización a definitiva";
-            //    VerMensaje = true;
-            //}
+                }
+            }
+            else
+            {
+                TxtMensaje = "No tiene permitido cambiar el estatus de la cotización a pendiente de autorizar";
+                VerMensaje = true;
+            }
+            ActualizarEstatusRB();
+        }
+
+        private async void EstatusDefinitiva(object parameter)
+        {
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("PENDIENTE_DEFINITIVA") == true);
+            if (permiso.Activo == true)
+            {
+                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                if (validarAutor == true)
+                {
+                    if (ListaProductos.Count > 0)
+                    {
+                        if (InfoCotizacion.ClaveEstatus == 161)
+                        {
+                            var vmMensaje = new MensajeViewModel
+                            {
+                                TituloMensaje = "Advertencia",
+                                CuerpoMensaje = "El cambio de estatus de la Cotización a Definitiva es irreversible, ¿Desea cambiar el estatus?",
+                                MostrarCancelar = true
+                            };
+                            var vwMensaje = new MensajeView
+                            {
+                                DataContext = vmMensaje
+                            };
+                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                            if (result.Equals("OK") == true)
+                            {
+                                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
+                                GuardarCotizacion(ClienteSel);
+                            }
+                            else
+                                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161); //Si cancela el cambio de estatus, se regresa a Pendiente
+                        }
+                        else
+                        {
+                            var vmMensaje = new MensajeViewModel
+                            {
+                                TituloMensaje = "Error",
+                                CuerpoMensaje = "Para cambiar el estatus a Definitiva, la cotización debe estar en estatus de Pendiente de Autorizar.",
+                                MostrarCancelar = false
+                            };
+                            var vwMensaje = new MensajeView
+                            {
+                                DataContext = vmMensaje
+                            };
+                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
+                        }
+                    }
+                    else
+                    {
+                        var vmMensaje = new MensajeViewModel
+                        {
+                            TituloMensaje = "Error",
+                            CuerpoMensaje = "No es posible cambiar el estatus de la cotización si no tiene productos agregados.",
+                            MostrarCancelar = false
+                        };
+                        var vwMensaje = new MensajeView
+                        {
+                            DataContext = vmMensaje
+                        };
+                        var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    }
+                }
+                else
+                {
+                    var vmMensaje = new MensajeViewModel
+                    {
+                        TituloMensaje = "Advertencia",
+                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
+                    };
+                    var vwMensaje = new MensajeView
+                    {
+                        DataContext = vmMensaje
+                    };
+                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                }
+            }
+            else
+            {
+                TxtMensaje = "No tiene permitido cambiar el estatus de la cotización a definitiva";
+                VerMensaje = true;
+            }
             ActualizarEstatusRB();
         }
 
@@ -926,6 +1087,7 @@ namespace Cotizador.ViewModel
                         req.AddParameter("claveComprobante", prmCotizacion);
                         req.AddParameter("emails", prmEmails);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
+                        req.AddParameter("fichaTecnica", EnviarFichaTecnica);
 
                         IRestResponse response = rest.Execute(req);
                         if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
@@ -938,6 +1100,7 @@ namespace Cotizador.ViewModel
                             TxtMensaje = "Hubo un error al enviar la cotizacion: " + response.Content;
                             VerMensaje = true;
                         }
+                        EnviarFichaTecnica = 0;
                     }
                 }
             }
@@ -975,6 +1138,17 @@ namespace Cotizador.ViewModel
             };
             var result = await DialogHost.Show(vwObs, "CrearCotizacion");
             Observaciones = vmObs.Observaciones;
+        }
+
+        private bool ValidarAutorCotizacion()
+        {
+            bool ban = false;
+            if (InfoCotizacion != null)
+            {
+                if (InfoCotizacion.ClaveEntidadFiscalResponsable == Usuario.ClaveEntidadFiscalEmpleado)
+                    ban = true;
+            }
+            return ban;
         }
         #endregion
     }

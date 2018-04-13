@@ -70,9 +70,9 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBox Grid.Row="0" mdWpf:HintAssist.Hint="Descripción:" AcceptsReturn="True" Style="{StaticResource MaterialDesignTextAreaTextBox}" Margin="8"
-                             TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding TxtDescripcion}"/>
+                             TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding TxtDescripcion}" IsReadOnly="True"/>
                     <TextBox Grid.Row="1" Grid.RowSpan="2" mdWpf:HintAssist.Hint="Resumen:" AcceptsReturn="True" Style="{StaticResource MaterialDesignTextAreaTextBox}" 
-                             Margin="8" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding TxtResumen}"/>
+                             Margin="8" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding TxtResumen}" IsReadOnly="True"/>
                 </Grid>
             </Grid>
             <!--AREA DE MENSAJES-->
@@ -81,7 +81,7 @@
             </mdWpf:Snackbar>
             <!--AREA DE BOTONES-->
             <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="10 0 10 0" Command="{Binding DescargarFichaTecnicaCommand}">
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="10 0 10 0" Command="{Binding DescargarFichaTecnicaCommand}" Visibility="Hidden">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <mdWpf:PackIcon Kind="FilePdfBox"/>

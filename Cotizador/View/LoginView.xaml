@@ -75,11 +75,11 @@
                         Style="{StaticResource MaterialDesignRaisedAccentButton}"
                         Command="{Binding ValidarUsuarioCommand}" 
                         CommandParameter="{Binding ElementName=txtPassword}"/>
-                    <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource PrimaryHueDarkBrush}"
-                                    ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionMidButton}" HorizontalAlignment="Stretch">
+                    <mdWpf:Snackbar IsActive="{Binding VerMensaje}" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Background="{DynamicResource PrimaryHueMidBrush}" HorizontalAlignment="Stretch"
+                                    ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionButton}">
                         <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar" >
                             <mdWpf:SnackbarMessage.Content>
-                                <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}" TextWrapping="Wrap"/>
+                                <TextBlock Text="{Binding TxtMensaje}" Foreground="White" TextWrapping="Wrap"/>
                             </mdWpf:SnackbarMessage.Content>
                         </mdWpf:SnackbarMessage>
                     </mdWpf:Snackbar>

@@ -3,7 +3,9 @@ using Cotizador.Model;
 using Cotizador.View;
 using MaterialDesignThemes.Wpf;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace Cotizador.ViewModel
@@ -118,13 +120,22 @@ namespace Cotizador.ViewModel
                 DataContext = VmFichaT
             };
             // OPCIONES DEL MENU
-            MenuOpcion = new[]
+            List<MenuOpciones> listaMenu = new List<MenuOpciones>
             {
                 new MenuOpciones("Cart", "Cotizador", VwCotizador),
                 new MenuOpciones("Magnify", "Buscar Cotizaciones", VwBuscadorCot),
                 new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP),
                 new MenuOpciones("FilePdfBox", "Fichas Técnicas", VwFichaT)
             };
+            // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO GESTIONAR PERMISOS
+            var permiso = ListaAcciones.Single(x => x.Constante.Equals("PERMISOS_COTIZADOR") == true);
+            if (permiso.Activo == false)
+            {
+                var opc = listaMenu.Single(x => x.Icono.Equals("AccountSettingsVariant") == true);
+                listaMenu.Remove(opc);
+            }
+            // AL CONVERTIR LA LISTA EN ARREGLO, SE VISUALIZA EN PANTALLA EL MENÚ
+            MenuOpcion = listaMenu.ToArray();
         }
 
         private async void CerrarSesion(object parameter)

@@ -22,6 +22,7 @@ namespace Cotizador.ViewModel
 
         #region Variables
         private ObservableCollection<AccionesDefinidas> _listaAcciones;
+        private ObservableCollection<AccionesDefinidas> _permisosAplicacion;
         private ApiKey _appKey;
         private string _localhost;
         private Usuario _usuario;
@@ -40,6 +41,7 @@ namespace Cotizador.ViewModel
         public List<Permisos> ListaPermisos { get => _listaPermisos; set { _listaPermisos = value; OnPropertyChanged(); } }
         public string TxtMensaje { get => _txtMensaje; set { _txtMensaje = value; OnPropertyChanged(); } }
         public bool VerMensaje { get => _verMensaje; set { _verMensaje = value; OnPropertyChanged(); } }
+        public ObservableCollection<AccionesDefinidas> PermisosAplicacion { get => _permisosAplicacion; set { _permisosAplicacion = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor
@@ -54,38 +56,46 @@ namespace Cotizador.ViewModel
         #region Métodos
         private async void GuardarPermisos(object parameter)
         {
-            string lista = JsonConvert.SerializeObject(ListaAcciones);
-            UsuarioPermisos usrpermisos = new UsuarioPermisos
-            {
-                ClaveEFEmpresa = Usuario.ClaveEntidadFiscalEmpresa,
-                ClaveEFUsuario = DatUsuario.ClaveEntidadFiscalUsuario,
-                ListaPermisos = lista
-            };
-            var paramUsrPermisos = JsonConvert.SerializeObject(usrpermisos);
-            var restclient = new RestClient(Localhost);
-            var request = new RestRequest("guardarPermisos", Method.POST);
-            request.AddHeader("Authorization", "Bearer " + AppKey.Token);
-            request.AddHeader("Accept", "application/json");
-            request.AddParameter("text/json", paramUsrPermisos, ParameterType.RequestBody);
-            request.RequestFormat = DataFormat.Json;
             string tituloMsj = "";
             string cuerpoMsj = "";
-            IRestResponse response = restclient.Execute(request);
-            if(response.IsSuccessful == true && response.StatusCode == HttpStatusCode.OK)
+            if (ListaAcciones != null && ListaAcciones.Count > 0)
             {
-                tituloMsj = "Aviso";
-                cuerpoMsj = "La información de los permisos han sido guardados correctamente";
-                LimpiarFormulario();
-            }
-            else if(response.StatusCode==HttpStatusCode.NoContent)
-            {
-                tituloMsj = "Advertencia";
-                cuerpoMsj = "La información de los permisos no fue guardada, por favor intente de nuevo";
+                string lista = JsonConvert.SerializeObject(ListaAcciones);
+                UsuarioPermisos usrpermisos = new UsuarioPermisos
+                {
+                    ClaveEFEmpresa = Usuario.ClaveEntidadFiscalEmpresa,
+                    ClaveEFUsuario = DatUsuario.ClaveEntidadFiscalUsuario,
+                    ListaPermisos = lista
+                };
+                var paramUsrPermisos = JsonConvert.SerializeObject(usrpermisos);
+                var restclient = new RestClient(Localhost);
+                var request = new RestRequest("guardarPermisos", Method.POST);
+                request.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                request.AddHeader("Accept", "application/json");
+                request.AddParameter("text/json", paramUsrPermisos, ParameterType.RequestBody);
+                request.RequestFormat = DataFormat.Json;
+                IRestResponse response = restclient.Execute(request);
+                if (response.IsSuccessful == true && response.StatusCode == HttpStatusCode.OK)
+                {
+                    tituloMsj = "Aviso";
+                    cuerpoMsj = "La información de los permisos han sido guardados correctamente";
+                    LimpiarFormulario();
+                }
+                else if (response.StatusCode == HttpStatusCode.NoContent)
+                {
+                    tituloMsj = "Advertencia";
+                    cuerpoMsj = "La información de los permisos no fue guardada, por favor intente de nuevo";
+                }
+                else
+                {
+                    tituloMsj = "Error";
+                    cuerpoMsj = "Hubo un problema en el servidor que no permitió guardar la información, notifique el error";
+                }
             }
             else
             {
                 tituloMsj = "Error";
-                cuerpoMsj = "Hubo un problema en el servidor que no permitió guardar la información, notifique el error";
+                cuerpoMsj = "La lista de permisos está vacía, debe elegir un usuario y modificar sus permisos para poder guardar los cambios";
             }
             var vmMensaje = new MensajeViewModel
             {

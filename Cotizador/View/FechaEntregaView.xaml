@@ -14,7 +14,7 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource PrimaryHueLightBrush}"
              FontFamily="{StaticResource MaterialDesignFont}"
-             Height="530" Width="500">
+             Height="550" Width="500">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

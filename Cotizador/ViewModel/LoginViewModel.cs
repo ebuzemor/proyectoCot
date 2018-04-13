@@ -144,13 +144,30 @@ namespace Cotizador.ViewModel
                 }
                 if (Usuario != null)
                 {
-                    //ValidarPermisosUsuario();
-                    InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost, ListaAcciones);
-                    InicioView vwInicio = new InicioView
+                    ValidarPermisosUsuario();
+                    if (ListaPermisos == null)
                     {
-                        DataContext = vmInicio
-                    };
-                    Navigator.NavigationService.Navigate(vwInicio);
+                        var vmMsj = new MensajeViewModel
+                        {
+                            CuerpoMensaje = "El usuario no tiene un esquema de privilegios asignado.",
+                            TituloMensaje = "Error",
+                            MostrarCancelar = false
+                        };
+                        var vwMsj = new MensajeView
+                        {
+                            DataContext = vmMsj
+                        };
+                        var result = await DialogHost.Show(vwMsj, "LoginView");
+                    }
+                    else
+                    {
+                        InicioViewModel vmInicio = new InicioViewModel(AppKey, Usuario, Localhost, ListaAcciones);
+                        InicioView vwInicio = new InicioView
+                        {
+                            DataContext = vmInicio
+                        };
+                        Navigator.NavigationService.Navigate(vwInicio);
+                    }
                 }
             }
         }
@@ -294,13 +311,15 @@ namespace Cotizador.ViewModel
         {
             CargarPermisosAplicacion();
             CargarPermisosUsuario();
-            foreach(Permisos p in ListaPermisos)
+            if (ListaPermisos != null)
             {
-                var accion = ListaAcciones.SingleOrDefault(x => x.ClaveSeccion == p.ClaveSeccion);
-                if (accion != null)
-                    accion.Activo = true;
+                foreach (Permisos p in ListaPermisos)
+                {
+                    var accion = ListaAcciones.SingleOrDefault(x => x.ClaveSeccion == p.ClaveSeccion);
+                    if (accion != null)
+                        accion.Activo = true;
+                }
             }
-
         }
 
         private void CerrarMensaje(object parameter) => VerMensaje = false;

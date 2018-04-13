@@ -5,8 +5,6 @@ using MaterialDesignThemes.Wpf;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -62,7 +60,7 @@ namespace Cotizador.ViewModel
 
         #region Métodos
         private async void BuscarFichaTecnica(object parameter)
-        {                        
+        {
             //RutaImagenProducto = null;
             var vmBuscarFT = new BuscarFichaTecnicaViewModel
             {
@@ -77,8 +75,9 @@ namespace Cotizador.ViewModel
             var result = await DialogHost.Show(vwBuscarFT, "FichaTecnica");
             if (result.Equals("SelProducto") == true)
             {
+                LimpiarFormulario();
                 FtProducto = vmBuscarFT.NvoProducto;
-                InfoFicha = "Código: " + FtProducto.CodigoInterno + ", Descripción: " + FtProducto.Descripcion + ", Precio Unit.: $" + FtProducto.PrecioPublico;
+                InfoFicha = "Código: " + FtProducto.CodigoInterno + ", Descripción: " + FtProducto.Descripcion + ", Precio Unit.: " + FtProducto.PrecioPublico.ToString("C2");
                 //Se busca la ficha tecnica por ClaveProducto
                 var rest = new RestClient(Localhost);
                 var req = new RestRequest("buscarFichaTecnica/" + FtProducto.ClaveProducto, Method.GET);
@@ -111,6 +110,11 @@ namespace Cotizador.ViewModel
                             stream.Dispose();
                         }
                     }
+                    else if(resp.IsSuccessful==true && resp.StatusCode == HttpStatusCode.NoContent)
+                    {
+                        TxtMensaje = "El producto solicitado aún no cuenta con ficha técnica.";
+                        VerMensaje = true;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -128,13 +132,18 @@ namespace Cotizador.ViewModel
 
         private void ResetFormulario(object parameter)
         {
+            LimpiarFormulario();
+        }
+
+        private void CerrarMensaje(object parameter) => VerMensaje = false;
+
+        private void LimpiarFormulario()
+        {
             RutaImagenProducto = null;
             InfoFicha = null;
             TxtDescripcion = null;
             TxtResumen = null;
         }
-
-        private void CerrarMensaje(object parameter) => VerMensaje = false;
         #endregion
     }
 }
