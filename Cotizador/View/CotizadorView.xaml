@@ -37,6 +37,7 @@
     <!--CONTENEDOR PRINCIPAL-->
     <mdWpf:DialogHost Identifier="CrearCotizacion">
         <mdWpf:DialogHost Identifier="EmailCotizacion">
+            <!--<mdWpf:DialogHost Identifier="FechaEntrega">-->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="20"/>
@@ -371,6 +372,7 @@
                     <mdWpf:SnackbarMessage Content="{Binding TxtMensaje}" ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar"/>
                 </mdWpf:Snackbar>
             </Grid>
+            <!--</mdWpf:DialogHost>-->
         </mdWpf:DialogHost>
     </mdWpf:DialogHost>
 </UserControl>

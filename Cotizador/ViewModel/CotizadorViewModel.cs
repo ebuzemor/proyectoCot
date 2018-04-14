@@ -247,16 +247,8 @@ namespace Cotizador.ViewModel
                     }
                     else
                     {
-                        var vmMensaje = new MensajeViewModel
-                        {
-                            TituloMensaje = "Advertencia",
-                            CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
-                        };
-                        var vwMensaje = new MensajeView
-                        {
-                            DataContext = vmMensaje
-                        };
-                        var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                        TxtMensaje = "Esta cotización ha sido creada por otro usuario, no es posible realizar modificaciones.";
+                        VerMensaje = true;
                     }
                 }
                 else
@@ -304,16 +296,8 @@ namespace Cotizador.ViewModel
                 }
                 else
                 {
-                    var vmMensaje = new MensajeViewModel
-                    {
-                        TituloMensaje = "Advertencia",
-                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
-                    };
-                    var vwMensaje = new MensajeView
-                    {
-                        DataContext = vmMensaje
-                    };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    TxtMensaje = "Esta cotización ha sido creada por otro usuario, no es posible realizar modificaciones.";
+                    VerMensaje = true;
                 }
             }
             else
@@ -325,29 +309,29 @@ namespace Cotizador.ViewModel
 
         private async void DefineFechaEntrega(object parameter)
         {
-            var permiso = ListaAcciones.Single(x => x.Constante.Equals("DEFINE_ENTREGA") == true);
-            if (permiso.Activo == true)
+            try
             {
-                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
-                if (validarAutor == true)
+                var permiso = ListaAcciones.Single(x => x.Constante.Equals("DEFINE_ENTREGA") == true);
+                if (permiso.Activo == true)
                 {
-                    var clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
-                    ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
-                    DateTime defineFecha = (prodsel.DiasEntrega > 0) ? FechaCotizacion.AddDays(prodsel.DiasEntrega) : FechaCtzVigencia;
-                    var vmFecEntrega = new FechaEntregaViewModel
+                    bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
+                    if (validarAutor == true)
                     {
-                        ProdSeleccionado = prodsel,
-                        FechaLimite = FechaCotizacion.Date,
-                        FechaEntrega = defineFecha.Date
-                    };
-                    var vwFecEntrega = new FechaEntregaView
-                    {
-                        DataContext = vmFecEntrega
-                    };
-                    try
-                    {
-                        var result = await DialogHost.Show(vwFecEntrega, "CrearCotizacion");
-                        if (result.Equals("OK") == true)
+                        var clvProducto = Convert.IsDBNull(parameter) ? 0 : Convert.ToInt64(parameter);
+                        ProductoSeleccionado prodsel = ListaProductos.Single(x => x.Producto.ClaveProducto == clvProducto);
+                        DateTime defineFecha = (prodsel.DiasEntrega > 0) ? FechaCotizacion.AddDays(prodsel.DiasEntrega) : FechaCtzVigencia;
+                        var vmFecEntrega = new FechaEntregaViewModel
+                        {
+                            ProdSeleccionado = prodsel,
+                            FechaLimite = FechaCotizacion.Date,
+                            FechaEntrega = defineFecha.Date
+                        };
+                        var vwFecEntrega = new FechaEntregaView
+                        {
+                            DataContext = vmFecEntrega
+                        };
+                        object resFec = await DialogHost.Show(vwFecEntrega, "EmailCotizacion");
+                        if (resFec.Equals("OK") == true)
                         {
                             prodsel.FechaEntrega = vmFecEntrega.FechaEntrega;
                             TimeSpan ts = vmFecEntrega.FechaEntrega - FechaCotizacion.Date;
@@ -356,29 +340,21 @@ namespace Cotizador.ViewModel
                             ChecarFechaEntrega(FechaCotizacion, ListaProductos);
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Console.Write(ex.Message);
+                        TxtMensaje = "Esta cotización ha sido creada por otro usuario, no es posible realizar modificaciones.";
+                        VerMensaje = true;
                     }
                 }
                 else
                 {
-                    var vmMensaje = new MensajeViewModel
-                    {
-                        TituloMensaje = "Advertencia",
-                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
-                    };
-                    var vwMensaje = new MensajeView
-                    {
-                        DataContext = vmMensaje
-                    };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    TxtMensaje = "No tiene permitido establecer la fecha de entrega de productos.";
+                    VerMensaje = true;
                 }
             }
-            else
+            catch (Exception ex)
             {
-                TxtMensaje = "No tiene permitido establecer la fecha de entrega de productos.";
-                VerMensaje = true;
+                Console.Write(ex.Message);
             }
         }
 
@@ -413,16 +389,8 @@ namespace Cotizador.ViewModel
                 }
                 else
                 {
-                    var vmMensaje = new MensajeViewModel
-                    {
-                        TituloMensaje = "Advertencia",
-                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
-                    };
-                    var vwMensaje = new MensajeView
-                    {
-                        DataContext = vmMensaje
-                    };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    TxtMensaje = "Esta cotización ha sido creada por otro usuario, no es posible realizar modificaciones.";
+                    VerMensaje = true;
                 }
             }
             else
@@ -652,16 +620,8 @@ namespace Cotizador.ViewModel
                 }
                 else
                 {
-                    var vmMensaje = new MensajeViewModel
-                    {
-                        TituloMensaje = "Advertencia",
-                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
-                    };
-                    var vwMensaje = new MensajeView
-                    {
-                        DataContext = vmMensaje
-                    };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    TxtMensaje = "Esta cotización ha sido creada por otro usuario, no es posible realizar modificaciones.";
+                    VerMensaje = true;
                 }
             }
             else
@@ -838,7 +798,7 @@ namespace Cotizador.ViewModel
             }
         }
 
-        private async void EstatusBorrador(object parameter)
+        private void EstatusBorrador(object parameter)
         {
             var permiso = ListaAcciones.Single(x => x.Constante.Equals("PENDIENTE_BORRADOR") == true);
             if (permiso.Activo == true)
@@ -850,16 +810,8 @@ namespace Cotizador.ViewModel
                 }
                 else
                 {
-                    var vmMensaje = new MensajeViewModel
-                    {
-                        TituloMensaje = "Advertencia",
-                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
-                    };
-                    var vwMensaje = new MensajeView
-                    {
-                        DataContext = vmMensaje
-                    };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    TxtMensaje = "Esta cotización ha sido creada por otro usuario, no es posible realizar modificaciones.";
+                    VerMensaje = true;
                 }
             }
             else
@@ -939,16 +891,8 @@ namespace Cotizador.ViewModel
                 }
                 else
                 {
-                    var vmMensaje = new MensajeViewModel
-                    {
-                        TituloMensaje = "Advertencia",
-                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
-                    };
-                    var vwMensaje = new MensajeView
-                    {
-                        DataContext = vmMensaje
-                    };
-                    var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                    TxtMensaje = "Esta cotización ha sido creada por otro usuario, no es posible realizar modificaciones.";
+                    VerMensaje = true;
                 }
             }
             else
@@ -964,54 +908,35 @@ namespace Cotizador.ViewModel
             var permiso = ListaAcciones.Single(x => x.Constante.Equals("PENDIENTE_DEFINITIVA") == true);
             if (permiso.Activo == true)
             {
-                bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
-                if (validarAutor == true)
+                if (ListaProductos.Count > 0)
                 {
-                    if (ListaProductos.Count > 0)
+                    if (InfoCotizacion.ClaveEstatus == 161)
                     {
-                        if (InfoCotizacion.ClaveEstatus == 161)
+                        var vmMensaje = new MensajeViewModel
                         {
-                            var vmMensaje = new MensajeViewModel
-                            {
-                                TituloMensaje = "Advertencia",
-                                CuerpoMensaje = "El cambio de estatus de la Cotización a Definitiva es irreversible, ¿Desea cambiar el estatus?",
-                                MostrarCancelar = true
-                            };
-                            var vwMensaje = new MensajeView
-                            {
-                                DataContext = vmMensaje
-                            };
-                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                            if (result.Equals("OK") == true)
-                            {
-                                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
-                                GuardarCotizacion(ClienteSel);
-                            }
-                            else
-                                EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161); //Si cancela el cambio de estatus, se regresa a Pendiente
+                            TituloMensaje = "Advertencia",
+                            CuerpoMensaje = "El cambio de estatus de la Cotización a Definitiva es irreversible, ¿Desea cambiar el estatus?",
+                            MostrarCancelar = true
+                        };
+                        var vwMensaje = new MensajeView
+                        {
+                            DataContext = vmMensaje
+                        };
+                        var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                        if (result.Equals("OK") == true)
+                        {
+                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 162);
+                            GuardarCotizacion(ClienteSel);
                         }
                         else
-                        {
-                            var vmMensaje = new MensajeViewModel
-                            {
-                                TituloMensaje = "Error",
-                                CuerpoMensaje = "Para cambiar el estatus a Definitiva, la cotización debe estar en estatus de Pendiente de Autorizar.",
-                                MostrarCancelar = false
-                            };
-                            var vwMensaje = new MensajeView
-                            {
-                                DataContext = vmMensaje
-                            };
-                            var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
-                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
-                        }
+                            EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 161); //Si cancela el cambio de estatus, se regresa a Pendiente
                     }
                     else
                     {
                         var vmMensaje = new MensajeViewModel
                         {
                             TituloMensaje = "Error",
-                            CuerpoMensaje = "No es posible cambiar el estatus de la cotización si no tiene productos agregados.",
+                            CuerpoMensaje = "Para cambiar el estatus a Definitiva, la cotización debe estar en estatus de Pendiente de Autorizar.",
                             MostrarCancelar = false
                         };
                         var vwMensaje = new MensajeView
@@ -1019,14 +944,16 @@ namespace Cotizador.ViewModel
                             DataContext = vmMensaje
                         };
                         var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
+                        EstatusCotizacion = ListaEstatusCtz.Single(x => x.ClaveTipoDeStatusDeComprobante == 160);
                     }
                 }
                 else
                 {
                     var vmMensaje = new MensajeViewModel
                     {
-                        TituloMensaje = "Advertencia",
-                        CuerpoMensaje = "La cotización ha sido creada por otro usuario, no tiene el permiso necesario para realizar modificaciones."
+                        TituloMensaje = "Error",
+                        CuerpoMensaje = "No es posible cambiar el estatus de la cotización si no tiene productos agregados.",
+                        MostrarCancelar = false
                     };
                     var vwMensaje = new MensajeView
                     {
@@ -1037,7 +964,7 @@ namespace Cotizador.ViewModel
             }
             else
             {
-                TxtMensaje = "No tiene permitido cambiar el estatus de la cotización a definitiva";
+                TxtMensaje = "No tiene permitido autorizar cotizaciones.";
                 VerMensaje = true;
             }
             ActualizarEstatusRB();

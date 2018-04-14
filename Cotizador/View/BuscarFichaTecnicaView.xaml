@@ -47,7 +47,7 @@
                     <KeyBinding Command="{Binding BuscarProductosCommand}" Key="Return"/>
                 </TextBox.InputBindings>
             </TextBox>
-            <Button Grid.Row="1" Grid.Column="1" Content="Buscar Usuario" Margin="0 6 0 0" Style="{StaticResource MaterialDesignRaisedAccentButton}"
+            <Button Grid.Row="1" Grid.Column="1" Content="Buscar Producto" Margin="0 6 0 0" Style="{StaticResource MaterialDesignRaisedAccentButton}"
                 Command="{Binding BuscarProductosCommand}"/>
             <!--LISTA DE PRODUCTOS OBTENIDOS EN LA BUSQUEDA-->
             <ListView x:Name="Lista" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="3" ItemsSource="{Binding CvsProductos.View}"

@@ -134,6 +134,13 @@ namespace Cotizador.ViewModel
                 var opc = listaMenu.Single(x => x.Icono.Equals("AccountSettingsVariant") == true);
                 listaMenu.Remove(opc);
             }
+            // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO BUSCAR FICHAS TECNICAS
+            permiso = ListaAcciones.Single(y => y.Constante.Equals("BUSCAR_FICHASTECNICAS") == true);
+            if(permiso.Activo==false)
+            {
+                var opc = listaMenu.Single(y => y.Icono.Equals("FilePdfBox") == true);
+                listaMenu.Remove(opc);
+            }
             // AL CONVERTIR LA LISTA EN ARREGLO, SE VISUALIZA EN PANTALLA EL MENÚ
             MenuOpcion = listaMenu.ToArray();
         }
