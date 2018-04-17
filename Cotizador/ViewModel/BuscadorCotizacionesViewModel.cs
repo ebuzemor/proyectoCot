@@ -314,7 +314,7 @@ namespace Cotizador.ViewModel
                 vmInicio.VmCotizador.FechaCotizacion = Convert.ToDateTime(InfoCotizacion.FechaEmision);
                 vmInicio.VmCotizador.ListaProductos = ListaProductosCtz;
                 vmInicio.VmCotizador.ChecarFechaEntrega(Convert.ToDateTime(InfoCotizacion.FechaEmision), ListaProductosCtz);
-                vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
+                //vmInicio.VmCotizador.ListaDetalles = new ObservableCollection<ProductoSeleccionado>(ListaProductosCtz);
                 vmInicio.VmCotizador.CalcularTotales();
                 vmInicio.VmCotizador.NumCotizacion = "COTIZACION: " + InfoCotizacion.CodigoDeComprobante;
                 vmInicio.VmCotizador.EditaSucursal = InfoCotizacion.ClaveEntidadFiscalInmueble;

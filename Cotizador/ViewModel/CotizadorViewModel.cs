@@ -111,7 +111,7 @@ namespace Cotizador.ViewModel
         public List<ComprobantesImpuestos> ListaImpuestosXlinea { get => _listaImpuestosXlinea; set => _listaImpuestosXlinea = value; }
         public List<DetalleComprobantes> ListaDetalleComprobantes { get => _listaDetalleComprobantes; set => _listaDetalleComprobantes = value; }
         public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged(); } }
-        public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged(); } }
+        //public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged(); } }
         public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged(); } }
         public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged(); } }
         public long ClaveEstatusCtz { get => _claveEstatusCtz; set { _claveEstatusCtz = value; OnPropertyChanged(); } }
@@ -143,7 +143,7 @@ namespace Cotizador.ViewModel
             EstatusDefinitivaCommand = new RelayCommand(EstatusDefinitiva);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
-            ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
+            //ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
             BorradorSeleccionado = true;
             AceptaCambiosCtz = true;
             AceptaCambiosCliente = true;
@@ -215,12 +215,11 @@ namespace Cotizador.ViewModel
                             if (result.Equals("SelProducto") == true)
                             {
                                 ProductoSel = vmBuscarProducto.SelProducto;
-                                ProductoSel.FechaEntrega = FechaCtzVigencia;
+                                ProductoSel.FechaEntrega = DateTime.Now;
                                 ProductoSeleccionado ps = ListaProductos.SingleOrDefault(x => x.Producto.ClaveProducto == ProductoSel.Producto.ClaveProducto);
                                 if (ps == null)
                                 {
                                     ListaProductos.Add(ProductoSel);
-                                    ActualizarListaDetalles(ProductoSel, 2);
                                     CalcularTotales();
                                 }
                                 else
@@ -290,7 +289,6 @@ namespace Cotizador.ViewModel
                     {
                         vmEditarItem.ActualizarProducto();
                         producto = vmEditarItem.ProdSeleccionado;
-                        ActualizarListaDetalles(producto, 1);
                         CalcularTotales();
                     }
                 }
@@ -336,7 +334,6 @@ namespace Cotizador.ViewModel
                             prodsel.FechaEntrega = vmFecEntrega.FechaEntrega;
                             TimeSpan ts = vmFecEntrega.FechaEntrega - FechaCotizacion.Date;
                             prodsel.DiasEntrega = ts.Days;
-                            ActualizarListaDetalles(prodsel, 1);
                             ChecarFechaEntrega(FechaCotizacion, ListaProductos);
                         }
                     }
@@ -382,7 +379,6 @@ namespace Cotizador.ViewModel
                     if (result.Equals("OK") == true)
                     {
                         ListaProductos.Remove(prodsel);
-                        ActualizarListaDetalles(prodsel, 0);
                         CalcularTotales();
                         ChecarFechaEntrega(FechaCotizacion, ListaProductos);
                     }
@@ -457,7 +453,7 @@ namespace Cotizador.ViewModel
             if (permiso.Activo == true)
             {
                 bool validarAutor = (InfoCotizacion != null) ? ValidarAutorCotizacion() : true;
-                if (validarAutor == true)
+                if (validarAutor == true || EstatusCotizacion.ClaveTipoDeStatusDeComprobante == 162)
                 {
                     if (ClienteSel != null && ListaProductos.Count > 0)
                     {
@@ -469,7 +465,7 @@ namespace Cotizador.ViewModel
                         ListaImpuestosXlinea = new List<ComprobantesImpuestos>();
                         int c = 1;
 
-                        foreach (ProductoSeleccionado item in ListaDetalles)
+                        foreach (ProductoSeleccionado item in ListaProductos)
                         {
                             string[] cadTasas = item.Producto.Tasas.Split(',');
                             string[] cadClave = item.Producto.ClavesImpuestos.Split(',');
@@ -675,24 +671,6 @@ namespace Cotizador.ViewModel
             IndexEstatusCtz = 0;
             EditaSucursal = 0;
             EditaUsuario = 0;
-        }
-
-        private void ActualizarListaDetalles(ProductoSeleccionado prodsel, int estatus)
-        {
-            switch (estatus)
-            {
-                case 2:
-                    prodsel.Estatus = estatus;
-                    ListaDetalles.Add(prodsel);
-                    break;
-                default:
-                    {
-                        var prod = ListaDetalles.First(x => x.Producto.ClaveProducto == prodsel.Producto.ClaveProducto);
-                        prod.Estatus = estatus;
-                        prod.DiasEntrega = prodsel.DiasEntrega;
-                        break;
-                    }
-            }
         }
 
         public void MostrarSucursal()
