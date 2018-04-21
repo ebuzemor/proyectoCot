@@ -349,7 +349,7 @@ namespace Cotizador.ViewModel
                 if (resp.IsSuccessful && resp.StatusCode == HttpStatusCode.OK)
                 {
                     var info = JsonConvert.DeserializeObject<ClientesJson>(resp.Content);
-                    ClienteCtz = info.Clientes.First();                    
+                    ClienteCtz = info.Clientes.First();
                 }
 
                 /// CARGA DE DETALLES DE LA COTIZACION
@@ -402,31 +402,58 @@ namespace Cotizador.ViewModel
         }
 
         private async void EnviarCotizacion(object parameter)
-        {            
+        {
             string numCot = parameter as string;
             var permiso = ListaAcciones.Single(x => x.Constante.Equals("EMAIL_COTIZACION") == true);
             if (permiso.Activo == true)
             {
-                EnviarFichaTecnica = 0;
-                var msjVm = new MensajeViewModel
-                {
-                    TituloMensaje = "Aviso",
-                    CuerpoMensaje = "¿Desea incluir en la cotización la ficha técnica de los productos?",
-                    MostrarCancelar = true
-                };
-                var msjVw = new MensajeView
-                {
-                    DataContext = msjVm
-                };
-                var resMsj = await DialogHost.Show(msjVw, "BuscadorCotizacionesView");
-                if (resMsj.Equals("OK") == true)
-                {
-                    EnviarFichaTecnica = 1;
-                }
                 InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("cargarDetallesCotizacion/" + numCot, Method.GET);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+
+                IRestResponse respdet = rest.Execute(req);
+                if (respdet.IsSuccessful && respdet.StatusCode == HttpStatusCode.OK)
+                {
+                    List<InfoDetallesCotizacion> detalles = JsonConvert.DeserializeObject<List<InfoDetallesCotizacion>>(respdet.Content);
+                    ListaProductosCtz = new ObservableCollection<ProductoSeleccionado>();
+                    foreach (InfoDetallesCotizacion fila in detalles)
+                    {
+                        double pdesc = Math.Round(fila.ImporteDescuento / (fila.PrecioUnitario * fila.Cantidad), 2);
+                        DateTime fecEntrega = (fila.DiasDeEntrega == 0) ? Convert.ToDateTime(InfoCotizacion.FechaVigencia) : Convert.ToDateTime(InfoCotizacion.FechaEmision).AddDays(fila.DiasDeEntrega);
+                        ProductoSeleccionado psel = new ProductoSeleccionado
+                        {
+                            Cantidad = fila.Cantidad,
+                            Descuento = pdesc,
+                            Importe = fila.Importe,
+                            ImporteDesc = fila.ImporteDescuento,
+                            DesctoUnitario = Math.Round(fila.PrecioUnitario * pdesc, 2),
+                            Impuesto = fila.Impuestos,
+                            SubTotal = fila.Subtotal,
+                            Estatus = 3,
+                            ClaveDetalleDeComprobante = fila.ClaveDetalleDeComprobante,
+                            DiasEntrega = fila.DiasDeEntrega,
+                            FechaEntrega = fecEntrega,
+                            Producto = new Producto
+                            {
+                                ClaveProducto = fila.ClaveProducto,
+                                Descripcion = fila.Descripcion.Trim(),
+                                PrecioUnitario = fila.PrecioUnitario,
+                                SumaImpuestos = fila.SumaImpuestos,
+                                CodigoInterno = fila.CodigoInterno,
+                                Tasas = fila.Tasas,
+                                ClavesImpuestos = fila.ClavesImpuestos
+                            }
+                        };
+                        ListaProductosCtz.Add(psel);
+                    }
+                }
                 CorreosElectronicos = InfoCotizacion.CorreoElectronico;
                 var vmEnviarCtz = new EnviarCotizacionViewModel
                 {
+                    TituloEnvio = "Enviar cotizacion #" + InfoCotizacion.CodigoDeComprobante,
+                    ListaProductosFT = ListaProductosCtz,
                     NumCotizacion = InfoCotizacion.CodigoDeComprobante,
                     CorreosElectronicos = CorreosElectronicos
                 };
@@ -448,14 +475,26 @@ namespace Cotizador.ViewModel
                     {
                         string prmCotizacion = InfoCotizacion.CodigoDeComprobante;
                         string prmEmails = String.Join(",", Regex.Split(CorreosElectronicos, @"\r\n"));
-                        var rest = new RestClient(Localhost);
-                        var req = new RestRequest("enviarMail", Method.POST);
+                        List<EnvioFichaTecnica> listaFT = new List<EnvioFichaTecnica>();
+                        foreach(ProductoSeleccionado ps in vmEnviarCtz.ListaProductosFT)
+                        {
+                            var envft = new EnvioFichaTecnica
+                            {
+                                ClaveProducto = ps.Producto.ClaveProducto,
+                                EnvioFicha = (ps.FichaTecnica == true) ? 1 : 0
+                            };
+                            listaFT.Add(envft);
+                        }
+                        string datosFT = JsonConvert.SerializeObject(listaFT);
+                        rest = new RestClient(Localhost);
+                        req = new RestRequest("enviarMail", Method.POST);
                         req.AddHeader("Accept", "application/json");
                         req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                         req.AddParameter("claveComprobante", prmCotizacion);
                         req.AddParameter("emails", prmEmails);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
                         req.AddParameter("fichaTecnica", EnviarFichaTecnica);
+                        req.AddParameter("listaProductosFT", datosFT);
 
                         IRestResponse response = rest.Execute(req);
                         if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
@@ -484,34 +523,84 @@ namespace Cotizador.ViewModel
             try
             {
                 string numCot = parameter as string;
+                InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
                 var permiso = ListaAcciones.Single(x => x.Constante.Equals("PDF_COTIZACION") == true);
                 if (permiso.Activo == true)
                 {
-                    EnviarFichaTecnica = 0;
-                    var msjVm = new MensajeViewModel
-                    {
-                        TituloMensaje = "Aviso",
-                        CuerpoMensaje = "¿Desea incluir en la cotización la ficha técnica de los productos?",
-                        MostrarCancelar = true
-                    };
-                    var msjVw = new MensajeView
-                    {
-                        DataContext = msjVm
-                    };
-                    var resMsj = await DialogHost.Show(msjVw, "BuscadorCotizacionesView");
-                    if (resMsj.Equals("OK") == true)
-                    {
-                        EnviarFichaTecnica = 1;
-                    }
-                    InfoCotizacion = ListaCotizaciones.Where(x => x.ClaveComprobanteDeCotizacion == numCot).First();
                     var rest = new RestClient(Localhost);
-                    var req = new RestRequest("descargarPDF/" + Usuario.ClaveEntidadFiscalEmpresa + "/" + InfoCotizacion.CodigoDeComprobante + "/" + EnviarFichaTecnica, Method.GET);
-                    req.AddHeader("Content-Type", "application/pdf");
+                    var req = new RestRequest("cargarDetallesCotizacion/" + numCot, Method.GET);
+                    req.AddHeader("Accept", "application/json");
                     req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-                    byte[] archivo = rest.DownloadData(req);
-                    File.WriteAllBytes(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf", archivo);
-                    System.Diagnostics.Process.Start(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf");
-                    EnviarFichaTecnica = 0;
+                    IRestResponse respdet = rest.Execute(req);
+                    if (respdet.IsSuccessful && respdet.StatusCode == HttpStatusCode.OK)
+                    {
+                        List<InfoDetallesCotizacion> detalles = JsonConvert.DeserializeObject<List<InfoDetallesCotizacion>>(respdet.Content);
+                        ListaProductosCtz = new ObservableCollection<ProductoSeleccionado>();
+                        foreach (InfoDetallesCotizacion fila in detalles)
+                        {
+                            double pdesc = Math.Round(fila.ImporteDescuento / (fila.PrecioUnitario * fila.Cantidad), 2);
+                            DateTime fecEntrega = (fila.DiasDeEntrega == 0) ? Convert.ToDateTime(InfoCotizacion.FechaVigencia) : Convert.ToDateTime(InfoCotizacion.FechaEmision).AddDays(fila.DiasDeEntrega);
+                            ProductoSeleccionado psel = new ProductoSeleccionado
+                            {
+                                Cantidad = fila.Cantidad,
+                                Descuento = pdesc,
+                                Importe = fila.Importe,
+                                ImporteDesc = fila.ImporteDescuento,
+                                DesctoUnitario = Math.Round(fila.PrecioUnitario * pdesc, 2),
+                                Impuesto = fila.Impuestos,
+                                SubTotal = fila.Subtotal,
+                                Estatus = 3,
+                                ClaveDetalleDeComprobante = fila.ClaveDetalleDeComprobante,
+                                DiasEntrega = fila.DiasDeEntrega,
+                                FechaEntrega = fecEntrega,
+                                Producto = new Producto
+                                {
+                                    ClaveProducto = fila.ClaveProducto,
+                                    Descripcion = fila.Descripcion.Trim(),
+                                    PrecioUnitario = fila.PrecioUnitario,
+                                    SumaImpuestos = fila.SumaImpuestos,
+                                    CodigoInterno = fila.CodigoInterno,
+                                    Tasas = fila.Tasas,
+                                    ClavesImpuestos = fila.ClavesImpuestos
+                                }
+                            };
+                            ListaProductosCtz.Add(psel);
+                        }
+                    }
+                    var elegirFTvm = new ElegirFichaTecnicaViewModel
+                    {
+                        ListaProductosFT = ListaProductosCtz
+                    };
+                    var elegirFTvw = new ElegirFichaTecnicaView
+                    {
+                        DataContext = elegirFTvm
+                    };
+                    var resFT = await DialogHost.Show(elegirFTvw, "BuscadorCotizacionesView");
+                    if (resFT.Equals("OK") == true)
+                    {
+                        List<EnvioFichaTecnica> listaFT = new List<EnvioFichaTecnica>();
+                        foreach (ProductoSeleccionado ps in elegirFTvm.ListaProductosFT)
+                        {
+                            var envft = new EnvioFichaTecnica
+                            {
+                                ClaveProducto = ps.Producto.ClaveProducto,
+                                EnvioFicha = (ps.FichaTecnica == true) ? 1 : 0
+                            };
+                            listaFT.Add(envft);
+                        }
+                        string datosFT = JsonConvert.SerializeObject(listaFT);
+                        rest = new RestClient(Localhost);
+                        req = new RestRequest("descargarPDF", Method.POST);// /" + Usuario.ClaveEntidadFiscalEmpresa + "/" + InfoCotizacion.CodigoDeComprobante + "/" + EnviarFichaTecnica, Method.GET);
+                        req.AddHeader("Content-Type", "application/pdf");
+                        req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                        req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
+                        req.AddParameter("claveComprobante", InfoCotizacion.CodigoDeComprobante);
+                        req.AddParameter("listaFichaTecnica", datosFT);
+                        byte[] archivo = rest.DownloadData(req);
+                        File.WriteAllBytes(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf", archivo);
+                        System.Diagnostics.Process.Start(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf");
+                        EnviarFichaTecnica = 0;
+                    }
                 }
                 else
                 {
@@ -616,4 +705,3 @@ namespace Cotizador.ViewModel
         #endregion
     }
 }
-

@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="Cotizador.View.EnviarCotizacionView"
+﻿<UserControl x:Class="Cotizador.View.ElegirFichaTecnicaView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
@@ -13,35 +13,32 @@
              TextOptions.TextRenderingMode="Auto"
              Background="{DynamicResource PrimaryHueLightBrush}"
              FontFamily="{StaticResource MaterialDesignFont}"
-             Height="500" Width="550">
+             Height="450" Width="550">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml"/>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Snackbar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="5">
+    <!--CONTENEDOR PRINCIPAL-->
+    <Grid Margin="16">
         <Grid.RowDefinitions>
-            <RowDefinition Height="45"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="40"/>
             <RowDefinition/>
-            <RowDefinition Height="5"/>
-            <RowDefinition Height="0.5*"/>
             <RowDefinition Height="45"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <!--TITULO DE VENTANA-->
-        <TextBlock Grid.Row="0" Style="{StaticResource MaterialDesignHeadlineTextBlock}" Text="{Binding TituloEnvio}"/>
-        <!--SUBTITULO-->
-        <TextBlock Grid.Row="1" Style="{StaticResource MaterialDesignSubheadingTextBlock}" FontStyle="Oblique" TextAlignment="Center"
-                   Text="Seleccione los productos que incluirán ficha técnica (opcional)." VerticalAlignment="Center"/>
-        <!--CUERPO DE LA VENTANA-->
-        <ListView x:Name="ListaFichas" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ListaProductosFT}"
+        <!--TITULO-->
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="Elige los productos que incluirán Ficha Técnica (opcional):" FontSize="18" FontWeight="SemiBold"
+                   VerticalAlignment="Center"/>
+        <!--LISTA DE PRODUCTOS-->
+        <ListView x:Name="ListaFichas" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding ListaProductosFT}"
                   ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
                   SelectedItem="{Binding FtProducto}" SelectionMode="Single" Margin="5">
             <ListView.ItemContainerStyle>
@@ -54,7 +51,7 @@
                     <GridViewColumn Header="Elegir">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <CheckBox IsChecked="{Binding FichaTecnica}" ToolTip="Incluir ficha técnica de este producto" HorizontalAlignment="Center"/>
+                                <CheckBox IsChecked="{Binding FichaTecnica}" ToolTip="Incluir ficha técnica de este producto"/>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -82,16 +79,30 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <!--DIVISOR-->
-        <GridSplitter Grid.Row="3" Height="5" HorizontalAlignment="Stretch"/>
-        <TextBox Grid.Row="4" Margin="5" VerticalAlignment="Top" mdWpf:HintAssist.Hint="Ingrese un email por cada línea" AcceptsReturn="True"
-                 Style="{StaticResource MaterialDesignTextAreaTextBox}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding CorreosElectronicos}"/>
+        <!--AREA DE MENSAJES-->
+        <mdWpf:Snackbar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueDarkBrush}"
+                        ActionButtonStyle="{StaticResource MaterialDesignSnackbarActionLightButton}">
+            <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                <mdWpf:SnackbarMessage.Content>
+                    <TextBlock Text="{Binding TxtMensaje}" Foreground="{DynamicResource PrimaryHueLightBrush}"/>
+                </mdWpf:SnackbarMessage.Content>
+            </mdWpf:SnackbarMessage>
+        </mdWpf:Snackbar>
         <!--BOTONES DE LA VENTANA-->
-        <StackPanel Orientation="Horizontal" Grid.Row="5" Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding ActivoEnviar}"
-                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="ENVIAR" Content="ENVIAR E-MAIL"/>
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0 16 0 0" HorizontalAlignment="Right">
+            <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">
+                <Button.CommandParameter>
+                    OK
+                </Button.CommandParameter>
+                DESCARGAR PDF
+            </Button>
             <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}"
-                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="CANCELAR" Content="CANCELAR"/>
+                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}">
+                <Button.CommandParameter>
+                    Null
+                </Button.CommandParameter>
+                CANCELAR
+            </Button>
         </StackPanel>
     </Grid>
 </UserControl>

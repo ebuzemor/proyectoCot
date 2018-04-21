@@ -77,7 +77,7 @@ namespace Cotizador.ViewModel
                 Titulo = "Iniciar Sesión";
                 ValidarUsuarioCommand = new RelayCommand(ValidarUsuario);
                 CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
-                TipoConexion("produccion");
+                TipoConexion("desarrollo");
                 ///verifica que exista un token, en caso contrario genera uno nuevo
                 if (string.IsNullOrEmpty(Token) != true)
                 {

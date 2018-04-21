@@ -158,6 +158,7 @@
     <Compile Include="Model\CondicionesComerciales.cs" />
     <Compile Include="Model\Cotizacion.cs" />
     <Compile Include="Model\DatosUsuarios.cs" />
+    <Compile Include="Model\EnvioFichaTecnica.cs" />
     <Compile Include="Model\EstatusCotizacion.cs" />
     <Compile Include="Model\FichaTecnica.cs" />
     <Compile Include="Model\Permisos.cs" />
@@ -178,6 +179,7 @@
     <Compile Include="ViewModel\BuscarUsuariosViewModel.cs" />
     <Compile Include="ViewModel\CotizadorViewModel.cs" />
     <Compile Include="ViewModel\EditarItemViewModel.cs" />
+    <Compile Include="ViewModel\ElegirFichaTecnicaViewModel.cs" />
     <Compile Include="ViewModel\EnviarCotizacionViewModel.cs" />
     <Compile Include="ViewModel\ExistenciasViewModel.cs" />
     <Compile Include="ViewModel\FechaEntregaViewModel.cs" />
@@ -211,6 +213,9 @@
     </Compile>
     <Compile Include="View\EditarItemView.xaml.cs">
       <DependentUpon>EditarItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ElegirFichaTecnicaView.xaml.cs">
+      <DependentUpon>ElegirFichaTecnicaView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EnviarCotizacionView.xaml.cs">
       <DependentUpon>EnviarCotizacionView.xaml</DependentUpon>
@@ -280,6 +285,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EditarItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ElegirFichaTecnicaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

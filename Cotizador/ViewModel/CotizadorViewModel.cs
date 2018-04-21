@@ -33,7 +33,7 @@ namespace Cotizador.ViewModel
         #region Variables
         private Cliente _clienteSel;
         private ObservableCollection<ProductoSeleccionado> _listaProductos;
-        private ObservableCollection<ProductoSeleccionado> _listaDetalles;
+        //private ObservableCollection<ProductoSeleccionado> _listaDetalles;
         private ObservableCollection<EstatusCotizacion> _listaEstatusCtz;
         private string _datosCliente;
         private string _cteRazonSocial;

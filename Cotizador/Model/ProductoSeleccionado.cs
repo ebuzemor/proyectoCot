@@ -8,7 +8,7 @@ namespace Cotizador.Model
         private Producto _producto;
         private double _cantidad;
         private double _descuento;
-        private double _importeDesc;        
+        private double _importeDesc;
         private double _importe;
         private double _impuesto;
         private double _subTotal;
@@ -17,6 +17,7 @@ namespace Cotizador.Model
         private DateTime _fechaEntrega;
         private int _diasEntrega;
         private double _desctoUnitario;
+        private bool _fichaTecnica; 
 
         public Producto Producto { get => _producto; set { _producto = value; OnPropertyChanged(); } }
         public double Cantidad { get => _cantidad; set { _cantidad = value; OnPropertyChanged(); } }
@@ -30,5 +31,6 @@ namespace Cotizador.Model
         public DateTime FechaEntrega { get => _fechaEntrega; set { _fechaEntrega = value; OnPropertyChanged(); } }
         public int DiasEntrega { get => _diasEntrega; set { _diasEntrega = value; OnPropertyChanged(); } }
         public double DesctoUnitario { get => _desctoUnitario; set { _desctoUnitario = value; OnPropertyChanged(); } }
+        public bool FichaTecnica { get => _fichaTecnica; set { _fichaTecnica = value; OnPropertyChanged(); } }
     }
 }
