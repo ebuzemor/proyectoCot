@@ -992,7 +992,7 @@ namespace Cotizador.ViewModel
                         req.AddParameter("claveComprobante", prmCotizacion);
                         req.AddParameter("emails", prmEmails);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
-                        req.AddParameter("listaProductosFT", datosFT);
+                        req.AddParameter("fichaTecnica", datosFT);
 
                         IRestResponse response = rest.Execute(req);
                         if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)

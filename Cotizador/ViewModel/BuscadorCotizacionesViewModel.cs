@@ -494,7 +494,6 @@ namespace Cotizador.ViewModel
                         req.AddParameter("claveComprobante", prmCotizacion);
                         req.AddParameter("emails", prmEmails);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
-                        //req.AddParameter("fichaTecnica", EnviarFichaTecnica);
                         req.AddParameter("fichaTecnica", datosFT);
 
                         IRestResponse response = rest.Execute(req);
