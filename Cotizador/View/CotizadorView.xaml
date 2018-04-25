@@ -161,7 +161,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos}" CanUserDeleteRows="False"
+                    <DataGrid x:Name="lstProductos" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemsSource="{Binding ListaProductos, Mode=TwoWay}" CanUserDeleteRows="False"
                               CanUserAddRows="False" CanUserReorderColumns="False" CanUserSortColumns="True" AutoGenerateColumns="False"  SelectionMode="Single"
                               SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8" mdWpf:DataGridAssist.ColumnHeaderPadding="8" Margin="5"
                               VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsHitTestVisible="{Binding AceptaCambiosCtz}">

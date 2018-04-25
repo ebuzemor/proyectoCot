@@ -382,7 +382,7 @@ namespace Cotizador.ViewModel
                             Producto = new Producto
                             {
                                 ClaveProducto = fila.ClaveProducto,
-                                Descripcion = fila.Descripcion,
+                                Descripcion = fila.Descripcion.Trim(),
                                 PrecioUnitario = fila.PrecioUnitario,
                                 SumaImpuestos = fila.SumaImpuestos,
                                 CodigoInterno = fila.CodigoInterno,
@@ -450,6 +450,7 @@ namespace Cotizador.ViewModel
                     }
                 }
                 CorreosElectronicos = InfoCotizacion.CorreoElectronico;
+                var xx = JsonConvert.SerializeObject(ListaProductosCtz);
                 var vmEnviarCtz = new EnviarCotizacionViewModel
                 {
                     TituloEnvio = "Enviar cotizacion #" + InfoCotizacion.CodigoDeComprobante,
@@ -462,7 +463,7 @@ namespace Cotizador.ViewModel
                     DataContext = vmEnviarCtz
                 };
                 var result = await DialogHost.Show(vwEnviarCtz, "BuscadorCotizacionesView");
-                if (result.Equals("ENVIAR"))
+                if (result.Equals("ENVIAR") == true)
                 {
                     CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
                     bool existeError = ValidarCorreo();
@@ -493,8 +494,8 @@ namespace Cotizador.ViewModel
                         req.AddParameter("claveComprobante", prmCotizacion);
                         req.AddParameter("emails", prmEmails);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
-                        req.AddParameter("fichaTecnica", EnviarFichaTecnica);
-                        req.AddParameter("listaProductosFT", datosFT);
+                        //req.AddParameter("fichaTecnica", EnviarFichaTecnica);
+                        req.AddParameter("fichaTecnica", datosFT);
 
                         IRestResponse response = rest.Execute(req);
                         if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
@@ -595,7 +596,7 @@ namespace Cotizador.ViewModel
                         req.AddHeader("Authorization", "Bearer " + AppKey.Token);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
                         req.AddParameter("claveComprobante", InfoCotizacion.CodigoDeComprobante);
-                        req.AddParameter("listaFichaTecnica", datosFT);
+                        req.AddParameter("fichaTecnica", datosFT);
                         byte[] archivo = rest.DownloadData(req);
                         File.WriteAllBytes(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf", archivo);
                         System.Diagnostics.Process.Start(Path.GetTempPath() + InfoCotizacion.CodigoDeComprobante + ".pdf");

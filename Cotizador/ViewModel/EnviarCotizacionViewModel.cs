@@ -29,7 +29,7 @@ namespace Cotizador.ViewModel
             }
         }
         public ObservableCollection<ProductoSeleccionado> ListaProductosFT { get => _listaProductosFT; set { _listaProductosFT = value; OnPropertyChanged(); } }
-        public ProductoSeleccionado FtProducto { get => _ftProducto; set { _ftProducto = value; OnPropertyChanged(); } }        
+        public ProductoSeleccionado FtProducto { get => _ftProducto; set { _ftProducto = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor

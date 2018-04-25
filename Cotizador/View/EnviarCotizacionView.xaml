@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mdWpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              TextElement.Foreground="Black"
@@ -41,9 +42,8 @@
         <TextBlock Grid.Row="1" Style="{StaticResource MaterialDesignSubheadingTextBlock}" FontStyle="Oblique" TextAlignment="Center"
                    Text="Seleccione los productos que incluirán ficha técnica (opcional)." VerticalAlignment="Center"/>
         <!--CUERPO DE LA VENTANA-->
-        <ListView x:Name="ListaFichas" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ListaProductosFT}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  SelectedItem="{Binding FtProducto}" SelectionMode="Single" Margin="5">
+        <ListView x:Name="ListaFichas" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ListaProductosFT}" SelectedItem="{Binding FtProducto}" SelectionMode="Single" Margin="5"
+                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>

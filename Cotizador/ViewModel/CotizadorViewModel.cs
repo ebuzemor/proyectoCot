@@ -33,7 +33,7 @@ namespace Cotizador.ViewModel
         #region Variables
         private Cliente _clienteSel;
         private ObservableCollection<ProductoSeleccionado> _listaProductos;
-        //private ObservableCollection<ProductoSeleccionado> _listaDetalles;
+        private ObservableCollection<ProductoSeleccionado> _listaProductosFT;
         private ObservableCollection<EstatusCotizacion> _listaEstatusCtz;
         private string _datosCliente;
         private string _cteRazonSocial;
@@ -111,7 +111,7 @@ namespace Cotizador.ViewModel
         public List<ComprobantesImpuestos> ListaImpuestosXlinea { get => _listaImpuestosXlinea; set => _listaImpuestosXlinea = value; }
         public List<DetalleComprobantes> ListaDetalleComprobantes { get => _listaDetalleComprobantes; set => _listaDetalleComprobantes = value; }
         public InfoCotizaciones InfoCotizacion { get => _infoCotizacion; set { _infoCotizacion = value; OnPropertyChanged(); } }
-        //public ObservableCollection<ProductoSeleccionado> ListaDetalles { get => _listaDetalles; set { _listaDetalles = value; OnPropertyChanged(); } }
+        public ObservableCollection<ProductoSeleccionado> ListaProductosFT { get => _listaProductosFT; set { _listaProductosFT = value; OnPropertyChanged(); } }
         public string NumCotizacion { get => _numCotizacion; set { _numCotizacion = value; OnPropertyChanged(); } }
         public int IndexEstatusCtz { get => _indexEstatusCtz; set { _indexEstatusCtz = value; OnPropertyChanged(); } }
         public long ClaveEstatusCtz { get => _claveEstatusCtz; set { _claveEstatusCtz = value; OnPropertyChanged(); } }
@@ -123,7 +123,7 @@ namespace Cotizador.ViewModel
         public string CorreosElectronicos { get => _correosElectronicos; set { _correosElectronicos = value; OnPropertyChanged(); } }
         public long EditaSucursal { get => _editaSucursal; set { _editaSucursal = value; OnPropertyChanged(); } }
         public long EditaUsuario { get => _editaUsuario; set { _editaUsuario = value; OnPropertyChanged(); } }
-        public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }        
+        public ObservableCollection<AccionesDefinidas> ListaAcciones { get => _listaAcciones; set { _listaAcciones = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor
@@ -143,7 +143,6 @@ namespace Cotizador.ViewModel
             EstatusDefinitivaCommand = new RelayCommand(EstatusDefinitiva);
             ListaProductos = new ObservableCollection<ProductoSeleccionado>();
             FechaCotizacion = DateTime.Now;
-            //ListaDetalles = new ObservableCollection<ProductoSeleccionado>();
             BorradorSeleccionado = true;
             AceptaCambiosCtz = true;
             AceptaCambiosCliente = true;
@@ -587,22 +586,6 @@ namespace Cotizador.ViewModel
                             var result = await DialogHost.Show(vwMensaje, "CrearCotizacion");
                             if (MiCotizacion.ClaveTipoEstatusRecepcion == 160)
                             {
-                                EnviarFichaTecnica = 0;
-                                var msjVm = new MensajeViewModel
-                                {
-                                    TituloMensaje = "Aviso",
-                                    CuerpoMensaje = "¿Desea incluir en la cotización la ficha técnica de los productos?",
-                                    MostrarCancelar = true
-                                };
-                                var msjVw = new MensajeView
-                                {
-                                    DataContext = msjVm
-                                };
-                                var resEnv = await DialogHost.Show(msjVw, "CrearCotizacion");
-                                if (resEnv.Equals("OK") == true)
-                                {
-                                    EnviarFichaTecnica = 1;
-                                }
                                 EnviarCotizacion();
                             }
                             LimpiarCotizacion();
@@ -961,20 +944,26 @@ namespace Cotizador.ViewModel
                     CorreosElectronicos = ClienteSel.CorreoElectronico;
                 else
                     CorreosElectronicos = string.Empty;
-
-                var vmEnviarCtz = new EnviarCotizacionViewModel
+                ListaProductosFT = new ObservableCollection<ProductoSeleccionado>();
+                foreach (ProductoSeleccionado p in ListaProductos)
                 {
+                    ListaProductosFT.Add(p);
+                }
+                var vmEmailCtz = new EnviarCotizacionViewModel
+                {
+                    TituloEnvio = "Enviar cotizacion #" + NumCotizacion,
+                    ListaProductosFT = ListaProductosFT,
                     NumCotizacion = NumCotizacion,
                     CorreosElectronicos = CorreosElectronicos
                 };
-                var vwEnviarCtz = new EnviarCotizacionView
+                var vwEmailCtz = new EnviarCotizacionView()
                 {
-                    DataContext = vmEnviarCtz
+                    DataContext = vmEmailCtz
                 };
-                var envio = await DialogHost.Show(vwEnviarCtz, "EmailCotizacion");
-                if (envio.Equals("ENVIAR"))
+                var envio = await DialogHost.Show(vwEmailCtz,"EmailCotizacion");
+                if (envio.Equals("ENVIAR") == true)
                 {
-                    CorreosElectronicos = vmEnviarCtz.CorreosElectronicos;
+                    CorreosElectronicos = vmEmailCtz.CorreosElectronicos;
                     bool existeError = ValidarCorreo();
                     if (existeError == true)
                     {
@@ -983,8 +972,19 @@ namespace Cotizador.ViewModel
                     }
                     else
                     {
-                        string prmCotizacion = vmEnviarCtz.NumCotizacion;                        
+                        string prmCotizacion = vmEmailCtz.NumCotizacion;
                         string prmEmails = String.Join(",", Regex.Split(CorreosElectronicos, @"\r\n"));
+                        List<EnvioFichaTecnica> listaFT = new List<EnvioFichaTecnica>();
+                        foreach (ProductoSeleccionado ps in vmEmailCtz.ListaProductosFT)
+                        {
+                            var envft = new EnvioFichaTecnica
+                            {
+                                ClaveProducto = ps.Producto.ClaveProducto,
+                                EnvioFicha = (ps.FichaTecnica == true) ? 1 : 0
+                            };
+                            listaFT.Add(envft);
+                        }
+                        string datosFT = JsonConvert.SerializeObject(listaFT);
                         var rest = new RestClient(Localhost);
                         var req = new RestRequest("enviarMail", Method.POST);
                         req.AddHeader("Accept", "application/json");
@@ -992,7 +992,7 @@ namespace Cotizador.ViewModel
                         req.AddParameter("claveComprobante", prmCotizacion);
                         req.AddParameter("emails", prmEmails);
                         req.AddParameter("claveEF_Empresa", Usuario.ClaveEntidadFiscalEmpresa);
-                        req.AddParameter("fichaTecnica", EnviarFichaTecnica);
+                        req.AddParameter("listaProductosFT", datosFT);
 
                         IRestResponse response = rest.Execute(req);
                         if (response.IsSuccessful && response.StatusCode == HttpStatusCode.OK)
