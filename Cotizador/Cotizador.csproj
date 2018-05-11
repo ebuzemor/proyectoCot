@@ -162,12 +162,12 @@
     <Compile Include="Model\EstatusCotizacion.cs" />
     <Compile Include="Model\FichaTecnica.cs" />
     <Compile Include="Model\Permisos.cs" />
+    <Compile Include="Model\ProductoVendido.cs" />
     <Compile Include="Model\UsuarioPermisos.cs" />
     <Compile Include="Model\VigenciaEstatus.cs" />
     <Compile Include="Model\Existencias.cs" />
     <Compile Include="Model\InfoCotizaciones.cs" />
     <Compile Include="Model\InfoDetallesCotizacion.cs" />
-    <Compile Include="Model\ListaProductos.cs" />
     <Compile Include="Model\Producto.cs" />
     <Compile Include="Model\ProductoSeleccionado.cs" />
     <Compile Include="Model\Sucursal.cs" />
@@ -178,13 +178,16 @@
     <Compile Include="ViewModel\BuscarProductosViewModel.cs" />
     <Compile Include="ViewModel\BuscarUsuariosViewModel.cs" />
     <Compile Include="ViewModel\CotizadorViewModel.cs" />
+    <Compile Include="ViewModel\DetalleCotizacionViewModel.cs" />
     <Compile Include="ViewModel\EditarItemViewModel.cs" />
     <Compile Include="ViewModel\ElegirFichaTecnicaViewModel.cs" />
+    <Compile Include="ViewModel\ElegirPeriodoViewModel.cs" />
     <Compile Include="ViewModel\EnviarCotizacionViewModel.cs" />
     <Compile Include="ViewModel\ExistenciasViewModel.cs" />
     <Compile Include="ViewModel\FechaEntregaViewModel.cs" />
     <Compile Include="ViewModel\FichaTecnicaViewModel.cs" />
     <Compile Include="ViewModel\GestionPermisosViewModel.cs" />
+    <Compile Include="ViewModel\HistorialClienteViewModel.cs" />
     <Compile Include="ViewModel\InicioViewModel.cs" />
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
@@ -211,11 +214,17 @@
     <Compile Include="View\CotizadorView.xaml.cs">
       <DependentUpon>CotizadorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\DetalleCotizacionView.xaml.cs">
+      <DependentUpon>DetalleCotizacionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\EditarItemView.xaml.cs">
       <DependentUpon>EditarItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ElegirFichaTecnicaView.xaml.cs">
       <DependentUpon>ElegirFichaTecnicaView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ElegirPeriodoView.xaml.cs">
+      <DependentUpon>ElegirPeriodoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\EnviarCotizacionView.xaml.cs">
       <DependentUpon>EnviarCotizacionView.xaml</DependentUpon>
@@ -231,6 +240,9 @@
     </Compile>
     <Compile Include="View\GestionPermisosView.xaml.cs">
       <DependentUpon>GestionPermisosView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HistorialClienteView.xaml.cs">
+      <DependentUpon>HistorialClienteView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\InicioView.xaml.cs">
       <DependentUpon>InicioView.xaml</DependentUpon>
@@ -284,11 +296,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\DetalleCotizacionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\EditarItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ElegirFichaTecnicaView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ElegirPeriodoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -309,6 +329,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\GestionPermisosView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HistorialClienteView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -32,6 +32,8 @@ namespace Cotizador.ViewModel
         private GestionPermisosViewModel _vmGestionP;
         private FichaTecnicaView _vwFichaT;
         private FichaTecnicaViewModel _vmFichaT;
+        private HistorialClienteView _vwHistorialCte;
+        private HistorialClienteViewModel _vmHistorialCte;
 
         public MenuOpciones[] MenuOpcion { get; set; }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
@@ -46,6 +48,8 @@ namespace Cotizador.ViewModel
         public GestionPermisosViewModel VmGestionP { get => _vmGestionP; set { _vmGestionP = value; OnPropertyChanged(); } }
         public FichaTecnicaView VwFichaT { get => _vwFichaT; set { _vwFichaT = value; OnPropertyChanged(); } }
         public FichaTecnicaViewModel VmFichaT { get => _vmFichaT; set { _vmFichaT = value; OnPropertyChanged(); } }
+        public HistorialClienteView VwHistorialCte { get => _vwHistorialCte; set { _vwHistorialCte = value; OnPropertyChanged(); } }
+        public HistorialClienteViewModel VmHistorialCte { get => _vmHistorialCte; set { _vmHistorialCte = value; OnPropertyChanged(); } }
 
         //public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
         #endregion
@@ -119,13 +123,26 @@ namespace Cotizador.ViewModel
             {
                 DataContext = VmFichaT
             };
+            // HISTORIAL DEL CLIENTE
+            VmHistorialCte = new HistorialClienteViewModel
+            {
+                Usuario = Usuario,
+                AppKey = AppKey,
+                Localhost = Localhost,
+                ListaAcciones = ListaAcciones
+            };
+            VwHistorialCte = new HistorialClienteView
+            {
+                DataContext = VmHistorialCte
+            };
             // OPCIONES DEL MENU
             List<MenuOpciones> listaMenu = new List<MenuOpciones>
             {
                 new MenuOpciones("Cart", "Cotizador", VwCotizador),
                 new MenuOpciones("Magnify", "Buscar Cotizaciones", VwBuscadorCot),
                 new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP),
-                new MenuOpciones("FilePdfBox", "Fichas Técnicas", VwFichaT)
+                new MenuOpciones("FilePdfBox", "Fichas Técnicas", VwFichaT),
+                new MenuOpciones("ClipboardAccount", "Historial del Cliente", VwHistorialCte)
             };
             // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO GESTIONAR PERMISOS
             var permiso = ListaAcciones.Single(x => x.Constante.Equals("PERMISOS_COTIZADOR") == true);

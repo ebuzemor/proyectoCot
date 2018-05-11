@@ -37,7 +37,6 @@
     <!--CONTENEDOR PRINCIPAL-->
     <mdWpf:DialogHost Identifier="CrearCotizacion">
         <mdWpf:DialogHost Identifier="EmailCotizacion">
-            <!--<mdWpf:DialogHost Identifier="FechaEntrega">-->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="20"/>
@@ -124,16 +123,16 @@
                                             Grid.Column="1" Grid.ColumnSpan="4" Padding="2" mdWpf:ShadowAssist.ShadowDepth="Depth5">
                                     <Grid ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True" SelectiveScrollingGrid.SelectiveScrollingOrientation="Vertical">
                                         <Grid.RowDefinitions>
-                                            <RowDefinition Height="30"/>
-                                            <RowDefinition Height="30"/>
-                                            <RowDefinition Height="30"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="*"/>
                                         </Grid.RowDefinitions>
                                         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="2 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Left">
                                             <mdWpf:PackIcon Kind="AccountCardDetails"/>
-                                            <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Bold" Text="Datos del Cliente a Cotizar:"/>
+                                            <TextBlock Margin="5 0 0 0" FontStyle="Oblique" FontWeight="Normal" Text="Datos del Cliente a Cotizar:" TextDecorations="Underline"/>
                                         </StackPanel>
-                                        <TextBlock Grid.Row="1" Text="{Binding CteRazonSocial}"/>
-                                        <TextBlock TextWrapping="Wrap" Grid.Row="2" Text="{Binding DatosCliente}"/>
+                                        <TextBlock Grid.Row="1" Text="{Binding CteRazonSocial}" FontWeight="SemiBold" TextAlignment="Justify" TextWrapping="WrapWithOverflow"/>
+                                        <TextBlock TextWrapping="Wrap" Grid.Row="2" Text="{Binding DatosCliente}" TextAlignment="Justify"/>
                                     </Grid>
                                 </mdWpf:Card>
                             </Grid>
@@ -372,7 +371,6 @@
                     <mdWpf:SnackbarMessage Content="{Binding TxtMensaje}" ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar"/>
                 </mdWpf:Snackbar>
             </Grid>
-            <!--</mdWpf:DialogHost>-->
         </mdWpf:DialogHost>
     </mdWpf:DialogHost>
 </UserControl>

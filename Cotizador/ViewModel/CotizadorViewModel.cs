@@ -436,14 +436,17 @@ namespace Cotizador.ViewModel
         public void ChecarFechaEntrega(DateTime FechaCtz, ObservableCollection<ProductoSeleccionado> Lista)
         {            
             int dias = 0;
-            foreach(ProductoSeleccionado p in Lista)
+            if (Lista != null)
             {
-                if (p.DiasEntrega > dias)
+                foreach (ProductoSeleccionado p in Lista)
                 {
-                    dias = p.DiasEntrega;
-                    FechaCtzEntrega = FechaCtz.AddDays(dias);
+                    if (p.DiasEntrega > dias)
+                    {
+                        dias = p.DiasEntrega;
+                        FechaCtzEntrega = FechaCtz.AddDays(dias);
+                    }
                 }
-            }            
+            }
         }
 
         private async void GuardarCotizacion(object parameter)

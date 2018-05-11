@@ -31,7 +31,7 @@ namespace Cotizador.ViewModel
                     FiltrarSucursales(_txtFiltro);
                     OnPropertyChanged();
                 }
-            }                 
+            }
         }
         public ICollectionView IcvUsuarios { get => _icvUsuarios; set { _icvUsuarios = value; OnPropertyChanged(); } }
         #endregion
