@@ -91,10 +91,10 @@ namespace Cotizador.ViewModel
             InfoCliente = null;
             CteRazonSocial = string.Empty;
             DatosCliente = string.Empty;
-            ListaCtzFacturadas.Clear();
-            ListaCtzUltimas.Clear();
-            ListaProdCotizados.Clear();
-            ListaProdVendidos.Clear();
+            if (ListaCtzFacturadas != null) { ListaCtzFacturadas.Clear(); }
+            if (ListaCtzUltimas != null) { ListaCtzUltimas.Clear(); }
+            if (ListaProdCotizados != null) { ListaProdCotizados.Clear(); }
+            if (ListaProdVendidos != null) { ListaProdVendidos.Clear(); }
             DateTime hoy = DateTime.Now;
             FechaInicio = new DateTime(hoy.Year, hoy.Month, 1);
             FechaFinal = FechaInicio.AddMonths(1).AddDays(-1);
@@ -103,38 +103,34 @@ namespace Cotizador.ViewModel
 
         private async void BuscarCliente(object parameter)
         {
-            var permiso = ListaAcciones.Single(x => x.Constante.Equals("AGREGAR_CLIENTE") == true);
-            if (permiso.Activo == true)
+            if (FechaInicio < FechaFinal)
             {
-                if (FechaInicio < FechaFinal)
+                var vmBuscarCliente = new BuscarClientesViewModel
                 {
-                    var vmBuscarCliente = new BuscarClientesViewModel
+                    AppKey = AppKey,
+                    Usuario = Usuario,
+                    Localhost = Localhost
+                };
+                var vwBuscarCliente = new BuscarClientesView
+                {
+                    DataContext = vmBuscarCliente
+                };
+                var buscarCte = await DialogHost.Show(vwBuscarCliente, "HistorialCliente");
+                if (buscarCte.Equals("NvoCliente") == true)
+                {
+                    if (vmBuscarCliente.NvoCliente != null)
                     {
-                        AppKey = AppKey,
-                        Usuario = Usuario,
-                        Localhost = Localhost
-                    };
-                    var vwBuscarCliente = new BuscarClientesView
-                    {
-                        DataContext = vmBuscarCliente
-                    };
-                    var buscarCte = await DialogHost.Show(vwBuscarCliente, "HistorialCliente");
-                    if (buscarCte.Equals("NvoCliente") == true)
-                    {
-                        if (vmBuscarCliente.NvoCliente != null)
-                        {
-                            InfoCliente = vmBuscarCliente.NvoCliente;
-                            CteRazonSocial = InfoCliente.RazonSocial + " | RFC:" + InfoCliente.Rfc + " | Codigo:" + InfoCliente.CodigoDeCliente;
-                            DatosCliente = "Contacto(s):" + InfoCliente.Contacto + " | Teléfono(s): " + InfoCliente.NumeroTelefono + " | Direccion: " + InfoCliente.Direccion;
-                            ObtenerHistorial();
-                        }
+                        InfoCliente = vmBuscarCliente.NvoCliente;
+                        CteRazonSocial = InfoCliente.RazonSocial + " | RFC:" + InfoCliente.Rfc + " | Codigo:" + InfoCliente.CodigoDeCliente;
+                        DatosCliente = "Contacto(s):" + InfoCliente.Contacto + " | Teléfono(s): " + InfoCliente.NumeroTelefono + " | Direccion: " + InfoCliente.Direccion;
+                        ObtenerHistorial();
                     }
                 }
-                else
-                {
-                    TxtMensaje = "La fecha de inicio del período debe ser menor o igual a la fecha final, por favor corrija.";
-                    VerMensaje = true;
-                }
+            }
+            else
+            {
+                TxtMensaje = "La fecha de inicio del período debe ser menor o igual a la fecha final, por favor corrija.";
+                VerMensaje = true;
             }
         }
 

@@ -36,7 +36,7 @@
                   ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionMode="Single">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>

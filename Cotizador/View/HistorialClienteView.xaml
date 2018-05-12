@@ -63,6 +63,7 @@
                     </Grid>
                 </mdWpf:Card>
             </Grid>
+            <!--ULTIMAS COTIZACIONES GENERADAS-->
             <GroupBox Grid.Row="1" Grid.Column="0" mdWpf:ColorZoneAssist.Mode="PrimaryDark" Margin="5" Style="{DynamicResource MaterialDesignGroupBox}" Header="Últimas Cotizaciones Generadas">
                 <DataGrid x:Name="lstUltimasCtz" ItemsSource="{Binding ListaCtzUltimas}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
                           CanUserSortColumns="True" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8"
@@ -125,6 +126,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
+            <!--ULTIMAS COTIZACIONES FACTURADAS-->
             <GroupBox Grid.Row="1" Grid.Column="1" mdWpf:ColorZoneAssist.Mode="Accent" Margin="5" Style="{DynamicResource MaterialDesignGroupBox}" Header="Últimas Cotizaciones Facturadas">
                 <DataGrid x:Name="lstCtzFacturadas" ItemsSource="{Binding ListaCtzFacturadas}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
                           CanUserSortColumns="True" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8"
@@ -174,6 +176,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
+            <!--ULTIMOS 10 PRODUCTOS COTIZADOS-->
             <GroupBox Grid.Row="2" Grid.Column="0" mdWpf:ColorZoneAssist.Mode="Inverted" Margin="5" Style="{DynamicResource MaterialDesignGroupBox}" Header="Últimos 10 Productos Cotizados">
                 <DataGrid x:Name="lstProdVendidos" ItemsSource="{Binding ListaProdCotizados}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
                           CanUserSortColumns="True" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8"
@@ -230,6 +233,7 @@
                     </DataGrid.Columns>
                 </DataGrid>
             </GroupBox>
+            <!--10 PRODUCTOS MÀS VENDIDOS-->
             <GroupBox Grid.Row="2" Grid.Column="1" mdWpf:ColorZoneAssist.Mode="PrimaryLight" Margin="5" Style="{DynamicResource MaterialDesignGroupBox}" Header="10 Productos Más Vendidos">
                 <DataGrid x:Name="lstProdMasVend" ItemsSource="{Binding ListaProdVendidos}" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False"
                           CanUserSortColumns="True" AutoGenerateColumns="False" SelectionMode="Single" SelectionUnit="FullRow" mdWpf:DataGridAssist.CellPadding="13 8 8 8"

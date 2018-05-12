@@ -153,9 +153,16 @@ namespace Cotizador.ViewModel
             }
             // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO BUSCAR FICHAS TECNICAS
             permiso = ListaAcciones.Single(y => y.Constante.Equals("BUSCAR_FICHASTECNICAS") == true);
-            if(permiso.Activo==false)
+            if (permiso.Activo == false)
             {
                 var opc = listaMenu.Single(y => y.Icono.Equals("FilePdfBox") == true);
+                listaMenu.Remove(opc);
+            }
+            // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO CONSULTAR EL HISTORIAL DE UN CLIENTE
+            permiso = ListaAcciones.Single(y => y.Constante.Equals("HISTORIAL_CLIENTE") == true);
+            if (permiso.Activo == false)
+            {
+                var opc = listaMenu.Single(y => y.Icono.Equals("ClipboardAccount") == true);
                 listaMenu.Remove(opc);
             }
             // AL CONVERTIR LA LISTA EN ARREGLO, SE VISUALIZA EN PANTALLA EL MENÚ

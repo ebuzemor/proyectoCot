@@ -24,17 +24,11 @@ namespace Cotizador.ViewModel
         #endregion
 
         #region Constructor
-        public DetalleCotizacionViewModel()
-        {
-
-        }
+        public DetalleCotizacionViewModel() { }
         #endregion
 
         #region Métodos
-        public void CalcularTotales()
-        {
-
-        }
+        
         #endregion
     }
 }
