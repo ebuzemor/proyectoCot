@@ -161,6 +161,7 @@
     <Compile Include="Model\EnvioFichaTecnica.cs" />
     <Compile Include="Model\EstatusCotizacion.cs" />
     <Compile Include="Model\FichaTecnica.cs" />
+    <Compile Include="Model\InfoFacturas.cs" />
     <Compile Include="Model\Permisos.cs" />
     <Compile Include="Model\ProductoVendido.cs" />
     <Compile Include="Model\UsuarioPermisos.cs" />

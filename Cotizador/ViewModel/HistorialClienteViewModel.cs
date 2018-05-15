@@ -39,7 +39,7 @@ namespace Cotizador.ViewModel
         private DateTime _fechaInicio;
         private DateTime _fechaFinal;
         private Usuario _usuario;
-        private ObservableCollection<InfoCotizaciones> _listaCtzFacturadas;
+        private ObservableCollection<InfoFacturas> _listaCtzFacturadas;
         private ObservableCollection<InfoCotizaciones> _listaCtzUltimas;
         private ObservableCollection<ProductoVendido> _listaProdCotizados;
         private ObservableCollection<ProductoVendido> _listaProdVendidos;
@@ -61,7 +61,7 @@ namespace Cotizador.ViewModel
         public DateTime FechaInicio { get => _fechaInicio; set { _fechaInicio = value; OnPropertyChanged(); } }
         public DateTime FechaFinal { get => _fechaFinal; set { _fechaFinal = value; OnPropertyChanged(); } }
         public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
-        public ObservableCollection<InfoCotizaciones> ListaCtzFacturadas { get => _listaCtzFacturadas; set { _listaCtzFacturadas = value; OnPropertyChanged(); } }
+        public ObservableCollection<InfoFacturas> ListaCtzFacturadas { get => _listaCtzFacturadas; set { _listaCtzFacturadas = value; OnPropertyChanged(); } }
         public ObservableCollection<InfoCotizaciones> ListaCtzUltimas { get => _listaCtzUltimas; set { _listaCtzUltimas = value; OnPropertyChanged(); } }
         public ObservableCollection<ProductoVendido> ListaProdCotizados { get => _listaProdCotizados; set { _listaProdCotizados = value; OnPropertyChanged(); } }
         public ObservableCollection<ProductoVendido> ListaProdVendidos { get => _listaProdVendidos; set { _listaProdVendidos = value; OnPropertyChanged(); } }
@@ -188,8 +188,8 @@ namespace Cotizador.ViewModel
             resp = rest.Execute(req);
             if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
             {
-                List<InfoCotizaciones> lista = JsonConvert.DeserializeObject<List<InfoCotizaciones>>(resp.Content);
-                ListaCtzFacturadas = new ObservableCollection<InfoCotizaciones>(lista.OrderBy(x => x.CodigoDeComprobante));
+                List<InfoFacturas> lista = JsonConvert.DeserializeObject<List<InfoFacturas>>(resp.Content);
+                ListaCtzFacturadas = new ObservableCollection<InfoFacturas>(lista.OrderBy(x => x.CodigoFactura));
             }
             // Se obtienen los últimos productos cotizados en el período
             req = new RestRequest("obtenerListaProdCotizados/" + Usuario.ClaveEntidadFiscalInmueble + "/" + FechaInicio.ToString("yyyy-MM-dd") + "/"
@@ -227,17 +227,17 @@ namespace Cotizador.ViewModel
         {
             string numctz = parameter as string;
             var comp = ListaCtzUltimas.Where(x => x.ClaveComprobanteDeCotizacion == numctz).Single();
-            CargarDetallesCtz(numctz, comp);
+            CargarDetallesCtz(numctz, comp.CodigoDeComprobante, string.Empty);
         }
 
         private void VerCtzFacturada(object parameter)
         {
             string numctz = parameter as string;
-            var comp = ListaCtzFacturadas.Where(x => x.ClaveComprobanteDeCotizacion == numctz).Single();
-            CargarDetallesCtz(numctz, comp);
+            var comp = ListaCtzFacturadas.Where(x => x.ClaveComprobante == numctz).Single();
+            CargarDetallesCtz(numctz, comp.CodigoFactura, comp.RazonSocial);
         }
 
-        private async void CargarDetallesCtz(string numctz, InfoCotizaciones infoctz)
+        private async void CargarDetallesCtz(string numctz, string infoctz, string razonSocial)
         {
             var rest = new RestClient(Localhost);
             var req = new RestRequest("cargarDetallesCotizacion/" + numctz, Method.GET);
@@ -287,7 +287,8 @@ namespace Cotizador.ViewModel
                 var vmDetCtz = new DetalleCotizacionViewModel
                 {
                     ListaProductos = ListaProductos,
-                    NumCotizacion = "Cotización: " + infoctz.CodigoDeComprobante,
+                    NumCotizacion = (infoctz.Contains("CTZ") == true) ? "Cotización: " + infoctz : "# Factura: " + infoctz,
+                    RazonSocial = (infoctz.Contains("CTZ") == true) ? string.Empty : "Vendedor: " + razonSocial,
                     CantidadTotal = CantidadTotal,
                     DescuentoTotal = DescuentoTotal,
                     ImporteTotal = ImporteTotal,
