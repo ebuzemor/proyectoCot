@@ -29,8 +29,11 @@ namespace Cotizador.Model
         [JsonProperty("nombreUsuario")]
         public string NombreUsuario { get; set; }
 
-        [JsonProperty("razonSocial")]
-        public string RazonSocial { get; set; }
+        [JsonProperty("razonSocialUsuario")]
+        public string RazonSocialUsuario { get; set; }
+
+        [JsonProperty("razonSocialEmpresa")]
+        public string RazonSocialEmpresa { get; set; }
 
         [JsonProperty("sucursal")]
         public long Sucursal { get; set; }

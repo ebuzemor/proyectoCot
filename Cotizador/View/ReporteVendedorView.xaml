@@ -1,0 +1,143 @@
+﻿<UserControl x:Class="Cotizador.View.ReporteVendedorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:mdWpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{StaticResource MaterialDesignFont}">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml" />
+                <ResourceDictionary xmlns:chart="clr-namespace:De.TorstenMandelkow.MetroChart;assembly=De.TorstenMandelkow.MetroChart">
+                    <Style x:Key="MinimalChartStyle" TargetType="chart:ChartBase">
+                        <Setter Property="Width" Value="200"/>
+                        <Setter Property="Height" Value="200"/>
+                    </Style>
+                    <chart:ResourceDictionaryCollection x:Key="CustomColors">
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush1" Color="#BF0B3B"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush2" Color="#FF8C00"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush3" Color="#2168CF"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush4" Color="#4427A1"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush5" Color="#DE4A2B"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush6" Color="#04756F"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush7" Color="#0A173D"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush8" Color="#D90000"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush9" Color="#B22222"/>
+                        </ResourceDictionary>
+                        <ResourceDictionary>
+                            <SolidColorBrush x:Key="Brush10" Color="#D2691E"/>
+                        </ResourceDictionary>
+                    </chart:ResourceDictionaryCollection>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <mdWpf:DialogHost Identifier="ReporteVendedor">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+            <!--AREA DE GRAFICOS-->
+            <chart:ClusteredColumnChart Grid.Row="0" Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
+                                        ChartTitle="Cotizaciones Generadas" ChartSubTitle="Cantidad de cotizaciones generadas en el período" Palette="{StaticResource CustomColors}" 
+                                        SelectedBrush="Transparent" ToolTipFormat="{}{0} : {3:P2}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <chart:ClusteredColumnChart.Series>
+                    <chart:ChartSeries SeriesTitle="# Cotizaciones" ItemsSource="{Binding DatosCotizaciones}" DisplayMember="Categoria" 
+                                       ValueMember="Numero" HorizontalAlignment="Center"/>
+                </chart:ClusteredColumnChart.Series>
+            </chart:ClusteredColumnChart>
+            <chart:ClusteredBarChart Grid.Row="0" Grid.Column="1" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
+                                         ChartTitle="Información de Montos en Cotizaciones" ChartSubTitle="En el período establecido" Palette="{StaticResource CustomColors}" 
+                                         SelectedBrush="Transparent" ToolTipFormat="{}{0} : {1:C2}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <chart:ClusteredBarChart.Series>
+                    <chart:ChartSeries SeriesTitle="$ Cotizaciones" DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{1:C2}"
+                                       ItemsSource="{Binding DatosMontosCtz}"/>
+                    <chart:ChartSeries SeriesTitle="$ Descuentos" DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{1:C2}"
+                                       ItemsSource="{Binding DatosDescuentosCtz}"/>
+                </chart:ClusteredBarChart.Series>
+            </chart:ClusteredBarChart>
+            <chart:PieChart Grid.Row="1" Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
+                                 ChartTitle="Información de Cotizaciones Facturadas" ChartSubTitle="En el período establecido" Palette="{StaticResource CustomColors}" 
+                                 SelectedBrush="Transparent" ToolTipFormat="{}{0} : {1:C2}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                <chart:PieChart.Series>
+                    <chart:ChartSeries SeriesTitle="Monto Facturado Cotizaciones" DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{1:C2}"
+                                       ItemsSource="{Binding DatosCtzFacturadas}"/>
+                    <chart:ChartSeries SeriesTitle="Monto Facturado Descuentos " DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{1:C2}"
+                                       ItemsSource="{Binding DatosDscFacturados}"/>
+                </chart:PieChart.Series>
+            </chart:PieChart>
+            <chart:RadialGaugeChart Grid.Row="1" Grid.Column="1" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
+                                     ChartTitle="Porcentaje Cotizaciones Facturadas" ChartSubTitle="Con respecto al monto total de las cotizaciones generadas" Palette="{StaticResource CustomColors}" 
+                                     SelectedBrush="Transparent" ToolTipFormat="{}{0} : {1:N2} %" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                <chart:RadialGaugeChart.Series>
+                    <chart:ChartSeries SeriesTitle="Cotizaciones" DisplayMember="Categoria" ValueMember="Numero" ItemsSource="{Binding DatosReporte}"/>
+                </chart:RadialGaugeChart.Series>
+            </chart:RadialGaugeChart>
+            <!--MENSAJES DE ERROR-->
+            <mdWpf:Snackbar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}">
+                <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                    <mdWpf:SnackbarMessage.Content>
+                        <TextBlock Text="{Binding TxtMensaje}" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueDarkBrush}" TextWrapping="WrapWithOverflow"/>
+                    </mdWpf:SnackbarMessage.Content>
+                </mdWpf:SnackbarMessage>
+            </mdWpf:Snackbar>
+            <!--AREA DE BOTONES-->
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                <TextBlock FontSize="17" Margin="0 0 10 0" Text="{Binding TxtVendedor}" VerticalAlignment="Center"/>
+                <TextBlock FontSize="17" Margin="0 0 10 0" Text="{Binding TxtPeriodo}" VerticalAlignment="Center"/>
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="10 0 0 0" Command="{Binding ElegirVendedorCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="AccountSwitch"/>
+                            <TextBlock Margin="10 0 0 0" Text="Elegir Vendedor"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="10 0 10 0" Command="{Binding ElegirPeriodoCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="Calendar"/>
+                            <TextBlock Margin="10 0 0 0" Text="Elegir Período"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </mdWpf:DialogHost>
+</UserControl>

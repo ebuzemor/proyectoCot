@@ -38,6 +38,7 @@
                 <RowDefinition/>
                 <RowDefinition Height="45"/>
             </Grid.RowDefinitions>
+            <!--AREA DE BUSQUEDA DE CLIENTE-->
             <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="0.2*"/>

@@ -145,7 +145,7 @@ namespace Cotizador.ViewModel
             if (result.Equals("DatUsuario") == true)
             {
                 DatUsuario = vmBuscar.DatUsuario;
-                InfoUsuario = "Nombre: " + DatUsuario.RazonSocial + " | Nickname: " + DatUsuario.Nickname;                
+                InfoUsuario = "Nombre: " + DatUsuario.RazonSocial + " | Nickname: " + DatUsuario.Nickname;
                 ValidarPermisosUsuario();
             }
         }

@@ -33,7 +33,7 @@
     <SuiteName>APROSI</SuiteName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>5</ApplicationRevision>
     <ApplicationVersion>0.9.7.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -99,6 +99,9 @@
     <ApplicationIcon>logo_aprosi.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="De.TorstenMandelkow.MetroChart">
+      <HintPath>..\De.TorstenMandelkow.MetroChart.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.3\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -142,6 +145,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Common\ConvertidorPorcentaje.cs" />
+    <Compile Include="Common\DatosGraficas.cs" />
     <Compile Include="Common\MenuOpciones.cs" />
     <Compile Include="Common\MyConverter.cs" />
     <Compile Include="Common\Navigator.cs" />
@@ -164,6 +168,7 @@
     <Compile Include="Model\InfoFacturas.cs" />
     <Compile Include="Model\Permisos.cs" />
     <Compile Include="Model\ProductoVendido.cs" />
+    <Compile Include="Model\ReporteVendedor.cs" />
     <Compile Include="Model\UsuarioPermisos.cs" />
     <Compile Include="Model\VigenciaEstatus.cs" />
     <Compile Include="Model\Existencias.cs" />
@@ -193,10 +198,8 @@
     <Compile Include="ViewModel\LoginViewModel.cs" />
     <Compile Include="ViewModel\MensajeViewModel.cs" />
     <Compile Include="ViewModel\ObservacionesViewModel.cs" />
+    <Compile Include="ViewModel\ReporteVendedorViewModel.cs" />
     <Compile Include="ViewModel\SeleccionarSucursalViewModel.cs" />
-    <Compile Include="View\AutorizarCotizacionesView.xaml.cs">
-      <DependentUpon>AutorizarCotizacionesView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\BuscadorCotizacionesView.xaml.cs">
       <DependentUpon>BuscadorCotizacionesView.xaml</DependentUpon>
     </Compile>
@@ -266,13 +269,12 @@
     <Compile Include="View\ObservacionesView.xaml.cs">
       <DependentUpon>ObservacionesView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ReporteVendedorView.xaml.cs">
+      <DependentUpon>ReporteVendedorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SeleccionarSucursalView.xaml.cs">
       <DependentUpon>SeleccionarSucursalView.xaml</DependentUpon>
     </Compile>
-    <Page Include="View\AutorizarCotizacionesView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\BuscadorCotizacionesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -354,6 +356,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ObservacionesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ReporteVendedorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

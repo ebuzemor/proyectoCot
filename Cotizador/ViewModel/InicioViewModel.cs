@@ -34,6 +34,8 @@ namespace Cotizador.ViewModel
         private FichaTecnicaViewModel _vmFichaT;
         private HistorialClienteView _vwHistorialCte;
         private HistorialClienteViewModel _vmHistorialCte;
+        private ReporteVendedorView _vwRptVendedor;
+        private ReporteVendedorViewModel _vmRptVendedor;
 
         public MenuOpciones[] MenuOpcion { get; set; }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
@@ -50,6 +52,8 @@ namespace Cotizador.ViewModel
         public FichaTecnicaViewModel VmFichaT { get => _vmFichaT; set { _vmFichaT = value; OnPropertyChanged(); } }
         public HistorialClienteView VwHistorialCte { get => _vwHistorialCte; set { _vwHistorialCte = value; OnPropertyChanged(); } }
         public HistorialClienteViewModel VmHistorialCte { get => _vmHistorialCte; set { _vmHistorialCte = value; OnPropertyChanged(); } }
+        public ReporteVendedorView VwRptVendedor { get => _vwRptVendedor; set { _vwRptVendedor = value; OnPropertyChanged(); } }
+        public ReporteVendedorViewModel VmRptVendedor { get => _vmRptVendedor; set { _vmRptVendedor = value; OnPropertyChanged(); } }
 
         //public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
         #endregion
@@ -135,6 +139,19 @@ namespace Cotizador.ViewModel
             {
                 DataContext = VmHistorialCte
             };
+            //REPORTE DE VENDEDOR
+            VmRptVendedor = new ReporteVendedorViewModel
+            {
+                Usuario = Usuario,
+                AppKey = AppKey,
+                Localhost = Localhost,
+                ListaAcciones = ListaAcciones
+            };
+            VmRptVendedor.ObtenerReporte(true);
+            VwRptVendedor = new ReporteVendedorView
+            {
+                DataContext = VmRptVendedor
+            };
             // OPCIONES DEL MENU
             List<MenuOpciones> listaMenu = new List<MenuOpciones>
             {
@@ -142,7 +159,8 @@ namespace Cotizador.ViewModel
                 new MenuOpciones("Magnify", "Buscar Cotizaciones", VwBuscadorCot),
                 new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP),
                 new MenuOpciones("FilePdfBox", "Fichas Técnicas", VwFichaT),
-                new MenuOpciones("ClipboardAccount", "Historial del Cliente", VwHistorialCte)
+                new MenuOpciones("ClipboardAccount", "Historial del Cliente", VwHistorialCte),
+                new MenuOpciones("ChartBar", "Reporte Desempeño", VwRptVendedor)
             };
             // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO GESTIONAR PERMISOS
             var permiso = ListaAcciones.Single(x => x.Constante.Equals("PERMISOS_COTIZADOR") == true);
@@ -163,6 +181,13 @@ namespace Cotizador.ViewModel
             if (permiso.Activo == false)
             {
                 var opc = listaMenu.Single(y => y.Icono.Equals("ClipboardAccount") == true);
+                listaMenu.Remove(opc);
+            }
+            // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO CONSULTAR EL REPORTE DE DESEMPEÑO DE UN VENDEDOR
+            permiso = ListaAcciones.Single(y => y.Constante.Equals("REPORTE_COTIZACIONES") == true);
+            if (permiso.Activo == false)
+            {
+                var opc = listaMenu.Single(y => y.Icono.Equals("ChartBar") == true);
                 listaMenu.Remove(opc);
             }
             // AL CONVERTIR LA LISTA EN ARREGLO, SE VISUALIZA EN PANTALLA EL MENÚ
