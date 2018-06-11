@@ -73,7 +73,7 @@
                 <RowDefinition/>
                 <RowDefinition Height="45"/>
             </Grid.RowDefinitions>
-            <!--AREA DE GRAFICOS-->
+            <!--COTIZACIONES GENERADAS-->
             <chart:ClusteredColumnChart Grid.Row="0" Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
                                         ChartTitle="Cotizaciones Generadas" ChartSubTitle="Cantidad de cotizaciones generadas en el período" Palette="{StaticResource CustomColors}" 
                                         SelectedBrush="Transparent" ToolTipFormat="{}{0} : {3:P2}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
@@ -82,16 +82,17 @@
                                        ValueMember="Numero" HorizontalAlignment="Center"/>
                 </chart:ClusteredColumnChart.Series>
             </chart:ClusteredColumnChart>
+            <!--MONTOS EN COTIZACIONES-->
             <chart:ClusteredBarChart Grid.Row="0" Grid.Column="1" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
-                                         ChartTitle="Información de Montos en Cotizaciones" ChartSubTitle="En el período establecido" Palette="{StaticResource CustomColors}" 
-                                         SelectedBrush="Transparent" ToolTipFormat="{}{0} : {1:C2}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                     ChartTitle="Información de Montos en Cotizaciones" ChartSubTitle="En el período establecido" Palette="{StaticResource CustomColors}" 
+                                     SelectedBrush="Transparent" ToolTipFormat="{}{0} : {1:C2}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
                 <chart:ClusteredBarChart.Series>
-                    <chart:ChartSeries SeriesTitle="$ Cotizaciones" DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{1:C2}"
-                                       ItemsSource="{Binding DatosMontosCtz}"/>
-                    <chart:ChartSeries SeriesTitle="$ Descuentos" DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{1:C2}"
+                    <chart:ChartSeries SeriesTitle="$ Cotizaciones" DisplayMemberPath="Categoria" DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{0:C2}" ItemsSource="{Binding DatosMontosCtz}"/>
+                    <chart:ChartSeries SeriesTitle="$ Descuentos" DisplayMember="Categoria" ValueMember="Numero" ItemStringFormat="{}{0:C2}"
                                        ItemsSource="{Binding DatosDescuentosCtz}"/>
                 </chart:ClusteredBarChart.Series>
             </chart:ClusteredBarChart>
+            <!--COTIZACIONES FACTURADAS-->
             <chart:PieChart Grid.Row="1" Grid.Column="0" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
                                  ChartTitle="Información de Cotizaciones Facturadas" ChartSubTitle="En el período establecido" Palette="{StaticResource CustomColors}" 
                                  SelectedBrush="Transparent" ToolTipFormat="{}{0} : {1:C2}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
@@ -102,6 +103,7 @@
                                        ItemsSource="{Binding DatosDscFacturados}"/>
                 </chart:PieChart.Series>
             </chart:PieChart>
+            <!--PORCENTAJE COTIZACIONES -->
             <chart:RadialGaugeChart Grid.Row="1" Grid.Column="1" Background="{DynamicResource MaterialDesignPaper}" Foreground="{DynamicResource MaterialDesignBody}" 
                                      ChartTitle="Porcentaje Cotizaciones Facturadas" ChartSubTitle="Con respecto al monto total de las cotizaciones generadas" Palette="{StaticResource CustomColors}" 
                                      SelectedBrush="Transparent" ToolTipFormat="{}{0} : {1:N2} %" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">

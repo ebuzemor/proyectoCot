@@ -51,12 +51,12 @@ namespace Cotizador.ViewModel
         private string _txtMensaje;
         private ObservableCollection<Existencias> _listaExistencias;
 
-        public ObservableCollection<Producto> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged(); } }        
+        public ObservableCollection<Producto> ListaProductos { get => _listaProductos; set { _listaProductos = value; OnPropertyChanged(); } }
         public ProductosJson ProductosJson { get => _productosJson; set { _productosJson = value; OnPropertyChanged(); } }
         public string TxtProducto { get => _txtProducto; set { _txtProducto = value; OnPropertyChanged(); } }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
-        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }        
-        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }        
+        public Usuario Usuario { get => _usuario; set { _usuario = value; OnPropertyChanged(); } }
+        public string Localhost { get => _localhost; set { _localhost = value; OnPropertyChanged(); } }
         public ProductoSeleccionado SelProducto { get => _selProducto; set { _selProducto = value; OnPropertyChanged(); } }
         public CollectionViewSource CvsProductos { get => _cvsProductos; set { _cvsProductos = value; OnPropertyChanged(); } }
         public int ItemsPorPag { get => _itemsPorPag; set => _itemsPorPag = value; }
@@ -66,7 +66,7 @@ namespace Cotizador.ViewModel
         public bool ActivoInicio { get => _activoInicio; set { _activoInicio = value; OnPropertyChanged(); } }
         public bool ActivoAnterior { get => _activoAnterior; set { _activoAnterior = value; OnPropertyChanged(); } }
         public bool ActivoSiguiente { get => _activoSiguiente; set { _activoSiguiente = value; OnPropertyChanged(); } }
-        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }                
+        public bool ActivoFinal { get => _activoFinal; set { _activoFinal = value; OnPropertyChanged(); } }
         public double TxtImporte { get => _txtImporte; set { _txtImporte = value; OnPropertyChanged(); } }
         public double TxtImporteDesc { get => _txtImporteDesc; set { _txtImporteDesc = value; OnPropertyChanged(); } }
         public bool ActivoSeleccionar { get => _activoSeleccionar; set { _activoSeleccionar = value; OnPropertyChanged(); } }
@@ -75,15 +75,20 @@ namespace Cotizador.ViewModel
             get => _txtCantidad;
             set
             {
-                if (NvoProducto != null && NvoProducto.EsFraccionable == 0)
+                if (NvoProducto != null)
                 {
-                    _txtCantidad = Convert.ToInt32(value);
+                    if (NvoProducto.EsFraccionable == 0)
+                    {
+                        _txtCantidad = Convert.ToInt32(value);
+                    }
+                    else
+                    {
+                        _txtCantidad = Convert.ToDouble(value);
+                    }
+                    OnPropertyChanged();
+                    CalcularImporte(_txtCantidad);
+                    ActivarBtnSeleccionar();
                 }
-                else
-                    _txtCantidad = Convert.ToDouble(value);
-                OnPropertyChanged();
-                CalcularImporte(_txtCantidad);
-                ActivarBtnSeleccionar();
             }
         }
         public double TxtDescuento

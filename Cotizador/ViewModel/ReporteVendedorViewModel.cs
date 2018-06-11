@@ -61,7 +61,7 @@ namespace Cotizador.ViewModel
         public ObservableCollection<DatosGraficas> DatosDescuentosCtz { get => _datosDescuentosCtz; set { _datosDescuentosCtz = value; OnPropertyChanged(); } }
         public ObservableCollection<DatosGraficas> DatosCtzFacturadas { get => _datosCtzFacturadas; set { _datosCtzFacturadas = value; OnPropertyChanged(); } }
         public ObservableCollection<DatosGraficas> DatosDscFacturados { get => _datosDscFacturados; set { _datosDscFacturados = value; OnPropertyChanged(); } }
-        public List<DatosSeries> ListaSeries { get => _listaSeries; set { _listaSeries = value; OnPropertyChanged(); } }        
+        public List<DatosSeries> ListaSeries { get => _listaSeries; set { _listaSeries = value; OnPropertyChanged(); } }
         #endregion
 
         #region Constructor

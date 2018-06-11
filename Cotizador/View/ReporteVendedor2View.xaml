@@ -1,0 +1,200 @@
+﻿<UserControl x:Class="Cotizador.View.ReporteVendedor2View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mdWpf="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             mc:Ignorable="d" 
+             d:DesignHeight="768" d:DesignWidth="1024"
+             TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+             TextElement.FontWeight="Regular"
+             TextElement.FontSize="14"
+             TextOptions.TextFormattingMode="Ideal"
+             TextOptions.TextRenderingMode="Auto"
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{StaticResource MaterialDesignFont}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.TextBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Button.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Card.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <mdWpf:DialogHost Identifier="ReporteVendedor2">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition Height="45"/>
+            </Grid.RowDefinitions>
+            <!--COTIZACIONES GENERADAS-->
+            <lvc:CartesianChart Grid.Row="0" Grid.Column="0" Series="{Binding SeriesCotizaciones}" LegendLocation="Bottom" Margin="15">
+                <lvc:CartesianChart.DataTooltip>
+                    <lvc:DefaultTooltip BulletSize="20" Background="Gray" ShowTitle="False" SelectionMode="OnlySender"/>
+                </lvc:CartesianChart.DataTooltip>
+                <lvc:CartesianChart.AxisX>
+                    <lvc:Axis Title="Estatus Cotizaciones Generadas" ShowLabels="False" FontSize="18" FontWeight="Bold" Position="RightTop"
+                              Foreground="White" IsMerged="True"/>
+                </lvc:CartesianChart.AxisX>
+                <lvc:CartesianChart.AxisY>
+                    <lvc:Axis Title="Cantidad"/>
+                </lvc:CartesianChart.AxisY>
+            </lvc:CartesianChart>
+            <!--MONTOS EN COTIZACIONES-->
+            <Grid Grid.Row="0" Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.2*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <UniformGrid Grid.Row="0" Columns="2">
+                    <Button Width="32" Height="30" Margin="10" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Cliente con mayor cotización"
+                            Command="{Binding ClienteMaxCtzCommand}">
+                        <mdWpf:PackIcon Width="24" Height="24" Kind="AccountCheck" />
+                    </Button>
+                    <Button Width="32" Height="30" Margin="10" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Cliente con mayor descuento"
+                            Command="{Binding ClienteDscMaxCommand}">
+                        <mdWpf:PackIcon Width="24" Height="24" Kind="AccountSettings" />
+                    </Button>
+                </UniformGrid>
+                <lvc:CartesianChart Grid.Row="1" Series="{Binding SeriesMontosCtz}" LegendLocation="Bottom" Margin="15">
+                    <lvc:CartesianChart.DataTooltip>
+                        <lvc:DefaultTooltip BulletSize="20" Background="Gray" ShowTitle="False"/>
+                    </lvc:CartesianChart.DataTooltip>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Información de Montos en Cotizaciones" FontSize="18" FontWeight="Bold" ShowLabels="True" Position="RightTop" 
+                                  LabelFormatter="{Binding MontFormato}" Language="es-Mx" Foreground="{DynamicResource MaterialDesignBody}"/>
+                    </lvc:CartesianChart.AxisX>
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Montos" Language="es-Mx" ShowLabels="False"/>
+                    </lvc:CartesianChart.AxisY>
+                </lvc:CartesianChart>
+            </Grid>
+            <!--COTIZACIONES FACTURADAS-->
+            <Grid Grid.Row="1" Grid.Column="0" Margin="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.3*"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <UniformGrid Columns="2" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBlock Text="Monto Facturado Cotizaciones" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   FontSize="12" FontWeight="Bold" Foreground="White"/>
+                        <Button Width="32" Height="32" Margin="10" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Cliente con mayor facturación"
+                                Command="{Binding ClienteMaxFacCommand}">
+                            <mdWpf:PackIcon Width="24" Height="24" Kind="AccountStarVariant" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Monto Facturado Descuentos" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                   FontSize="12" FontWeight="Bold" Foreground="White"/>
+                        <Button Width="32" Height="32" Margin="10" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Cliente con mayor descuento"
+                                Command="{Binding ClienteDscFacCommand}">
+                            <mdWpf:PackIcon Width="24" Height="24" Kind="AccountAlert" />
+                        </Button>
+                    </StackPanel>
+                </UniformGrid>
+                <lvc:PieChart Grid.Column="0" Grid.Row="1" LegendLocation="Bottom" Hoverable="True" Series="{Binding SeriesCtzFacturadas}">
+                    <lvc:PieChart.DataTooltip>
+                        <lvc:DefaultTooltip BulletSize="20" Background="Gray" ShowTitle="False" SelectionMode="OnlySender"/>
+                    </lvc:PieChart.DataTooltip>
+                </lvc:PieChart>
+                <lvc:PieChart Grid.Column="1" Grid.Row="1" LegendLocation="Bottom" Hoverable="True" Series="{Binding SeriesDscFacturados}">
+                    <lvc:PieChart.DataTooltip>
+                        <lvc:DefaultTooltip BulletSize="20" Background="Gray" ShowTitle="False" SelectionMode="OnlySender"/>
+                    </lvc:PieChart.DataTooltip>
+                </lvc:PieChart>
+            </Grid>
+            <!--PORCENTAJE COTIZACIONES -->
+            <Grid Grid.Row="1" Grid.Column="1" Margin="15">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.3*"/>
+                    <RowDefinition/>
+                    <RowDefinition Height="0.1*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Porcentaje Cotizaciones Facturadas"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Foreground="White"/>
+                <lvc:Gauge Grid.Row="1" Grid.Column="0" From="0" To="1" Value="{Binding MontoCtzFact}" Foreground="White"
+                           LabelFormatter="{Binding PorcFormato}" Uses360Mode="True" Margin="10" ToolTip="Monto Cotizaciones Facturadas">
+                    <lvc:Gauge.GaugeActiveFill>
+                        <LinearGradientBrush>
+                            <GradientStop Color="Yellow" Offset="0.0" />
+                            <GradientStop Color="Orange" Offset="0.5" />
+                            <GradientStop Color="Red" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </lvc:Gauge.GaugeActiveFill>
+                </lvc:Gauge>
+                <lvc:Gauge Grid.Row="1" Grid.Column="1" From="0" To="1" Value="{Binding CantCtzFact}" Foreground="White"
+                           LabelFormatter="{Binding PorcFormato}" Uses360Mode="True" Margin="10" ToolTip="Cantidad Cotizaciones Facturadas">
+                    <lvc:Gauge.GaugeActiveFill>
+                        <LinearGradientBrush>
+                            <GradientStop Color="White" Offset="0.0"/>
+                            <GradientStop Color="Green" Offset="0.5"/>
+                            <GradientStop Color="DarkGreen" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </lvc:Gauge.GaugeActiveFill>
+                </lvc:Gauge>
+                <lvc:Gauge Grid.Row="1" Grid.Column="2" From="0" To="1" Value="{Binding MontoMaxCte}" Foreground="White"
+                           LabelFormatter="{Binding PorcFormato}" Uses360Mode="True" Margin="10" ToolTip="Monto Máx. Facturado Cliente">
+                    <lvc:Gauge.GaugeActiveFill>
+                        <LinearGradientBrush>
+                            <GradientStop Color="#FF2D00" Offset="0.0"/>
+                            <GradientStop Color="#D90000" Offset="0.5"/>
+                            <GradientStop Color="#2E0927" Offset="1.0"/>
+                        </LinearGradientBrush>
+                    </lvc:Gauge.GaugeActiveFill>
+                </lvc:Gauge>
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Monto Cotizaciones Facturadas" FontSize="10"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Row="2" Grid.Column="1" Text="Cantidad Cotizaciones Facturadas" FontSize="10"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Row="2" Grid.Column="2" Text="Monto Máx. Facturado Cliente" FontSize="10"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+            <!--MENSAJES DE ERROR-->
+            <mdWpf:Snackbar Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" IsActive="{Binding VerMensaje}" Background="{DynamicResource PrimaryHueLightBrush}">
+                <mdWpf:SnackbarMessage ActionCommand="{Binding CerrarMensajeCommand}" ActionContent="Cerrar">
+                    <mdWpf:SnackbarMessage.Content>
+                        <TextBlock Text="{Binding TxtMensaje}" FontWeight="Bold" Foreground="{DynamicResource PrimaryHueDarkBrush}" TextWrapping="WrapWithOverflow"/>
+                    </mdWpf:SnackbarMessage.Content>
+                </mdWpf:SnackbarMessage>
+            </mdWpf:Snackbar>
+            <!--AREA DE BOTONES-->
+            <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
+                <TextBlock FontSize="17" Margin="0 0 10 0" Text="{Binding TxtVendedor}" VerticalAlignment="Center"/>
+                <TextBlock FontSize="17" Margin="0 0 10 0" Text="{Binding TxtPeriodo}" VerticalAlignment="Center"/>
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="10 0 0 0" Command="{Binding ElegirVendedorCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="AccountSwitch"/>
+                            <TextBlock Margin="10 0 0 0" Text="Elegir Vendedor"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+                <Button Style="{StaticResource MaterialDesignRaisedAccentButton}" Margin="10 0 10 0" Command="{Binding ElegirPeriodoCommand}">
+                    <Button.Content>
+                        <StackPanel Orientation="Horizontal">
+                            <mdWpf:PackIcon Kind="Calendar"/>
+                            <TextBlock Margin="10 0 0 0" Text="Elegir Período"/>
+                        </StackPanel>
+                    </Button.Content>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </mdWpf:DialogHost>
+</UserControl>

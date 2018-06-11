@@ -14,6 +14,7 @@ using System.Windows.Controls;
 using System.Xml;
 using System.Linq;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Cotizador.ViewModel
 {
@@ -78,6 +79,8 @@ namespace Cotizador.ViewModel
                 ValidarUsuarioCommand = new RelayCommand(ValidarUsuario);
                 CerrarMensajeCommand = new RelayCommand(CerrarMensaje);
                 TipoConexion("desarrollo");
+                //Console.Write(ApplicationDeployment.CurrentDeployment.CurrentVersion);
+                Console.Write(Assembly.GetExecutingAssembly().GetName().Version);
                 ///verifica que exista un token, en caso contrario genera uno nuevo
                 if (string.IsNullOrEmpty(Token) != true)
                 {

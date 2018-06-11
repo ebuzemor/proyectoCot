@@ -144,7 +144,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBox mdWpf:HintAssist.Hint="# Cantidad" 
                                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
-                                 Margin="5" Grid.Column="0" Text="{Binding TxtCantidad}"/>
+                                 Margin="5" Grid.Column="0" Text="{Binding TxtCantidad, StringFormat=N2}"/>
                             <TextBox mdWpf:HintAssist.Hint="% Descuento" 
                                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}"
                                  Margin="5" Grid.Column="1" SelectedText="" 

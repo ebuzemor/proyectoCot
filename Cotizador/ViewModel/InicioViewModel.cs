@@ -36,6 +36,8 @@ namespace Cotizador.ViewModel
         private HistorialClienteViewModel _vmHistorialCte;
         private ReporteVendedorView _vwRptVendedor;
         private ReporteVendedorViewModel _vmRptVendedor;
+        private ReporteVendedor2View _vwRptVendedor2;
+        private ReporteVendedor2ViewModel _vmRptVendedor2;
 
         public MenuOpciones[] MenuOpcion { get; set; }
         public ApiKey AppKey { get => _appKey; set { _appKey = value; OnPropertyChanged(); } }
@@ -54,6 +56,8 @@ namespace Cotizador.ViewModel
         public HistorialClienteViewModel VmHistorialCte { get => _vmHistorialCte; set { _vmHistorialCte = value; OnPropertyChanged(); } }
         public ReporteVendedorView VwRptVendedor { get => _vwRptVendedor; set { _vwRptVendedor = value; OnPropertyChanged(); } }
         public ReporteVendedorViewModel VmRptVendedor { get => _vmRptVendedor; set { _vmRptVendedor = value; OnPropertyChanged(); } }
+        public ReporteVendedor2View VwRptVendedor2 { get => _vwRptVendedor2; set { _vwRptVendedor2 = value; OnPropertyChanged(); } }
+        public ReporteVendedor2ViewModel VmRptVendedor2 { get => _vmRptVendedor2; set { _vmRptVendedor2 = value; OnPropertyChanged(); } }
 
         //public int IdVentana { get => _idVentana; set { _idVentana = value; OnPropertyChanged(); } }
         #endregion
@@ -152,6 +156,19 @@ namespace Cotizador.ViewModel
             {
                 DataContext = VmRptVendedor
             };
+            //REPORTE DE VENDEDOR2
+            VmRptVendedor2 = new ReporteVendedor2ViewModel
+            {
+                Usuario = Usuario,
+                AppKey = AppKey,
+                Localhost = Localhost,
+                ListaAcciones = ListaAcciones
+            };
+            VmRptVendedor2.ObtenerReporte(true);
+            VwRptVendedor2 = new ReporteVendedor2View
+            {
+                DataContext = VmRptVendedor2
+            };
             // OPCIONES DEL MENU
             List<MenuOpciones> listaMenu = new List<MenuOpciones>
             {
@@ -160,7 +177,8 @@ namespace Cotizador.ViewModel
                 new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP),
                 new MenuOpciones("FilePdfBox", "Fichas Técnicas", VwFichaT),
                 new MenuOpciones("ClipboardAccount", "Historial del Cliente", VwHistorialCte),
-                new MenuOpciones("ChartBar", "Reporte Desempeño", VwRptVendedor)
+                new MenuOpciones("ChartBar", "Reporte Desempeño", VwRptVendedor),
+                new MenuOpciones("ChartPie", "Reporte 2 Desempeño", VwRptVendedor2)
             };
             // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO GESTIONAR PERMISOS
             var permiso = ListaAcciones.Single(x => x.Constante.Equals("PERMISOS_COTIZADOR") == true);
