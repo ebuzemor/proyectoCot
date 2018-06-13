@@ -183,13 +183,20 @@
                           mdWpf:DataGridAssist.ColumnHeaderPadding="8" Margin="5" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                           Background="Transparent">
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="Código Prod." Width="*">
+                        <DataGridTemplateColumn Header="C. Producto" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding CodigoDeProducto}" ToolTip="{Binding CodigoDeProducto}" VerticalAlignment="Center"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+                        <!--<DataGridTemplateColumn Header="Cód. Ctz." Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding CodigoDeComprobante}" ToolTip="{Binding CodigoDeComprobante}" VerticalAlignment="Center"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>-->
                         <DataGridTemplateColumn Header="Descripción" Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -204,7 +211,7 @@
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{Binding PrecioUnitario, StringFormat=C2}"/>
                                         </TextBlock.ToolTip>
-                                        </TextBlock>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -215,7 +222,7 @@
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{Binding Cantidad, StringFormat=N2}"/>
                                         </TextBlock.ToolTip>
-                                        </TextBlock>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -226,7 +233,7 @@
                                         <TextBlock.ToolTip>
                                             <TextBlock Text="{Binding Total, StringFormat=C2}"/>
                                         </TextBlock.ToolTip>
-                                        </TextBlock>
+                                    </TextBlock>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

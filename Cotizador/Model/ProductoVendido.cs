@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace Cotizador.Model
 {
@@ -7,6 +6,9 @@ namespace Cotizador.Model
     {
         [JsonProperty("claveProducto")]
         public long ClaveProducto { get; set; }
+
+        [JsonProperty("codigoDeComprobante", NullValueHandling = NullValueHandling.Ignore)]
+        public string CodigoDeComprobante { get; set; }
 
         [JsonProperty("codigoDeProducto")]
         public string CodigoDeProducto { get; set; }
