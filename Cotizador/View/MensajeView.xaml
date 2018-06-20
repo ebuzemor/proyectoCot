@@ -37,8 +37,8 @@
                    VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding ActivoSeleccionar}"
-                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="OK" Content="ACEPTAR"/>
+            <Button IsDefault="True" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" 
+                    CommandParameter="OK" Content="ACEPTAR"/>
             <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}" Visibility="{Binding MostrarCancelar, Converter={StaticResource VerBoton}}"
                     Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="CANCELAR" Content="CANCELAR"/>
         </StackPanel>

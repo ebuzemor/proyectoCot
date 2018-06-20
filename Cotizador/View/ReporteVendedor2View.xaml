@@ -129,7 +129,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Text="Porcentaje Cotizaciones Facturadas"
                            HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" FontWeight="Bold" Foreground="White"/>
-                <lvc:Gauge Grid.Row="1" Grid.Column="0" From="0" To="1" Value="{Binding MontoCtzFact}" Foreground="White"
+                <lvc:Gauge Grid.Row="1" Grid.Column="0" From="0" To="1" Value="{Binding MontoCtzFact, StringFormat=P2}" Foreground="White"
                            LabelFormatter="{Binding PorcFormato}" Uses360Mode="True" Margin="10" ToolTip="Monto Cotizaciones Facturadas">
                     <lvc:Gauge.GaugeActiveFill>
                         <LinearGradientBrush>
@@ -139,7 +139,7 @@
                         </LinearGradientBrush>
                     </lvc:Gauge.GaugeActiveFill>
                 </lvc:Gauge>
-                <lvc:Gauge Grid.Row="1" Grid.Column="1" From="0" To="1" Value="{Binding CantCtzFact}" Foreground="White"
+                <lvc:Gauge Grid.Row="1" Grid.Column="1" From="0" To="1" Value="{Binding CantCtzFact, StringFormat=P2}" Foreground="White"
                            LabelFormatter="{Binding PorcFormato}" Uses360Mode="True" Margin="10" ToolTip="Cantidad Cotizaciones Facturadas">
                     <lvc:Gauge.GaugeActiveFill>
                         <LinearGradientBrush>
@@ -149,7 +149,7 @@
                         </LinearGradientBrush>
                     </lvc:Gauge.GaugeActiveFill>
                 </lvc:Gauge>
-                <lvc:Gauge Grid.Row="1" Grid.Column="2" From="0" To="1" Value="{Binding MontoMaxCte}" Foreground="White"
+                <lvc:Gauge Grid.Row="1" Grid.Column="2" From="0" To="1" Value="{Binding MontoMaxCte, StringFormat=P2}" Foreground="White"
                            LabelFormatter="{Binding PorcFormato}" Uses360Mode="True" Margin="10" ToolTip="Monto Máx. Facturado Cliente">
                     <lvc:Gauge.GaugeActiveFill>
                         <LinearGradientBrush>

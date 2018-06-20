@@ -101,6 +101,7 @@ namespace Cotizador.ViewModel
             FechaInicio = new DateTime(hoy.Year, hoy.Month, 1);
             FechaFinal = FechaInicio.AddMonths(1).AddDays(-1);
             TxtPeriodo = " | Período: " + FechaInicio.ToString("dd-MM-yyyy") + " al " + FechaFinal.ToString("dd-MM-yyyy");
+            LimpiarValores();
         }
         #endregion
 
@@ -212,6 +213,7 @@ namespace Cotizador.ViewModel
                 {
                     TxtMensaje = "No existe información de cotizaciones generadas por el vendedor en el período establecido";
                     VerMensaje = true;
+                    LimpiarValores();
                 }
             }
         }
@@ -450,6 +452,21 @@ namespace Cotizador.ViewModel
                 TxtMensaje = "Error al mostrar información del Cliente";
                 VerMensaje = true;
             }
+        }
+
+        private void LimpiarValores()
+        {
+            SeriesCotizaciones = new SeriesCollection();
+            SeriesMontosCtz = new SeriesCollection();
+            SeriesCtzFacturadas = new SeriesCollection();
+            SeriesDscFacturados = new SeriesCollection();
+            MontoCtzFact = 0;
+            CantCtzFact = 0;
+            MontoMaxCte = 0;
+            DatosCteCtz = 0;
+            DatosCteDsc = 0;
+            DatosCteCtzFac = 0;
+            DatosCteDscFac = 0;
         }
         #endregion
     }

@@ -144,18 +144,18 @@ namespace Cotizador.ViewModel
                 DataContext = VmHistorialCte
             };
             //REPORTE DE VENDEDOR
-            VmRptVendedor = new ReporteVendedorViewModel
-            {
-                Usuario = Usuario,
-                AppKey = AppKey,
-                Localhost = Localhost,
-                ListaAcciones = ListaAcciones
-            };
-            VmRptVendedor.ObtenerReporte(true);
-            VwRptVendedor = new ReporteVendedorView
-            {
-                DataContext = VmRptVendedor
-            };
+            //VmRptVendedor = new ReporteVendedorViewModel
+            //{
+            //    Usuario = Usuario,
+            //    AppKey = AppKey,
+            //    Localhost = Localhost,
+            //    ListaAcciones = ListaAcciones
+            //};
+            //VmRptVendedor.ObtenerReporte(true);
+            //VwRptVendedor = new ReporteVendedorView
+            //{
+            //    DataContext = VmRptVendedor
+            //};
             //REPORTE DE VENDEDOR2
             VmRptVendedor2 = new ReporteVendedor2ViewModel
             {
@@ -177,8 +177,8 @@ namespace Cotizador.ViewModel
                 new MenuOpciones("AccountSettingsVariant", "Gestión de Permisos", VwGestionP),
                 new MenuOpciones("FilePdfBox", "Fichas Técnicas", VwFichaT),
                 new MenuOpciones("ClipboardAccount", "Historial del Cliente", VwHistorialCte),
-                new MenuOpciones("ChartBar", "Reporte Desempeño", VwRptVendedor),
-                new MenuOpciones("ChartPie", "Reporte 2 Desempeño", VwRptVendedor2)
+                //new MenuOpciones("ChartPie", "Reporte Desempeño", VwRptVendedor),
+                new MenuOpciones("ChartBar", "Reporte Desempeño", VwRptVendedor2)
             };
             // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO GESTIONAR PERMISOS
             var permiso = ListaAcciones.Single(x => x.Constante.Equals("PERMISOS_COTIZADOR") == true);

@@ -64,8 +64,7 @@
         </ListView>
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding ActivoSeleccionar}"
-                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="OK" Content="SELECCIONAR"/>
+            <Button Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="OK" Content="SELECCIONAR"/>
         </StackPanel>
     </Grid>
 </UserControl>
