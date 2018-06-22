@@ -249,30 +249,39 @@ namespace Cotizador.ViewModel
 
         private async void ElegirVendedor(object parameter)
         {
-            var vmBuscar = new BuscarUsuariosViewModel
+            var permiso = ListaAcciones.Single(y => y.Constante.Equals("REPORTE_COTIZACIONES") == true);
+            if (permiso.Activo == true)
             {
-                AppKey = AppKey,
-                Localhost = Localhost,
-                Usuario = Usuario
-            };
-            var vwBuscar = new BuscarUsuariosView
-            {
-                DataContext = vmBuscar
-            };
-            var result = await DialogHost.Show(vwBuscar, "ReporteVendedor2");
-            if (result.Equals("DatUsuario") == true)
-            {
-                if (vmBuscar.DatUsuario != null)
+                var vmBuscar = new BuscarUsuariosViewModel
                 {
-                    DatUsuario = vmBuscar.DatUsuario;
-                    TxtVendedor = "Vendedor: " + DatUsuario.RazonSocial;
-                    ObtenerReporte(false);
-                }
-                else
+                    AppKey = AppKey,
+                    Localhost = Localhost,
+                    Usuario = Usuario
+                };
+                var vwBuscar = new BuscarUsuariosView
                 {
-                    TxtMensaje = "Debe seleccionar un usuario para generar el reporte";
-                    VerMensaje = true;
+                    DataContext = vmBuscar
+                };
+                var result = await DialogHost.Show(vwBuscar, "ReporteVendedor2");
+                if (result.Equals("DatUsuario") == true)
+                {
+                    if (vmBuscar.DatUsuario != null)
+                    {
+                        DatUsuario = vmBuscar.DatUsuario;
+                        TxtVendedor = "Vendedor: " + DatUsuario.RazonSocial;
+                        ObtenerReporte(false);
+                    }
+                    else
+                    {
+                        TxtMensaje = "Debe seleccionar un usuario para generar el reporte";
+                        VerMensaje = true;
+                    }
                 }
+            }
+            else
+            {
+                TxtMensaje = "No tiene autorizado ver reportes de otros usuarios";
+                VerMensaje = true;
             }
         }
 
@@ -280,176 +289,208 @@ namespace Cotizador.ViewModel
 
         private async void ClienteMaxCtz(object parameter)
         {
-            var rest = new RestClient(Localhost);
-            var req = new RestRequest("datosClienteMaxCtz", Method.POST);
-            req.AddHeader("Accept", "application/json");
-            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-            req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
-            req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
-            req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
-            req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
-            req.AddParameter("montoCotizado", DatosCteCtz);
-
-            //Se obtienen los datos de las cotizaciones generadas en el período
-            IRestResponse resp = rest.Execute(req);
-            if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
+            if (DatosCteCtz > 0)
             {
-                var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
-                if (ltaDatosCte.Count > 0)
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("datosClienteMaxCtz", Method.POST);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
+                req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
+                req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
+                req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
+                req.AddParameter("montoCotizado", DatosCteCtz);
+
+                //Se obtienen los datos de las cotizaciones generadas en el período
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                 {
-                    var vmMsj = new MensajeViewModel
+                    var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
+                    if (ltaDatosCte.Count > 0)
                     {
-                        TituloMensaje = "Información",
-                        CuerpoMensaje = "Cliente con mayor monto cotizado:\n" + ltaDatosCte.First().NombreCliente,
-                        MostrarCancelar = false
-                    };
-                    var vwMsj = new MensajeView
+                        var vmMsj = new MensajeViewModel
+                        {
+                            TituloMensaje = "Información",
+                            CuerpoMensaje = "Cliente con mayor monto cotizado:\n" + ltaDatosCte.First().NombreCliente,
+                            MostrarCancelar = false
+                        };
+                        var vwMsj = new MensajeView
+                        {
+                            DataContext = vmMsj
+                        };
+                        var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                    }
+                    else
                     {
-                        DataContext = vmMsj
-                    };
-                    var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                        TxtMensaje = "No es posible encontrar información del Cliente";
+                        VerMensaje = true;
+                    }
                 }
                 else
                 {
-                    TxtMensaje = "No es posible encontrar información del Cliente";
+                    TxtMensaje = "Error al mostrar información del Cliente";
                     VerMensaje = true;
                 }
             }
             else
             {
-                TxtMensaje = "Error al mostrar información del Cliente";
+                TxtMensaje = "No hay datos del cliente a mostrar";
                 VerMensaje = true;
             }
         }
 
         private async void ClienteDscMax(object parameter)
         {
-            var rest = new RestClient(Localhost);
-            var req = new RestRequest("datosClienteDscMax", Method.POST);
-            req.AddHeader("Accept", "application/json");
-            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-            req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
-            req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
-            req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
-            req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
-            req.AddParameter("montoDescuento", DatosCteDsc);
-
-            //Se obtienen los datos del cliente con mayor descuento
-            IRestResponse resp = rest.Execute(req);
-            if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
+            if (DatosCteDsc > 0)
             {
-                var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
-                if (ltaDatosCte.Count > 0)
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("datosClienteDscMax", Method.POST);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
+                req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
+                req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
+                req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
+                req.AddParameter("montoDescuento", DatosCteDsc);
+
+                //Se obtienen los datos del cliente con mayor descuento
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                 {
-                    var vmMsj = new MensajeViewModel
+                    var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
+                    if (ltaDatosCte.Count > 0)
                     {
-                        TituloMensaje = "Información",
-                        CuerpoMensaje = "Cliente con mayor descuento cotizado:\n" + ltaDatosCte.First().NombreCliente,
-                        MostrarCancelar = false
-                    };
-                    var vwMsj = new MensajeView
+                        var vmMsj = new MensajeViewModel
+                        {
+                            TituloMensaje = "Información",
+                            CuerpoMensaje = "Cliente con mayor descuento cotizado:\n" + ltaDatosCte.First().NombreCliente,
+                            MostrarCancelar = false
+                        };
+                        var vwMsj = new MensajeView
+                        {
+                            DataContext = vmMsj
+                        };
+                        var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                    }
+                    else
                     {
-                        DataContext = vmMsj
-                    };
-                    var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                        TxtMensaje = "No es posible encontrar información del Cliente";
+                        VerMensaje = true;
+                    }
                 }
                 else
                 {
-                    TxtMensaje = "No es posible encontrar información del Cliente";
+                    TxtMensaje = "Error al mostrar información del Cliente";
                     VerMensaje = true;
                 }
             }
             else
             {
-                TxtMensaje = "Error al mostrar información del Cliente";
+                TxtMensaje = "No hay datos del cliente a mostrar";
                 VerMensaje = true;
             }
         }
 
         private async void ClienteMaxFac(object parameter)
         {
-            var rest = new RestClient(Localhost);
-            var req = new RestRequest("datosClienteMaxFac", Method.POST);
-            req.AddHeader("Accept", "application/json");
-            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-            req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
-            req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
-            req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
-            req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
-            req.AddParameter("montoFacturado", DatosCteCtzFac);
-
-            //Se obtienen los datos del cliente con mayor descuento
-            IRestResponse resp = rest.Execute(req);
-            if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
+            if (DatosCteCtzFac > 0)
             {
-                var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
-                if (ltaDatosCte.Count > 0)
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("datosClienteMaxFac", Method.POST);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
+                req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
+                req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
+                req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
+                req.AddParameter("montoFacturado", DatosCteCtzFac);
+
+                //Se obtienen los datos del cliente con mayor descuento
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                 {
-                    var vmMsj = new MensajeViewModel
+                    var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
+                    if (ltaDatosCte.Count > 0)
                     {
-                        TituloMensaje = "Información",
-                        CuerpoMensaje = "Cliente con mayor monto facturado:\n" + ltaDatosCte.First().NombreCliente,
-                        MostrarCancelar = false
-                    };
-                    var vwMsj = new MensajeView
+                        var vmMsj = new MensajeViewModel
+                        {
+                            TituloMensaje = "Información",
+                            CuerpoMensaje = "Cliente con mayor monto facturado:\n" + ltaDatosCte.First().NombreCliente,
+                            MostrarCancelar = false
+                        };
+                        var vwMsj = new MensajeView
+                        {
+                            DataContext = vmMsj
+                        };
+                        var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                    }
+                    else
                     {
-                        DataContext = vmMsj
-                    };
-                    var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                        TxtMensaje = "No es posible encontrar información del Cliente";
+                        VerMensaje = true;
+                    }
                 }
                 else
                 {
-                    TxtMensaje = "No es posible encontrar información del Cliente";
+                    TxtMensaje = "Error al mostrar información del Cliente";
                     VerMensaje = true;
                 }
             }
             else
             {
-                TxtMensaje = "Error al mostrar información del Cliente";
+                TxtMensaje = "No hay datos del cliente a mostrar";
                 VerMensaje = true;
             }
         }
 
         private async void ClienteDscFac(object parameter)
         {
-            var rest = new RestClient(Localhost);
-            var req = new RestRequest("datosClienteDscFac", Method.POST);
-            req.AddHeader("Accept", "application/json");
-            req.AddHeader("Authorization", "Bearer " + AppKey.Token);
-            req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
-            req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
-            req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
-            req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
-            req.AddParameter("desctoFacturado", DatosCteDscFac);
-
-            //Se obtienen los datos del cliente con mayor descuento
-            IRestResponse resp = rest.Execute(req);
-            if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
+            if (DatosCteDscFac > 0)
             {
-                var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
-                if (ltaDatosCte.Count > 0)
+                var rest = new RestClient(Localhost);
+                var req = new RestRequest("datosClienteDscFac", Method.POST);
+                req.AddHeader("Accept", "application/json");
+                req.AddHeader("Authorization", "Bearer " + AppKey.Token);
+                req.AddParameter("claveEF_Inmueble", ""); // Usuario.ClaveEntidadFiscalInmueble);
+                req.AddParameter("claveEF_Usuario", DatUsuario.ClaveEntidadFiscalUsuario);
+                req.AddParameter("fechaInicio", FechaInicio.ToString("yyyy-MM-dd"));
+                req.AddParameter("fechaFinal", FechaFinal.ToString("yyyy-MM-dd"));
+                req.AddParameter("desctoFacturado", DatosCteDscFac);
+
+                //Se obtienen los datos del cliente con mayor descuento
+                IRestResponse resp = rest.Execute(req);
+                if (resp.IsSuccessful == true && resp.StatusCode == HttpStatusCode.OK)
                 {
-                    var vmMsj = new MensajeViewModel
+                    var ltaDatosCte = JsonConvert.DeserializeObject<List<DatosClientesCtz>>(resp.Content);
+                    if (ltaDatosCte.Count > 0)
                     {
-                        TituloMensaje = "Información",
-                        CuerpoMensaje = "Cliente con mayor descuento facturado:\n" + ltaDatosCte.First().NombreCliente,
-                        MostrarCancelar = false
-                    };
-                    var vwMsj = new MensajeView
+                        var vmMsj = new MensajeViewModel
+                        {
+                            TituloMensaje = "Información",
+                            CuerpoMensaje = "Cliente con mayor descuento facturado:\n" + ltaDatosCte.First().NombreCliente,
+                            MostrarCancelar = false
+                        };
+                        var vwMsj = new MensajeView
+                        {
+                            DataContext = vmMsj
+                        };
+                        var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                    }
+                    else
                     {
-                        DataContext = vmMsj
-                    };
-                    var resMsj = await DialogHost.Show(vwMsj, "ReporteVendedor2");
+                        TxtMensaje = "No es posible encontrar información del Cliente";
+                        VerMensaje = true;
+                    }
                 }
                 else
                 {
-                    TxtMensaje = "No es posible encontrar información del Cliente";
+                    TxtMensaje = "Error al mostrar información del Cliente";
                     VerMensaje = true;
                 }
             }
             else
             {
-                TxtMensaje = "Error al mostrar información del Cliente";
+                TxtMensaje = "No hay datos del cliente a mostrar";
                 VerMensaje = true;
             }
         }

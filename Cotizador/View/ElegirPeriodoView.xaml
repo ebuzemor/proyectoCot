@@ -42,10 +42,10 @@
         </UniformGrid>
         <!--BOTONES DE LA VENTANA-->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 16 0 0" HorizontalAlignment="Right">
-            <Button IsDefault="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedAccentButton}" IsEnabled="{Binding ActivoSeleccionar}"
-                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="OK" Content="APLICAR"/>
-            <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}" Visibility="{Binding MostrarCancelar, Converter={StaticResource VerBoton}}"
-                    Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" CommandParameter="CANCELAR" Content="CANCELAR"/>
+            <Button IsDefault="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedAccentButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" 
+                    CommandParameter="OK" Content="APLICAR"/>
+            <Button IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignRaisedButton}" Command="{x:Static mdWpf:DialogHost.CloseDialogCommand}" 
+                    CommandParameter="CANCELAR" Content="CANCELAR"/>
         </StackPanel>
     </Grid>
 </UserControl>

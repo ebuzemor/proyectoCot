@@ -202,12 +202,12 @@ namespace Cotizador.ViewModel
                 listaMenu.Remove(opc);
             }
             // SE VERIFICA SI EL USUARIO TIENE AUTORIZADO CONSULTAR EL REPORTE DE DESEMPEÑO DE UN VENDEDOR
-            permiso = ListaAcciones.Single(y => y.Constante.Equals("REPORTE_COTIZACIONES") == true);
-            if (permiso.Activo == false)
-            {
-                var opc = listaMenu.Single(y => y.Icono.Equals("ChartBar") == true);
-                listaMenu.Remove(opc);
-            }
+            //permiso = ListaAcciones.Single(y => y.Constante.Equals("REPORTE_COTIZACIONES") == true);
+            //if (permiso.Activo == false)
+            //{
+            //    var opc = listaMenu.Single(y => y.Icono.Equals("ChartBar") == true);
+            //    listaMenu.Remove(opc);
+            //}
             // AL CONVERTIR LA LISTA EN ARREGLO, SE VISUALIZA EN PANTALLA EL MENÚ
             MenuOpcion = listaMenu.ToArray();
         }
