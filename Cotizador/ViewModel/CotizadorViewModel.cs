@@ -751,6 +751,7 @@ namespace Cotizador.ViewModel
                     ClaveEstatusCtz = 161;
                     break;
                 case 162:
+                case 164:
                     BorradorSeleccionado = false;
                     PendienteSeleccionado = false;
                     DefinitivaSeleccionado = true;
